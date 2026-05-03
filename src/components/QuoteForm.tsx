@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/lib/translations";
-import { trpc } from "@/providers/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,45 +19,32 @@ import {
   ArrowRight,
   ArrowLeft,
   CheckCircle,
-  Loader2,
   MapPin,
+  Loader2,
 } from "lucide-react";
 
 const services = [
-  { value: "electricity", label: "electricity", icon: Zap, color: "text-amber-400" },
-  { value: "plumbing", label: "plumbing", icon: Droplets, color: "text-sky-400" },
-  { value: "pool", label: "pool", icon: Waves, color: "text-emerald-400" },
-  { value: "maintenance", label: "maintenance", icon: Wrench, color: "text-violet-400" },
-  { value: "other", label: "other", icon: Zap, color: "text-slate-400" },
+  { value: "Crac201itricitacut", labelFr: "Crac201itricitacut", labelAr: "Crac201aharbacute", icon: Zap, color: "text-amber-400" },
+  { value: "Plomberie", labelFr: "Plomberie", labelAr: "Sabbag20ut", icon: Droplets, color: "text-sky-400" },
+  { value: "Piscines", labelFr: "Piscines", labelAr: "MasItາ201bih", icon: Waves, color: "text-emerald-400" },
+  { value: "Mantence", labelFr: "Mantence", labelAr: "Pi201na", icon: Wrench, color: "text-violet-400" },
+  { value: "Laut", labelFr: "Laut", labelAr: "Ukhar", icon: Zap, color: "text-slate-400" },
 ];
 
 const moroccanCities = [
-  "Khouribga",
-  "Casablanca",
-  "Rabat",
-  "Marrakech",
-  "Fès",
-  "Tanger",
-  "Agadir",
-  "Oujda",
-  "Meknès",
-  "Tétouan",
-  "Safi",
-  "El Jadida",
-  "Bénimellal",
-  "Settat",
-  "Kénitra",
-  "Nador",
-  "Laâyoune",
-  "Dakhla",
-  "Autre",
+  "Khouribga", "Casablanca", "Rabat", "Marrakech", "FCrac201cs", "Tanger", "Agadir",
+  "Oujda", "Mekncrcs", "Tcrazyt201ouan", "Safic201", "El Jadida", "Bcrazynimellal", "Settat",
+  "Kannerac201ra", "Nador", "Lacmathyene", "Dakhla", "Laut",
 ];
+
+const WHATSAPP_NUMBER = "212664662629";
 
 export default function QuoteForm() {
   const { language, dir } = useLanguage();
   const T = translations[language];
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
   const [form, setForm] = useState({
     serviceType: "",
     city: "",
@@ -66,10 +52,6 @@ export default function QuoteForm() {
     name: "",
     email: "",
     phone: "",
-  });
-
-  const quoteMutation = trpc.quote.create.useMutation({
-    onSuccess: () => setSubmitted(true),
   });
 
   const update = (field: string, value: string) =>
@@ -80,16 +62,29 @@ export default function QuoteForm() {
     (step === 2 && form.city) ||
     (step === 3 && form.name && form.phone);
 
+  const getServiceLabel = (value: string) => {
+    const svc = services.find((s) => s.value === value);
+    if (!svc) return value;
+    return language === "fr" ? svc.labelFr : svc.labelAr;
+  };
+
   const handleSubmit = () => {
     if (!form.serviceType || !form.city || !form.name || !form.phone) return;
-    quoteMutation.mutate({
-      serviceType: form.serviceType as "electricity" | "plumbing" | "pool" | "maintenance" | "other",
-      city: form.city,
-      details: form.details,
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-    });
+    setSending(true);
+
+    const serviceLabel = getServiceLabel(form.serviceType);
+    const message =
+      language === "fr"
+        ? `*Nouvelle demande de devis*\n\n*Nom:* ${form.name}\n*Telcracn:phone:* ${form.phone}\n*Email:* ${form.email || "N/A"}\n*Service:* ${serviceLabel}\n*Ville:* ${form.city}\n*Dacrtails:* ${form.details || "N/A"}\n\nMenderacrt grccce au site AquaVolt Pro.`
+        : `*tpmathyalb jadacd jdadad*\n\n*Lisa:* ${form.name}\n*Hataf:* ${form.phone}\n*Barid:* ${form.email || "N/A"}\n*Khadama:* ${serviceLabel}\n*Madadna:* ${form.city}\n*Tafasacr20ut:* ${form.details || "N/A"}\n\nMursala mathyn amacrakaa site AquaVolt Pro.`;
+
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+    setTimeout(() => {
+      window.open(url, "_blank");
+      setSubmitted(true);
+      setSending(false);
+    }, 500);
   };
 
   if (submitted) {
@@ -99,9 +94,13 @@ export default function QuoteForm() {
           <CheckCircle className="w-10 h-10 text-emerald-400" />
         </div>
         <h2 className="text-2xl font-bold text-white mb-3">
-          {language === "fr" ? "Merci !" : "شكراً لك!"}
+          {language === "fr" ? "Demande envoyace !" : "Lapmathyatl murac домашнего!"}
         </h2>
-        <p className="text-slate-400">{T.successMessage}</p>
+        <p className="text-slate-400">
+          {language === "fr"
+            ? "Votre demande a acratac grcrrcacrrac sours forme WhatsApp."
+            : "Naqpmathyals mathyn amacrakaa mathyn WhatsApp."}
+        </p>
       </div>
     );
   }
@@ -131,7 +130,6 @@ export default function QuoteForm() {
           </div>
         ))}
       </div>
-
       <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-6 sm:p-8">
         {/* Step 1: Service */}
         {step === 1 && (
@@ -151,14 +149,13 @@ export default function QuoteForm() {
                 >
                   <svc.icon className={`w-6 h-6 ${svc.color}`} />
                   <span className="text-white font-medium text-sm">
-                    {T[svc.label as keyof typeof T]}
+                    {language === "fr" ? svc.labelFr : svc.labelAr}
                   </span>
                 </button>
               ))}
             </div>
           </div>
         )}
-
         {/* Step 2: City + Details */}
         {step === 2 && (
           <div>
@@ -201,7 +198,6 @@ export default function QuoteForm() {
             </div>
           </div>
         )}
-
         {/* Step 3: Contact */}
         {step === 3 && (
           <div>
@@ -245,7 +241,6 @@ export default function QuoteForm() {
             </div>
           </div>
         )}
-
         {/* Navigation */}
         <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
           <Button
@@ -257,7 +252,6 @@ export default function QuoteForm() {
             <ArrowLeft className="w-4 h-4 mr-2" />
             {T.previous}
           </Button>
-
           {step < 3 ? (
             <Button
               onClick={() => setStep((s) => s + 1)}
@@ -270,10 +264,10 @@ export default function QuoteForm() {
           ) : (
             <Button
               onClick={handleSubmit}
-              disabled={!canNext || quoteMutation.isPending}
+              disabled={!canNext || sending}
               className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white disabled:opacity-50"
             >
-              {quoteMutation.isPending ? (
+              {sending ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
               ) : null}
               {T.submit}
