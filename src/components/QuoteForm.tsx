@@ -74,10 +74,7 @@ export default function QuoteForm() {
 
     const serviceLabel = getServiceLabel(form.serviceType);
     const message =
-      language === "fr"
-        ? `*Nouvelle demande de devis*\n\n*Nom:* ${form.name}\n*Telcracn:phone:* ${form.phone}\n*Email:* ${form.email || "N/A"}\n*Service:* ${serviceLabel}\n*Ville:* ${form.city}\n*Dacrtails:* ${form.details || "N/A"}\n\nMenderacrt grccce au site AquaVolt Pro.`
-        : `*tpmathyalb jadacd jdadad*\n\n*Lisa:* ${form.name}\n*Hataf:* ${form.phone}\n*Barid:* ${form.email || "N/A"}\n*Khadama:* ${serviceLabel}\n*Madadna:* ${form.city}\n*Tafasacr20ut:* ${form.details || "N/A"}\n\nMursala mathyn amacrakaa site AquaVolt Pro.`;
-
+`*Nouvelle demande de devis*\n\n*Nom:* ${form.name}\n*Telephone:* ${form.phone}\n*Email:* ${form.email || "N/A"}\n*Service:* ${serviceLabel}\n*Ville:* ${form.city}\n*Details:* ${form.details || "N/A"}\n\nMerci d'avoir utilise AquaVolt Pro.`;
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
     setTimeout(() => {
