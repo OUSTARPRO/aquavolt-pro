@@ -4,34 +4,26 @@
 
 @layer base {
   :root {
-    --background: 222 47% 4%;
-    --foreground: 0 0% 98%;
-    --card: 222 47% 6%;
-    --card-foreground: 0 0% 98%;
-    --popover: 222 47% 6%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 160 84% 39%;
+    --background: 20 14% 5%;
+    --foreground: 35 100% 95%;
+    --card: 20 14% 8%;
+    --card-foreground: 35 100% 95%;
+    --popover: 20 14% 8%;
+    --popover-foreground: 35 100% 95%;
+    --primary: 15 90% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --secondary: 30 20% 15%;
+    --secondary-foreground: 35 100% 95%;
+    --muted: 30 20% 15%;
+    --muted-foreground: 30 15% 55%;
+    --accent: 35 90% 55%;
+    --accent-foreground: 20 14% 5%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 160 84% 39%;
+    --border: 30 20% 18%;
+    --input: 30 20% 15%;
+    --ring: 15 90% 50%;
     --radius: 0.625rem;
-    --sidebar-background: 222 47% 4%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 160 84% 39%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 160 84% 39%;
   }
 }
 
@@ -44,7 +36,11 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
   }
 }
 
@@ -56,20 +52,87 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  .font-playfair {
+    font-family: 'Playfair Display', serif;
+  }
+  .text-fire {
+    background: linear-gradient(135deg, #ff6b00, #ff0000, #ff9500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .bg-fire {
+    background: linear-gradient(135deg, #e63000, #ff5500, #ff9500);
+  }
+  .glow-fire {
+    box-shadow: 0 0 30px rgba(230, 48, 0, 0.4), 0 0 60px rgba(230, 48, 0, 0.2);
+  }
+  .glow-fire-sm {
+    box-shadow: 0 0 15px rgba(230, 48, 0, 0.5);
+  }
 }
 
-/* Custom scrollbar for dark theme */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-12px) rotate(2deg); }
+  66% { transform: translateY(-6px) rotate(-1deg); }
 }
-::-webkit-scrollbar-track {
-  background: #0f172a;
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
-::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+@keyframes fire-flicker {
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.8; transform: scaleY(0.95); }
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes bounce-in {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-float-delay { animation: float 4s ease-in-out infinite 1.5s; }
+.animate-spin-slow { animation: spin-slow 20s linear infinite; }
+.animate-fire { animation: fire-flicker 0.5s ease-in-out infinite; }
+.animate-slide-up { animation: slide-up 0.6s ease-out forwards; }
+.animate-slide-in-right { animation: slide-in-right 0.5s ease-out forwards; }
+.animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.animate-pulse-ring { animation: pulse-ring 1.5s ease-out infinite; }
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0d0805; }
+::-webkit-scrollbar-thumb { background: #e63000; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #ff5500; }
+
+/* Cart animation */
+.cart-item-enter {
+  animation: slide-in-right 0.3s ease-out;
+}
+
+/* Pizza spin on hover */
+.pizza-spin:hover {
+  animation: spin-slow 3s linear infinite;
 }
