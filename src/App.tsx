@@ -4,11 +4,13 @@ import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import Devis from './pages/Devis'
 import Admin from './pages/Admin'
+import PizzeriaDemo from './pages/PizzeriaDemo'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/demo-pizzeria" element={<PizzeriaDemo />} />
       <Route path="/devis" element={<Devis />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/login" element={<Login />} />
