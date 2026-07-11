@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/sections/Hero";
 import Services from "@/sections/Services";
+import CatalogueTease from "@/sections/CatalogueTease";
 import Gallery from "@/sections/Gallery";
 import Testimonials from "@/sections/Testimonials";
 import Contact from "@/sections/Contact";
@@ -15,6 +16,7 @@ export default function Home() {
       <main>
         <Hero />
         <Services />
+        <CatalogueTease />
         <Gallery />
         <Testimonials />
         <Contact />

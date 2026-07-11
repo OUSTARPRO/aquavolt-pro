@@ -11,6 +11,7 @@ import {
   LogOut,
   Shield,
   MessageSquare,
+  LayoutGrid,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -31,11 +32,12 @@ export default function Navbar() {
   const T = translations[language];
 
   const navLinks = [
-    { label: T.home, href: "/" },
-    { label: T.services, href: isHome ? "#services" : "/#services" },
-    { label: T.gallery, href: isHome ? "#gallery" : "/#gallery" },
-    { label: T.quote, href: "/devis" },
-    { label: T.contact, href: isHome ? "#contact" : "/#contact" },
+    { label: T.home, href: "/", isRoute: true },
+    { label: T.services, href: isHome ? "#services" : "/#services", isRoute: false },
+    { label: T.gallery, href: isHome ? "#gallery" : "/#gallery", isRoute: false },
+    { label: language === "fr" ? "Catalogue" : "الكتالوج", href: "/catalogue", isRoute: true, highlight: true },
+    { label: T.quote, href: "/devis", isRoute: true },
+    { label: T.contact, href: isHome ? "#contact" : "/#contact", isRoute: false },
   ];
 
   const isAdmin = user?.role === "admin";
@@ -66,15 +68,30 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="px-3 py-2 text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors rounded-md hover:bg-white/5"
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.isRoute ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={`px-3 py-2 text-sm font-medium transition-colors rounded-md flex items-center gap-1.5 ${
+                    link.highlight
+                      ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
+                      : "text-slate-300 hover:text-emerald-400 hover:bg-white/5"
+                  }`}
+                >
+                  {link.highlight && <LayoutGrid className="w-3.5 h-3.5" />}
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="px-3 py-2 text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors rounded-md hover:bg-white/5"
+                >
+                  {link.label}
+                </a>
+              )
+            )}
             {isAdmin && (
               <Link
                 to="/admin"
@@ -147,16 +164,32 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="lg:hidden bg-slate-950/98 backdrop-blur-xl border-t border-emerald-500/10">
           <div className="px-4 py-3 space-y-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="block px-3 py-2.5 text-sm font-medium text-slate-300 hover:text-emerald-400 hover:bg-white/5 rounded-md"
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.isRoute ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-2 px-3 py-2.5 text-sm font-medium rounded-md ${
+                    link.highlight
+                      ? "text-emerald-400 hover:bg-emerald-500/10"
+                      : "text-slate-300 hover:text-emerald-400 hover:bg-white/5"
+                  }`}
+                >
+                  {link.highlight && <LayoutGrid className="w-4 h-4" />}
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="block px-3 py-2.5 text-sm font-medium text-slate-300 hover:text-emerald-400 hover:bg-white/5 rounded-md"
+                >
+                  {link.label}
+                </a>
+              )
+            )}
             {isAdmin && (
               <Link
                 to="/admin"

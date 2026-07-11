@@ -32,6 +32,7 @@ export default function Footer() {
               {[
                 { label: T.home, href: "/" },
                 { label: T.services, href: "#services" },
+                { label: language === "fr" ? "Catalogue Sites Web" : "كتالوج المواقع", href: "/catalogue" },
                 { label: T.quote, href: "/devis" },
                 { label: T.contact, href: "#contact" },
               ].map((link) => (
