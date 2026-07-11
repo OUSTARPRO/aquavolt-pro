@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
-  const { language, toggleLanguage, dir } = useLanguage();
+  const { language, toggleLanguage, dir, t } = useLanguage();
   const { user, isAuthenticated, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -33,6 +33,7 @@ export default function Navbar() {
   const navLinks = [
     { label: T.home, href: "/" },
     { label: T.services, href: isHome ? "#services" : "/#services" },
+    { label: t("Catalogue web", "كتالوج المواقع"), href: isHome ? "#catalogue-web" : "/#catalogue-web" },
     { label: T.gallery, href: isHome ? "#gallery" : "/#gallery" },
     { label: T.quote, href: "/devis" },
     { label: T.contact, href: isHome ? "#contact" : "/#contact" },
