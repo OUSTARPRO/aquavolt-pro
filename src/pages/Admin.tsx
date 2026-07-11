@@ -478,8 +478,8 @@ function CatalogueManager() {
       Forfait: p.name,
       Catégorie: p.category,
       Description: p.description,
-      "Prix (MAD)": p.price === 0 ? "Sur devis" : p.price,
-      "Ancien Prix": p.oldPrice ?? "",
+      "Prix (€)": p.price === 0 ? "Sur devis" : p.price,
+      "Ancien Prix (€)": p.oldPrice ?? "",
       "Remise %": p.promoPercent ?? "",
       Badge: p.badge ?? "",
       Options: (p.options as string[]).join(" | "),
@@ -694,10 +694,10 @@ function CatalogueManager() {
                         <span className="text-slate-500">Sur devis</span>
                       ) : (
                         <span>
-                          {pkg.price.toLocaleString("fr-FR")} MAD
+                          {pkg.price.toLocaleString("fr-FR")} €
                           {pkg.oldPrice && (
                             <span className="ml-1 text-slate-600 line-through text-xs">
-                              {pkg.oldPrice.toLocaleString("fr-FR")}
+                              {pkg.oldPrice.toLocaleString("fr-FR")} €
                             </span>
                           )}
                         </span>

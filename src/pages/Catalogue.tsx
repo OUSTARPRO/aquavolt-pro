@@ -66,14 +66,14 @@ const staticPackages = [
     name: "Starter Vitrine",
     description: "Idéal pour les artisans, commerçants et petites entreprises souhaitant une présence professionnelle en ligne.",
     category: "vitrine" as const,
-    price: 1500,
+    price: 149,
     oldPrice: null,
     options: [
       "1 page Landing Page",
       "Design responsive mobile/tablette",
       "Formulaire de contact",
       "Hébergement 1 an inclus",
-      "Nom de domaine .ma",
+      "Nom de domaine .fr ou .com",
       "SSL gratuit (HTTPS)",
       "Livraison en 7 jours",
     ],
@@ -88,8 +88,8 @@ const staticPackages = [
     name: "Business Pro",
     description: "La solution complète pour PME et entrepreneurs avec référencement et analytics intégrés.",
     category: "vitrine" as const,
-    price: 3500,
-    oldPrice: 4500,
+    price: 349,
+    oldPrice: 449,
     options: [
       "Jusqu'à 10 pages",
       "Design responsive premium",
@@ -112,11 +112,11 @@ const staticPackages = [
     name: "E-Commerce Standard",
     description: "Lancez votre boutique en ligne avec paiement sécurisé, gestion des stocks et tableau de bord.",
     category: "ecommerce" as const,
-    price: 6500,
+    price: 649,
     oldPrice: null,
     options: [
       "Jusqu'à 100 produits",
-      "Paiement en ligne (CMI / PayPal)",
+      "Paiement en ligne (Stripe / PayPal)",
       "Gestion des stocks",
       "Tableau de bord admin",
       "Paniers abandonnés",
@@ -135,11 +135,11 @@ const staticPackages = [
     name: "E-Commerce Premium",
     description: "Solution e-commerce entreprise avec produits illimités, multi-devises et application mobile.",
     category: "ecommerce" as const,
-    price: 12000,
-    oldPrice: 15000,
+    price: 1199,
+    oldPrice: 1499,
     options: [
       "Produits illimités",
-      "Multi-devises (MAD, EUR, USD)",
+      "Multi-devises (EUR, USD, GBP...)",
       "Application mobile PWA",
       "CRM clients intégré",
       "Analytics avancés",
@@ -159,7 +159,7 @@ const staticPackages = [
     name: "Portfolio Créatif",
     description: "Mettez en valeur vos créations avec animations fluides, galerie interactive et formulaire de contact.",
     category: "portfolio" as const,
-    price: 2200,
+    price: 219,
     oldPrice: null,
     options: [
       "Galerie projets illimitée",
@@ -181,8 +181,8 @@ const staticPackages = [
     name: "Blog Magazine",
     description: "Publiez du contenu, gérez des catégories et fidélisez votre audience avec newsletter et réseaux sociaux.",
     category: "blog" as const,
-    price: 2800,
-    oldPrice: 3500,
+    price: 279,
+    oldPrice: 349,
     options: [
       "Articles illimités",
       "Catégories & tags",
@@ -203,10 +203,10 @@ const staticPackages = [
     name: "Corporate Entreprise",
     description: "Site institutionnel multilingue avec espace client, intranet et intégrations ERP/CRM professionnels.",
     category: "corporate" as const,
-    price: 15000,
+    price: 1499,
     oldPrice: null,
     options: [
-      "Site multilingue (FR/AR/EN)",
+      "Site multilingue (FR/EN/AR)",
       "Intranet employés",
       "Espace client sécurisé",
       "Tableau de bord RH",
@@ -280,8 +280,8 @@ export default function Catalogue() {
       Forfait: p.name,
       Catégorie: p.category,
       Description: p.description,
-      "Prix (MAD)": p.price === 0 ? "Sur devis" : p.price,
-      "Ancien Prix (MAD)": p.oldPrice ?? "",
+      "Prix (€)": p.price === 0 ? "Sur devis" : p.price,
+      "Ancien Prix (€)": p.oldPrice ?? "",
       "Remise %": p.promoPercent ?? "",
       Badge: p.badge ?? "",
       Options: (p.options as string[]).join(" | "),
@@ -439,11 +439,11 @@ export default function Catalogue() {
                               <span className="text-3xl font-extrabold text-white">
                                 {pkg.price.toLocaleString("fr-FR")}
                               </span>
-                              <span className="text-emerald-400 font-semibold text-sm">MAD</span>
+                              <span className="text-emerald-400 font-semibold text-sm">€</span>
                             </div>
                             {pkg.oldPrice && (
                               <span className="text-slate-500 line-through text-sm">
-                                {pkg.oldPrice.toLocaleString("fr-FR")} MAD
+                                {pkg.oldPrice.toLocaleString("fr-FR")} €
                               </span>
                             )}
                             {hasPromo && (
