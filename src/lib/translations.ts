@@ -12,15 +12,15 @@ export const translations = {
 
     // Hero
     heroTitle: "AquaVolt Pro",
-    heroSubtitle: "L'excellence en Électricité, Plomberie & Piscines",
+    heroSubtitle: "Catalogue de sites web avec options manager et Excel automatise",
     heroDescription:
-      "Votre partenaire de confiance au Maroc. Basés à Khouribga, nous intervenons dans tout le royaume pour des prestations de haute qualité.",
+      "Votre partenaire digital au Maroc. Nous creons des sites vitrines, e-commerce et systemes de reporting Excel avec des prix raisonnables et des promos actives.",
     heroCta: "Demander un devis",
     heroCta2: "Nos services",
 
     // Services
-    servicesTitle: "Nos Expertises",
-    servicesSubtitle: "Des solutions complètes pour votre confort",
+    servicesTitle: "Nos Packs Sites Web",
+    servicesSubtitle: "Des offres completes avec options et tarifs promotionnels",
     electricity: "Électricité",
     electricityDesc:
       "Installation, rénovation et mise aux normes. Tableaux électriques, éclairage LED, domotique et dépannage urgent.",
@@ -130,15 +130,15 @@ export const translations = {
 
     // Hero
     heroTitle: "أكوا فولت برو",
-    heroSubtitle: "التميز في الكهرباء والسباكة والمسابح",
+    heroSubtitle: "كتالوج مواقع ويب مع خيارات الإدارة وExcel التلقائي",
     heroDescription:
-      "شريكك الموثوق في المغرب. مقرنا في خريبكة، نتدخل في جميع أنحاء المملكة لتقديم خدمات عالية الجودة.",
+      "شريكك الرقمي في المغرب. نبني مواقع تعريفية ومتاجر إلكترونية وأنظمة تقارير Excel بأسعار مناسبة وعروض مستمرة.",
     heroCta: "اطلب عرض سعر",
     heroCta2: "خدماتنا",
 
     // Services
-    servicesTitle: "خبراتنا",
-    servicesSubtitle: "حلول شاملة لراحتك",
+    servicesTitle: "باقات مواقع الويب",
+    servicesSubtitle: "عروض متكاملة مع خيارات وأسعار ترويجية",
     electricity: "الكهرباء",
     electricityDesc:
       "تركيب، تجديد وتحديث. لوحات كهربائية، إضاءة LED، منزل ذكي وإصلاحات طارئة.",

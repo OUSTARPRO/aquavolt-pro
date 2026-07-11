@@ -1,7 +1,7 @@
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, Droplets, Waves } from "lucide-react";
+import { ArrowRight, BarChart3, FileSpreadsheet, Globe2 } from "lucide-react";
 import { Link } from "react-router";
 
 export default function Hero() {
@@ -43,11 +43,11 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-6 backdrop-blur-sm">
-          <Zap className="w-4 h-4" />
+          <Globe2 className="w-4 h-4" />
           <span>
             {language === "fr"
-              ? "Intervention dans tout le Maroc"
-              : "تدخل في جميع أنحاء المغرب"}
+              ? "Creation de sites web pour tout le Maroc"
+              : "إنشاء مواقع ويب في جميع أنحاء المغرب"}
           </span>
         </div>
 
@@ -94,9 +94,9 @@ export default function Hero() {
         {/* Service icons */}
         <div className="mt-16 grid grid-cols-3 gap-6 max-w-lg mx-auto">
           {[
-            { icon: Zap, label: language === "fr" ? "Électricité" : "الكهرباء" },
-            { icon: Droplets, label: language === "fr" ? "Plomberie" : "السباكة" },
-            { icon: Waves, label: language === "fr" ? "Piscines" : "المسابح" },
+            { icon: Globe2, label: language === "fr" ? "Sites web" : "مواقع الويب" },
+            { icon: BarChart3, label: language === "fr" ? "Manager" : "إدارة" },
+            { icon: FileSpreadsheet, label: language === "fr" ? "Excel auto" : "Excel آلي" },
           ].map((item) => (
             <div
               key={item.label}
