@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catalogue de Sites Web — AquaVolt Pro</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #020817;
+      --bg2: #0f172a;
+      --bg3: #1e293b;
+      --border: rgba(255,255,255,0.08);
+      --emerald: #10b981;
+      --emerald2: #34d399;
+      --teal: #14b8a6;
+      --violet: #8b5cf6;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --sky: #0ea5e9;
+      --slate3: #475569;
+      --slate4: #334155;
+      --text: #f8fafc;
+      --text2: #94a3b8;
+      --text3: #64748b;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(2,8,23,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(16,185,129,0.15);
+      padding: 0 2rem;
+    }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .logo { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--emerald), var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 16px rgba(16,185,129,.3);
+      font-size: 18px;
+    }
+    .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--text); }
+    .logo-text span { color: var(--emerald); }
+    .logo-text small { color: var(--teal); font-size: .75rem; font-weight: 500; margin-left: 2px; }
+    .nav-tag {
+      background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.2);
+      color: var(--emerald); padding: .25rem .9rem; border-radius: 999px;
+      font-size: .78rem; font-weight: 600;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 5rem 2rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute;
+      top: -80px; left: 50%; transform: translateX(-80%);
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(16,185,129,.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: ''; position: absolute;
+      top: 0; right: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(139,92,246,.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.2);
+      color: var(--emerald); padding: .35rem 1rem; border-radius: 999px;
+      font-size: .78rem; font-weight: 600; margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900; letter-spacing: -.02em;
+      background: linear-gradient(135deg, #fff 30%, var(--emerald2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      color: var(--text2); font-size: 1.1rem; max-width: 560px;
+      margin: 0 auto 2rem;
+    }
+    .btn-export {
+      display: inline-flex; align-items: center; gap: .5rem;
+      border: 1.5px solid rgba(16,185,129,.35);
+      color: var(--emerald); background: transparent;
+      padding: .6rem 1.4rem; border-radius: 10px;
+      font-size: .875rem; font-weight: 600; cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-export:hover { background: rgba(16,185,129,.08); color: var(--emerald2); }
+
+    /* ─── STATS BAR ─── */
+    .stats-bar {
+      display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+      padding: 1.5rem 2rem; border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(15,23,42,.5);
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.6rem; font-weight: 800; color: var(--emerald); }
+    .stat-lbl { font-size: .75rem; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; }
+
+    /* ─── FILTERS ─── */
+    .filters {
+      max-width: 1280px; margin: 2.5rem auto 2rem;
+      padding: 0 2rem;
+      display: flex; gap: .6rem; flex-wrap: wrap; align-items: center;
+    }
+    .filter-icon { color: var(--text3); font-size: 1rem; margin-right: .2rem; }
+    .filter-btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .45rem 1rem; border-radius: 999px;
+      font-size: .8rem; font-weight: 600; cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: var(--bg2); color: var(--text2);
+      transition: all .2s;
+    }
+    .filter-btn:hover { color: var(--text); border-color: rgba(16,185,129,.3); }
+    .filter-btn.active {
+      background: var(--emerald); color: #fff;
+      border-color: var(--emerald);
+      box-shadow: 0 4px 14px rgba(16,185,129,.3);
+    }
+
+    /* ─── GRID ─── */
+    .grid {
+      max-width: 1280px; margin: 0 auto 3rem;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* ─── CARD ─── */
+    .card {
+      background: rgba(15,23,42,.7);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(0,0,0,.4);
+      border-color: rgba(16,185,129,.25);
+    }
+    .card.featured {
+      border-color: rgba(16,185,129,.4);
+      box-shadow: 0 8px 30px rgba(16,185,129,.12);
+    }
+    .card-top-bar { height: 4px; }
+    .card-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+
+    /* Badge */
+    .badge {
+      position: absolute; top: 1rem; right: 1rem;
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .25rem .7rem; border-radius: 999px;
+      font-size: .72rem; font-weight: 700; border: 1.5px solid;
+    }
+    .badge-emerald { background: rgba(16,185,129,.15); color: #34d399; border-color: rgba(16,185,129,.3); }
+    .badge-amber   { background: rgba(245,158,11,.15); color: #fbbf24; border-color: rgba(245,158,11,.3); }
+    .badge-rose    { background: rgba(244,63,94,.15);  color: #fb7185; border-color: rgba(244,63,94,.3); }
+    .badge-sky     { background: rgba(14,165,233,.15); color: #38bdf8; border-color: rgba(14,165,233,.3); }
+    .badge-violet  { background: rgba(139,92,246,.15); color: #a78bfa; border-color: rgba(139,92,246,.3); }
+
+    /* Card header */
+    .card-head { display: flex; align-items: center; gap: .9rem; margin-bottom: 1rem; }
+    .cat-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .cat-label { font-size: .7rem; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; font-weight: 600; margin-bottom: .1rem; }
+    .cat-name { font-size: 1.15rem; font-weight: 800; color: var(--text); transition: color .2s; }
+    .card:hover .cat-name { color: var(--emerald2); }
+
+    .card-desc { color: var(--text2); font-size: .855rem; line-height: 1.6; margin-bottom: 1.2rem; flex-grow: 0; }
+
+    /* Price */
+    .price-block { margin-bottom: 1.2rem; }
+    .price-row { display: flex; align-items: flex-end; gap: .6rem; flex-wrap: wrap; }
+    .price-main { font-size: 2rem; font-weight: 900; color: var(--text); line-height: 1; }
+    .price-currency { font-size: .85rem; font-weight: 700; color: var(--emerald); margin-bottom: .15rem; }
+    .price-old { font-size: .85rem; color: var(--text3); text-decoration: line-through; }
+    .price-promo {
+      display: inline-flex; align-items: center;
+      background: rgba(244,63,94,.12); color: #fb7185;
+      border: 1px solid rgba(244,63,94,.2);
+      border-radius: 999px; padding: .1rem .55rem;
+      font-size: .72rem; font-weight: 800;
+    }
+    .price-type { font-size: .72rem; color: var(--text3); margin-top: .25rem; }
+
+    /* Options */
+    .options-label {
+      font-size: .68rem; color: var(--text3);
+      text-transform: uppercase; letter-spacing: .07em; font-weight: 600;
+      margin-bottom: .65rem;
+    }
+    .options-list { list-style: none; flex: 1; margin-bottom: 1.4rem; }
+    .options-list li {
+      display: flex; align-items: flex-start; gap: .5rem;
+      font-size: .82rem; color: #cbd5e1; padding: .2rem 0;
+    }
+    .check { color: var(--emerald); flex-shrink: 0; margin-top: .1rem; font-size: .9rem; }
+
+    /* CTA */
+    .cta-btn {
+      display: flex; align-items: center; justify-content: center; gap: .4rem;
+      width: 100%; padding: .75rem 1rem; border-radius: 12px;
+      font-size: .875rem; font-weight: 700; cursor: pointer;
+      text-decoration: none; transition: all .2s;
+      border: 1.5px solid;
+    }
+    .cta-btn.primary {
+      background: linear-gradient(135deg, var(--emerald), var(--teal));
+      color: #fff; border-color: transparent;
+      box-shadow: 0 4px 14px rgba(16,185,129,.3);
+    }
+    .cta-btn.primary:hover { filter: brightness(1.1); box-shadow: 0 6px 20px rgba(16,185,129,.4); }
+    .cta-btn.secondary {
+      background: var(--bg3); color: var(--text2);
+      border-color: var(--border);
+    }
+    .cta-btn.secondary:hover { color: var(--emerald2); border-color: rgba(16,185,129,.3); background: rgba(16,185,129,.05); }
+    .cta-arrow { transition: transform .2s; }
+    .cta-btn:hover .cta-arrow { transform: translateX(3px); }
+
+    /* ─── BANNER ─── */
+    .banner {
+      max-width: 1280px; margin: 0 auto 5rem;
+      padding: 0 2rem;
+    }
+    .banner-inner {
+      background: linear-gradient(135deg, rgba(16,185,129,.08), rgba(20,184,166,.06));
+      border: 1.5px solid rgba(16,185,129,.2);
+      border-radius: 20px; padding: 3rem 2rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .banner-inner::before {
+      content: ''; position: absolute;
+      left: -80px; top: -80px; width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(16,185,129,.08), transparent 70%);
+    }
+    .banner-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .banner h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: .6rem; }
+    .banner p { color: var(--text2); max-width: 520px; margin: 0 auto 1.8rem; }
+    .banner-btns { display: flex; gap: .8rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      color: var(--text3); font-size: .8rem;
+    }
+    footer strong { color: var(--emerald); }
+
+    /* ─── PROMO RIBBON ─── */
+    .ribbon {
+      position: absolute; top: 0; left: 0;
+      background: linear-gradient(135deg, var(--rose), #dc2626);
+      color: #fff; font-size: .68rem; font-weight: 800;
+      padding: .15rem .6rem; border-bottom-right-radius: 8px;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr; }
+      .stats-bar { gap: 1.2rem; }
+      .hero { padding: 3rem 1rem 2rem; }
+    }
+
+    /* ─── PRINT ─── */
+    @media print {
+      nav, .btn-export, .cta-btn, .banner, footer { display: none; }
+      .card { break-inside: avoid; border: 1px solid #ccc; }
+      body { background: #fff; color: #000; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">Aqua<span>Volt</span><small>Pro</small></div>
+    </a>
+    <span class="nav-tag">✦ Catalogue Web 2026</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">✦ Catalogue de Sites Web</div>
+  <h1>Catalogue de Sites Web</h1>
+  <p>Des solutions web complètes à prix transparents — choisissez le forfait qui vous correspond</p>
+  <button class="btn-export" onclick="exportExcel()">
+    ⬇ Exporter Excel
+  </button>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">8</div><div class="stat-lbl">Forfaits disponibles</div></div>
+  <div class="stat"><div class="stat-num">149€</div><div class="stat-lbl">À partir de</div></div>
+  <div class="stat"><div class="stat-num">-22%</div><div class="stat-lbl">Meilleure promo</div></div>
+  <div class="stat"><div class="stat-num">6</div><div class="stat-lbl">Catégories</div></div>
+  <div class="stat"><div class="stat-num">7j</div><div class="stat-lbl">Livraison rapide</div></div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+  <span class="filter-icon">⊟</span>
+  <button class="filter-btn active" onclick="filter('all', this)">Tous</button>
+  <button class="filter-btn" onclick="filter('vitrine', this)">🌐 Site Vitrine</button>
+  <button class="filter-btn" onclick="filter('ecommerce', this)">🛒 E-Commerce</button>
+  <button class="filter-btn" onclick="filter('portfolio', this)">💼 Portfolio</button>
+  <button class="filter-btn" onclick="filter('blog', this)">📖 Blog / Magazine</button>
+  <button class="filter-btn" onclick="filter('corporate', this)">🏢 Corporate</button>
+  <button class="filter-btn" onclick="filter('custom', this)">🪄 Sur Mesure</button>
+</div>
+
+<!-- GRID -->
+<div class="grid" id="grid"></div>
+
+<!-- BANNER -->
+<div class="banner">
+  <div class="banner-inner">
+    <span class="banner-icon">🪄</span>
+    <h2>Besoin d'une solution sur mesure ?</h2>
+    <p>Notre équipe conçoit et développe des applications web uniques adaptées à vos processus métier.</p>
+    <div class="banner-btns">
+      <button class="btn-export" onclick="exportExcel()">⬇ Exporter Excel</button>
+      <a href="mailto:contact@aquavoltpro.ma" class="cta-btn primary" style="display:inline-flex;width:auto;padding:.6rem 1.4rem;">
+        Démarrer un projet →
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 <strong>AquaVolt Pro</strong> — Catalogue de Sites Web. Tous droits réservés.</p>
+  <p style="margin-top:.4rem;">📞 +212 6XX XXX XXX &nbsp;|&nbsp; 📧 contact@aquavoltpro.ma &nbsp;|&nbsp; 📍 Khouribga, Maroc</p>
+</footer>
+
+<script>
+  /* ─────────────────────────────────────────
+     DATA
+  ───────────────────────────────────────── */
+  const packages = [
+    {
+      id: 1,
+      name: "Starter Vitrine",
+      category: "vitrine",
+      catLabel: "Site Vitrine",
+      icon: "🌐",
+      gradient: "linear-gradient(135deg,#10b981,#14b8a6)",
+      description: "Idéal pour les artisans, commerçants et petites entreprises souhaitant une présence professionnelle en ligne.",
+      price: 149,
+      oldPrice: null,
+      promoPercent: null,
+      badge: null,
+      badgeClass: "",
+      featured: false,
+      options: [
+        "1 page Landing Page",
+        "Design responsive mobile / tablette",
+        "Formulaire de contact intégré",
+        "Hébergement 1 an inclus",
+        "Nom de domaine .fr ou .com",
+        "SSL gratuit (HTTPS)",
+        "Livraison en 7 jours ouvrés",
+      ],
+    },
+    {
+      id: 2,
+      name: "Business Pro",
+      category: "vitrine",
+      catLabel: "Site Vitrine",
+      icon: "🌐",
+      gradient: "linear-gradient(135deg,#10b981,#14b8a6)",
+      description: "La solution complète pour PME et entrepreneurs avec référencement et analytics intégrés.",
+      price: 349,
+      oldPrice: 449,
+      promoPercent: 22,
+      badge: "⭐ Populaire",
+      badgeClass: "badge-emerald",
+      featured: true,
+      options: [
+        "Jusqu'à 10 pages",
+        "Design responsive premium",
+        "SEO on-page optimisé",
+        "Hébergement 1 an inclus",
+        "Nom de domaine + SSL",
+        "Google Analytics intégré",
+        "Blog intégré",
+        "Bouton WhatsApp flottant",
+        "Livraison en 14 jours ouvrés",
+      ],
+    },
+    {
+      id: 3,
+      name: "E-Commerce Standard",
+      category: "ecommerce",
+      catLabel: "E-Commerce",
+      icon: "🛒",
+      gradient: "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+      description: "Lancez votre boutique en ligne avec paiement sécurisé, gestion des stocks et tableau de bord.",
+      price: 649,
+      oldPrice: null,
+      promoPercent: null,
+      badge: null,
+      badgeClass: "",
+      featured: false,
+      options: [
+        "Jusqu'à 100 produits",
+        "Paiement en ligne (Stripe / PayPal)",
+        "Gestion des stocks en temps réel",
+        "Tableau de bord admin complet",
+        "Récupération de paniers abandonnés",
+        "SEO e-commerce avancé",
+        "Hébergement 1 an inclus",
+        "SSL & sécurité avancée",
+      ],
+    },
+    {
+      id: 4,
+      name: "E-Commerce Premium",
+      category: "ecommerce",
+      catLabel: "E-Commerce",
+      icon: "🛒",
+      gradient: "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+      description: "Solution e-commerce entreprise avec produits illimités, multi-devises et application mobile.",
+      price: 1199,
+      oldPrice: 1499,
+      promoPercent: 20,
+      badge: "🏆 Best Seller",
+      badgeClass: "badge-amber",
+      featured: true,
+      options: [
+        "Produits illimités",
+        "Multi-devises (EUR, USD, GBP…)",
+        "Application mobile PWA incluse",
+        "CRM clients intégré",
+        "Analytics & rapports avancés",
+        "Programme de fidélité",
+        "API intégrations tierces",
+        "Support prioritaire 24/7",
+        "Hébergement cloud 2 ans inclus",
+      ],
+    },
+    {
+      id: 5,
+      name: "Portfolio Créatif",
+      category: "portfolio",
+      catLabel: "Portfolio",
+      icon: "💼",
+      gradient: "linear-gradient(135deg,#f59e0b,#ea580c)",
+      description: "Mettez en valeur vos créations avec animations fluides, galerie interactive et formulaire de contact.",
+      price: 219,
+      oldPrice: null,
+      promoPercent: null,
+      badge: "✨ Nouveau",
+      badgeClass: "badge-sky",
+      featured: false,
+      options: [
+        "Galerie projets illimitée",
+        "Animations CSS & GSAP fluides",
+        "Formulaire de contact stylisé",
+        "Blog / journal intégré",
+        "SEO optimisé",
+        "Hébergement 1 an inclus",
+        "Nom de domaine inclus",
+      ],
+    },
+    {
+      id: 6,
+      name: "Blog Magazine",
+      category: "blog",
+      catLabel: "Blog / Magazine",
+      icon: "📖",
+      gradient: "linear-gradient(135deg,#0ea5e9,#2563eb)",
+      description: "Publiez du contenu, gérez des catégories et fidélisez votre audience avec newsletter et réseaux sociaux.",
+      price: 279,
+      oldPrice: 349,
+      promoPercent: 20,
+      badge: "🔥 Promo",
+      badgeClass: "badge-rose",
+      featured: false,
+      options: [
+        "Articles illimités",
+        "Catégories & tags illimités",
+        "Newsletter intégrée (Mailchimp)",
+        "Partage réseaux sociaux automatique",
+        "Système de commentaires modérés",
+        "Google Analytics intégré",
+        "SEO avancé + sitemap XML",
+      ],
+    },
+    {
+      id: 7,
+      name: "Corporate Entreprise",
+      category: "corporate",
+      catLabel: "Corporate",
+      icon: "🏢",
+      gradient: "linear-gradient(135deg,#f43f5e,#db2777)",
+      description: "Site institutionnel multilingue avec espace client, intranet et intégrations ERP/CRM professionnels.",
+      price: 1499,
+      oldPrice: null,
+      promoPercent: null,
+      badge: null,
+      badgeClass: "",
+      featured: false,
+      options: [
+        "Site multilingue (FR / EN / AR)",
+        "Intranet employés sécurisé",
+        "Espace client avec login dédié",
+        "Tableau de bord RH",
+        "Intégrations ERP / CRM tierces",
+        "API REST documentée",
+        "Hébergement cloud dédié",
+        "Support & maintenance 1 an",
+        "Formation de l'équipe incluse",
+      ],
+    },
+    {
+      id: 8,
+      name: "Sur Mesure",
+      category: "custom",
+      catLabel: "Sur Mesure",
+      icon: "🪄",
+      gradient: "linear-gradient(135deg,#475569,#334155)",
+      description: "Développement 100 % personnalisé selon vos besoins : application web, API, architecture scalable.",
+      price: 0,
+      oldPrice: null,
+      promoPercent: null,
+      badge: null,
+      badgeClass: "",
+      featured: false,
+      options: [
+        "Analyse & cahier des charges offert",
+        "Architecture sur mesure",
+        "Développement full-stack",
+        "Tests & QA inclus",
+        "Déploiement & CI/CD",
+        "Documentation technique complète",
+        "Maintenance & évolutions incluses",
+      ],
+    },
+  ];
+
+  /* ─────────────────────────────────────────
+     RENDER
+  ───────────────────────────────────────── */
+  function renderCards(list) {
+    const grid = document.getElementById('grid');
+    if (!list.length) {
+      grid.innerHTML = '<p style="color:var(--text3);text-align:center;padding:4rem;grid-column:1/-1;">Aucun forfait pour cette catégorie.</p>';
+      return;
+    }
+    grid.innerHTML = list.map(p => {
+      const isCustom = p.category === 'custom' || p.price === 0;
+      const priceBlock = isCustom
+        ? `<div class="price-main" style="font-size:1.4rem;color:var(--text2);">Sur devis</div>`
+        : `<div class="price-row">
+            <div class="price-main">${p.price.toLocaleString('fr-FR')}</div>
+            <div class="price-currency">€</div>
+            ${p.oldPrice ? `<div class="price-old">${p.oldPrice.toLocaleString('fr-FR')} €</div>` : ''}
+            ${p.promoPercent ? `<div class="price-promo">-${p.promoPercent}% de réduction</div>` : ''}
+          </div>`;
+
+      const ctaText = isCustom ? 'Nous contacter →' : 'Demander ce forfait →';
+      const ctaClass = p.featured ? 'primary' : 'secondary';
+      const ctaHref = isCustom ? 'mailto:contact@aquavoltpro.ma' : `mailto:contact@aquavoltpro.ma?subject=Forfait ${encodeURIComponent(p.name)}&body=Bonjour, je suis intéressé par le forfait "${p.name}" à ${p.price === 0 ? 'demander un devis' : p.price + '€'}.%0A%0AMerci de me recontacter.`;
+
+      return `
+        <div class="card ${p.featured ? 'featured' : ''}" data-cat="${p.category}">
+          <div class="card-top-bar" style="background:${p.gradient}"></div>
+          ${p.badge ? `<div class="badge ${p.badgeClass}">${p.badge}</div>` : ''}
+          ${p.promoPercent && !p.badge ? `<div class="ribbon">-${p.promoPercent}%</div>` : ''}
+          <div class="card-body">
+            <div class="card-head">
+              <div class="cat-icon" style="background:${p.gradient}">${p.icon}</div>
+              <div>
+                <div class="cat-label">${p.catLabel}</div>
+                <div class="cat-name">${p.name}</div>
+              </div>
+            </div>
+            <p class="card-desc">${p.description}</p>
+            <div class="price-block">
+              ${priceBlock}
+              <div class="price-type">Paiement unique · Sans abonnement caché</div>
+            </div>
+            <div class="options-label">✓ Inclus dans ce forfait</div>
+            <ul class="options-list">
+              ${p.options.map(o => `<li><span class="check">✓</span>${o}</li>`).join('')}
+            </ul>
+            <a href="${ctaHref}" class="cta-btn ${ctaClass}">
+              ${ctaText} <span class="cta-arrow">→</span>
+            </a>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  /* ─────────────────────────────────────────
+     FILTER
+  ───────────────────────────────────────── */
+  function filter(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const list = cat === 'all' ? packages : packages.filter(p => p.category === cat);
+    renderCards(list);
+  }
+
+  /* ─────────────────────────────────────────
+     EXCEL EXPORT
+  ───────────────────────────────────────── */
+  function exportExcel() {
+    const rows = packages.map(p => ({
+      'Forfait':          p.name,
+      'Catégorie':        p.catLabel,
+      'Description':      p.description,
+      'Prix (€)':         p.price === 0 ? 'Sur devis' : p.price,
+      'Ancien Prix (€)':  p.oldPrice ?? '',
+      'Remise %':         p.promoPercent ?? '',
+      'Badge':            p.badge ? p.badge.replace(/[^\w\s]/g,'').trim() : '',
+      'Options':          p.options.join(' | '),
+      'CTA':              p.price === 0 ? 'Nous contacter' : 'Demander ce forfait',
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws['!cols'] = [
+      {wch:22},{wch:16},{wch:55},{wch:12},
+      {wch:14},{wch:10},{wch:16},{wch:90},{wch:20}
+    ];
+
+    // Style header row bold via cell format
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let C = range.s.c; C <= range.e.c; C++) {
+      const cell = ws[XLSX.utils.encode_cell({r:0, c:C})];
+      if (cell) { cell.s = { font: { bold: true } }; }
+    }
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Catalogue');
+
+    // 2nd sheet: summary
+    const summary = [
+      ['AquaVolt Pro — Catalogue de Sites Web 2026'],
+      [''],
+      ['Total forfaits', packages.length],
+      ['Prix minimum', '149 €'],
+      ['Prix maximum', '1 499 €'],
+      ['Forfaits en promotion', packages.filter(p=>p.promoPercent).length],
+      ['Date export', new Date().toLocaleDateString('fr-FR')],
+    ];
+    const ws2 = XLSX.utils.aoa_to_sheet(summary);
+    ws2['!cols'] = [{wch:30},{wch:20}];
+    XLSX.utils.book_append_sheet(wb, ws2, 'Résumé');
+
+    XLSX.writeFile(wb, `catalogue-sites-web-${new Date().toISOString().split('T')[0]}.xlsx`);
+  }
+
+  /* ─────────────────────────────────────────
+     INIT
+  ───────────────────────────────────────── */
+  renderCards(packages);
+</script>
+</body>
+</html>
