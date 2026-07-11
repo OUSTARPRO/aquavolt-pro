@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Bella Napoli | Pizzeria Authentique</title>
+  <meta name="description" content="La Bella Napoli - Pizzas artisanales cuites au feu de bois. Commandez en ligne ou réservez votre table." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --red:    #C0392B;
+      --red2:   #E74C3C;
+      --cream:  #FDF8F0;
+      --dark:   #1A0A00;
+      --gold:   #D4A017;
+      --gold2:  #F1C40F;
+      --green:  #27AE60;
+      --gray:   #6B6B6B;
+      --light:  #F5EFE6;
+      --white:  #FFFFFF;
+      --shadow: 0 20px 60px rgba(0,0,0,.15);
+      --r:      .75rem;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a  { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 3px; }
+
+    /* ── LOADER ── */
+    #loader {
+      position: fixed; inset: 0;
+      background: var(--dark);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9999;
+      transition: opacity .6s ease, visibility .6s ease;
+    }
+    #loader.done { opacity: 0; visibility: hidden; }
+    .loader-pizza {
+      font-size: 80px;
+      animation: spin 1.5s linear infinite;
+    }
+    .loader-text {
+      color: var(--gold);
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem;
+      margin-top: 1rem;
+      animation: pulse 1s ease-in-out infinite alternate;
+    }
+    @keyframes spin   { to { transform: rotate(360deg); } }
+    @keyframes pulse  { to { transform: scale(1.1); } }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      padding: .9rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(26,10,0,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212,160,23,.2);
+      transition: all .3s ease;
+    }
+    nav.scrolled { padding: .6rem 2rem; }
+    .nav-logo {
+      display: flex; align-items: center; gap: .7rem;
+    }
+    .nav-logo span:first-child { font-size: 2rem; }
+    .nav-logo-text { display: flex; flex-direction: column; }
+    .nav-logo-text .brand {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.5rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .nav-logo-text .tagline {
+      font-size: .65rem;
+      color: rgba(255,255,255,.5);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 2rem;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,.8);
+      font-size: .9rem;
+      font-weight: 500;
+      letter-spacing: .5px;
+      position: relative;
+      transition: color .3s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute;
+      bottom: -4px; left: 0; width: 0; height: 2px;
+      background: var(--gold);
+      transition: width .3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta {
+      background: var(--red); color: #fff !important;
+      padding: .5rem 1.2rem; border-radius: 50px;
+      transition: background .3s, transform .2s !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { background: var(--red2) !important; transform: scale(1.05); }
+    .cart-btn {
+      background: none; border: 2px solid var(--gold);
+      color: var(--gold); padding: .45rem 1rem;
+      border-radius: 50px; cursor: pointer;
+      font-size: .85rem; font-weight: 600;
+      display: flex; align-items: center; gap: .4rem;
+      transition: all .3s;
+    }
+    .cart-btn:hover { background: var(--gold); color: var(--dark); }
+    .cart-count {
+      background: var(--red); color: #fff;
+      border-radius: 50%; width: 20px; height: 20px;
+      font-size: .7rem; display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+    }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: .3rem;
+    }
+    .hamburger span {
+      display: block; width: 25px; height: 2px;
+      background: var(--gold);
+      transition: all .3s;
+    }
+
+    /* ── MOBILE NAV ── */
+    .mobile-nav {
+      display: none; position: fixed;
+      top: 0; right: -100%; width: 280px; height: 100%;
+      background: var(--dark);
+      z-index: 1001; padding: 5rem 2rem 2rem;
+      flex-direction: column; gap: 1.5rem;
+      transition: right .4s cubic-bezier(.4,0,.2,1);
+      border-left: 1px solid rgba(212,160,23,.2);
+    }
+    .mobile-nav.open { right: 0; }
+    .mobile-nav a {
+      color: rgba(255,255,255,.9);
+      font-size: 1.1rem;
+      padding: .5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .mobile-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.5); z-index: 1000;
+    }
+    .mobile-overlay.open { display: block; }
+    .close-mobile {
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      background: none; border: none;
+      color: var(--gold); font-size: 1.5rem; cursor: pointer;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(26,10,0,.85) 0%, rgba(192,57,43,.4) 100%),
+        url('https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=1800&q=85') center/cover no-repeat;
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .hero-particles {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    .particle {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: .15;
+      animation: float 8s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-30px) rotate(20deg); }
+    }
+    .hero-content {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 2rem;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(212,160,23,.15);
+      border: 1px solid rgba(212,160,23,.4);
+      padding: .4rem 1rem; border-radius: 50px;
+      color: var(--gold); font-size: .8rem;
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      animation: fadeInDown .8s ease both;
+    }
+    .hero-badge::before { content: '★'; font-size: .7rem; }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 1rem;
+      animation: fadeInUp .8s .2s ease both;
+    }
+    .hero-title .accent {
+      color: var(--gold);
+      font-style: italic;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: rgba(255,255,255,.75);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      animation: fadeInUp .8s .4s ease both;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      animation: fadeInUp .8s .6s ease both;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .85rem 2rem; border-radius: 50px;
+      font-weight: 600; font-size: .95rem;
+      cursor: pointer; border: none;
+      transition: all .3s ease;
+    }
+    .btn-primary {
+      background: var(--red);
+      color: #fff;
+      box-shadow: 0 8px 30px rgba(192,57,43,.4);
+    }
+    .btn-primary:hover {
+      background: var(--red2);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(192,57,43,.5);
+    }
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255,255,255,.4);
+    }
+    .btn-outline:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .hero-stats {
+      position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 3rem;
+      animation: fadeInUp .8s .8s ease both;
+    }
+    .stat {
+      text-align: center;
+      color: #fff;
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 700;
+      color: var(--gold);
+      display: block;
+    }
+    .stat-label {
+      font-size: .75rem;
+      color: rgba(255,255,255,.5);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    .scroll-indicator {
+      position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column;
+      align-items: center; gap: .3rem;
+      color: rgba(255,255,255,.4); font-size: .7rem;
+      text-transform: uppercase; letter-spacing: 2px;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    .scroll-indicator::after {
+      content: '';
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,.4), transparent);
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ── SECTION UTILS ── */
+    section { padding: 6rem 0; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .section-tag {
+      font-size: .75rem; font-weight: 600;
+      color: var(--red); letter-spacing: 3px;
+      text-transform: uppercase;
+      display: flex; align-items: center; gap: .5rem;
+      margin-bottom: .75rem;
+    }
+    .section-tag::before,
+    .section-tag::after {
+      content: ''; flex: 1; max-width: 40px; height: 1px;
+      background: var(--red);
+    }
+    .section-tag::before { display: none; }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      color: var(--gray);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      max-width: 600px;
+    }
+
+    /* ── REVEAL ANIMATIONS ── */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left  { opacity: 0; transform: translateX(-40px); transition: all .7s ease; }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(40px); transition: all .7s ease; }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+    @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeInUp   { from { opacity:0; transform:translateY(20px);  } to { opacity:1; transform:translateY(0); } }
+
+    /* ── SPECIAL BANNER ── */
+    .banner {
+      background: linear-gradient(90deg, var(--red), #8B0000, var(--red));
+      background-size: 200% 100%;
+      animation: gradShift 4s ease infinite;
+      padding: .75rem 0;
+      overflow: hidden;
+    }
+    @keyframes gradShift { 0%,100% { background-position:0% 50%; } 50% { background-position:100% 50%; } }
+    .banner-inner {
+      display: flex; gap: 4rem;
+      animation: marquee 20s linear infinite;
+      white-space: nowrap;
+    }
+    .banner-item {
+      color: #fff; font-size: .85rem; font-weight: 500;
+      display: flex; align-items: center; gap: .5rem;
+      flex-shrink: 0;
+    }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ── MENU SECTION ── */
+    #menu { background: var(--cream); }
+    .menu-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+      flex-wrap: wrap; gap: 1.5rem;
+    }
+    .menu-tabs {
+      display: flex; gap: .5rem; flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .tab {
+      padding: .6rem 1.5rem; border-radius: 50px;
+      border: 2px solid rgba(0,0,0,.1);
+      background: none; cursor: pointer;
+      font-size: .9rem; font-weight: 500;
+      transition: all .3s;
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .tab.active, .tab:hover {
+      background: var(--red); color: #fff;
+      border-color: var(--red);
+    }
+    .menu-search {
+      display: flex; align-items: center; gap: .5rem;
+      background: #fff; border-radius: 50px;
+      padding: .6rem 1.2rem;
+      box-shadow: 0 2px 15px rgba(0,0,0,.05);
+    }
+    .menu-search input {
+      border: none; outline: none;
+      font-size: .9rem; background: none;
+      width: 180px;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .menu-card {
+      background: #fff;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+      transition: transform .3s, box-shadow .3s;
+      position: relative;
+    }
+    .menu-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+    .menu-card-img {
+      height: 200px;
+      background-size: cover; background-position: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .menu-card-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.5) 0%, transparent 60%);
+    }
+    .badge-new, .badge-pop {
+      position: absolute; top: 1rem; left: 1rem;
+      padding: .25rem .75rem; border-radius: 50px;
+      font-size: .7rem; font-weight: 700;
+      z-index: 1; text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .badge-new { background: var(--green); color: #fff; }
+    .badge-pop { background: var(--gold); color: var(--dark); }
+    .menu-card-body { padding: 1.25rem; }
+    .menu-card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; font-weight: 700;
+      margin-bottom: .35rem;
+    }
+    .menu-card-desc {
+      font-size: .85rem; color: var(--gray);
+      line-height: 1.6; margin-bottom: 1rem;
+    }
+    .menu-card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .menu-card-price {
+      font-size: 1.3rem; font-weight: 700;
+      color: var(--red);
+    }
+    .menu-card-price span { font-size: .8rem; font-weight: 400; color: var(--gray); }
+    .add-btn {
+      background: var(--red); color: #fff;
+      border: none; border-radius: 50px;
+      padding: .5rem 1rem; font-size: .85rem;
+      font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: .3rem;
+      transition: all .3s;
+    }
+    .add-btn:hover { background: var(--red2); transform: scale(1.05); }
+    .menu-card-tags {
+      display: flex; gap: .4rem; margin-bottom: .75rem; flex-wrap: wrap;
+    }
+    .tag {
+      font-size: .7rem; padding: .2rem .6rem;
+      border-radius: 50px; background: var(--light);
+      color: var(--gray); font-weight: 500;
+    }
+    .rating {
+      display: flex; align-items: center; gap: .2rem;
+      font-size: .8rem; color: var(--gold);
+      position: absolute; bottom: 1rem; right: 1rem;
+      z-index: 1; color: #fff;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--dark); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-main {
+      border-radius: 2rem;
+      overflow: hidden;
+      aspect-ratio: 4/5;
+    }
+    .about-img-main img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .6s ease;
+    }
+    .about-img-main:hover img { transform: scale(1.05); }
+    .about-img-badge {
+      position: absolute; bottom: -1.5rem; right: -1.5rem;
+      background: var(--gold);
+      color: var(--dark);
+      padding: 1.5rem;
+      border-radius: 1.5rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      animation: rotate-slow 10s linear infinite;
+    }
+    @keyframes rotate-slow {
+      0%,100% { transform: rotate(-2deg); }
+      50%      { transform: rotate(2deg); }
+    }
+    .about-img-badge .num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem; font-weight: 900;
+      line-height: 1;
+    }
+    .about-img-badge .label {
+      font-size: .75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .about-content .section-tag,
+    .about-content .section-title { color: #fff; }
+    .about-content .section-tag { color: var(--gold); }
+    .about-content p {
+      color: rgba(255,255,255,.7);
+      line-height: 1.8; margin-bottom: 1.5rem;
+    }
+    .about-features {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-top: 2rem;
+    }
+    .feature-item {
+      display: flex; align-items: center; gap: .75rem;
+      color: rgba(255,255,255,.8);
+    }
+    .feature-icon {
+      width: 44px; height: 44px;
+      background: rgba(212,160,23,.15);
+      border: 1px solid rgba(212,160,23,.3);
+      border-radius: .75rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .feature-text { font-size: .9rem; font-weight: 500; }
+
+    /* ── SPECIALS ── */
+    #specials {
+      background: linear-gradient(135deg, #1A0A00 0%, #3D0C00 100%);
+      position: relative; overflow: hidden;
+    }
+    #specials::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(192,57,43,.15) 0%, transparent 60%),
+                  radial-gradient(circle at 80% 30%, rgba(212,160,23,.08) 0%, transparent 50%);
+    }
+    .specials-header { text-align: center; margin-bottom: 4rem; position: relative; }
+    .specials-header .section-tag { justify-content: center; }
+    .specials-header .section-title { color: #fff; }
+    .specials-header .section-sub { color: rgba(255,255,255,.6); margin: 0 auto; }
+    .specials-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; position: relative;
+    }
+    .special-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 1.5rem;
+      overflow: hidden;
+      position: relative;
+      transition: all .4s ease;
+      cursor: pointer;
+    }
+    .special-card:hover {
+      background: rgba(255,255,255,.08);
+      border-color: rgba(212,160,23,.3);
+      transform: translateY(-8px);
+    }
+    .special-card.featured {
+      grid-row: span 2;
+      border-color: rgba(212,160,23,.3);
+      background: rgba(212,160,23,.05);
+    }
+    .special-img {
+      width: 100%; height: 200px;
+      object-fit: cover;
+    }
+    .special-card.featured .special-img { height: 280px; }
+    .special-body { padding: 1.5rem; }
+    .special-emoji { font-size: 2rem; margin-bottom: .5rem; }
+    .special-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 700;
+      color: #fff; margin-bottom: .5rem;
+    }
+    .special-desc { color: rgba(255,255,255,.5); font-size: .85rem; line-height: 1.6; }
+    .special-footer {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-top: 1.25rem;
+    }
+    .special-price {
+      font-size: 1.4rem; font-weight: 700; color: var(--gold);
+    }
+    .special-badge {
+      background: var(--red); color: #fff;
+      font-size: .7rem; font-weight: 700;
+      padding: .25rem .75rem; border-radius: 50px;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    /* ── TESTIMONIALS ── */
+    #testimonials { background: var(--cream); }
+    .testimonials-header { text-align: center; margin-bottom: 4rem; }
+    .testimonials-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .review-card {
+      background: #fff;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+      position: relative;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .review-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .review-card::before {
+      content: '"';
+      position: absolute; top: 1rem; right: 1.5rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem; color: var(--light);
+      line-height: 1;
+    }
+    .review-stars {
+      color: var(--gold2); font-size: 1rem;
+      margin-bottom: 1rem; letter-spacing: 2px;
+    }
+    .review-text {
+      color: var(--gray); line-height: 1.7;
+      font-size: .95rem; margin-bottom: 1.5rem;
+    }
+    .reviewer {
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .reviewer-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .reviewer-name { font-weight: 600; font-size: .9rem; }
+    .reviewer-date { font-size: .75rem; color: var(--gray); }
+    .review-platform {
+      position: absolute; top: 1.5rem; left: 1.5rem;
+      font-size: .7rem; font-weight: 600;
+      color: var(--gray); text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ── RESERVATION ── */
+    #reservation {
+      background: var(--light);
+      position: relative;
+    }
+    .reservation-wrap {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .reservation-info .section-title { margin-bottom: 1rem; }
+    .reservation-info p { color: var(--gray); line-height: 1.8; margin-bottom: 2rem; }
+    .info-cards {
+      display: flex; flex-direction: column; gap: .75rem;
+    }
+    .info-card {
+      background: #fff; border-radius: 1rem;
+      padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: 1rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.05);
+    }
+    .info-card-icon {
+      width: 42px; height: 42px;
+      background: var(--red); border-radius: .75rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .info-card-text { font-size: .9rem; }
+    .info-card-text strong { display: block; font-weight: 600; }
+    .info-card-text span { color: var(--gray); font-size: .82rem; }
+    .reservation-form {
+      background: #fff; border-radius: 2rem;
+      padding: 2.5rem;
+      box-shadow: var(--shadow);
+    }
+    .form-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1rem; }
+    .form-group label {
+      font-size: .8rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .5px;
+      color: var(--gray);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: .75rem 1rem;
+      border: 2px solid var(--light);
+      border-radius: .75rem;
+      font-size: .9rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color .3s;
+      background: var(--cream);
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--red);
+    }
+    .form-group textarea { resize: none; height: 80px; }
+    .form-submit {
+      width: 100%; padding: 1rem;
+      background: var(--red); color: #fff;
+      border: none; border-radius: 1rem;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      gap: .5rem;
+      transition: all .3s;
+    }
+    .form-submit:hover {
+      background: var(--red2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(192,57,43,.35);
+    }
+
+    /* ── GALLERY ── */
+    #gallery { background: #fff; }
+    .gallery-header { text-align: center; margin-bottom: 3rem; }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 200px;
+      gap: 1rem;
+    }
+    .gallery-item {
+      border-radius: 1rem; overflow: hidden;
+      position: relative; cursor: pointer;
+    }
+    .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .gallery-item:nth-child(4) { grid-column: span 2; }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .5s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.08); }
+    .gallery-item-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 50%);
+      opacity: 0; transition: opacity .3s;
+      display: flex; align-items: flex-end; padding: 1rem;
+    }
+    .gallery-item:hover .gallery-item-overlay { opacity: 1; }
+    .gallery-item-label {
+      color: #fff; font-size: .85rem; font-weight: 500;
+    }
+
+    /* ── CART SIDEBAR ── */
+    .cart-sidebar {
+      position: fixed; right: -420px; top: 0; height: 100%;
+      width: 420px; max-width: 100vw;
+      background: #fff;
+      box-shadow: -10px 0 40px rgba(0,0,0,.15);
+      z-index: 2000;
+      transition: right .4s cubic-bezier(.4,0,.2,1);
+      display: flex; flex-direction: column;
+    }
+    .cart-sidebar.open { right: 0; }
+    .cart-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5); z-index: 1999;
+      display: none;
+    }
+    .cart-overlay.open { display: block; }
+    .cart-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--light);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cart-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+    }
+    .cart-close {
+      background: none; border: none;
+      font-size: 1.5rem; cursor: pointer;
+      color: var(--gray);
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: .5rem;
+      transition: background .2s;
+    }
+    .cart-close:hover { background: var(--light); }
+    .cart-items {
+      flex: 1; overflow-y: auto;
+      padding: 1.5rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .cart-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem;
+      background: var(--cream); border-radius: 1rem;
+    }
+    .cart-item-img {
+      width: 60px; height: 60px; border-radius: .75rem;
+      object-fit: cover; flex-shrink: 0;
+    }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 600; font-size: .9rem; }
+    .cart-item-price { color: var(--red); font-weight: 700; font-size: .9rem; }
+    .cart-item-qty {
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .qty-btn {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--light);
+      background: #fff;
+      cursor: pointer; font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .qty-btn:hover { border-color: var(--red); color: var(--red); }
+    .qty-num { font-weight: 600; min-width: 20px; text-align: center; }
+    .cart-empty {
+      text-align: center; color: var(--gray);
+      padding: 3rem 0;
+    }
+    .cart-empty .emoji { font-size: 3rem; margin-bottom: 1rem; }
+    .cart-footer {
+      padding: 1.5rem;
+      border-top: 1px solid var(--light);
+    }
+    .cart-total {
+      display: flex; justify-content: space-between;
+      font-size: 1.1rem; font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .cart-checkout {
+      width: 100%; padding: 1rem;
+      background: var(--red); color: #fff;
+      border: none; border-radius: 1rem;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: all .3s;
+    }
+    .cart-checkout:hover { background: var(--red2); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background: var(--dark); color: #fff;
+      padding: 1rem 1.5rem; border-radius: 1rem;
+      display: flex; align-items: center; gap: .75rem;
+      box-shadow: var(--shadow);
+      z-index: 3000;
+      transform: translateY(100px); opacity: 0;
+      transition: all .4s cubic-bezier(.4,0,.2,1);
+      max-width: 320px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast-icon { font-size: 1.5rem; }
+    .toast-text { font-size: .9rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      padding: 4rem 0 2rem;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 3rem; margin-bottom: 3rem;
+    }
+    .footer-brand .brand-logo {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem; color: var(--gold);
+      margin-bottom: .75rem;
+    }
+    .footer-brand p {
+      color: rgba(255,255,255,.5);
+      font-size: .9rem; line-height: 1.7;
+      max-width: 250px;
+    }
+    .footer-social {
+      display: flex; gap: .75rem; margin-top: 1.5rem;
+    }
+    .social-link {
+      width: 40px; height: 40px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: .75rem;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.5);
+      transition: all .3s;
+      font-size: 1rem;
+    }
+    .social-link:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .footer-col h4 {
+      color: #fff; font-size: .9rem;
+      font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 1.25rem;
+    }
+    .footer-col ul { display: flex; flex-direction: column; gap: .6rem; }
+    .footer-col ul a {
+      color: rgba(255,255,255,.5); font-size: .9rem;
+      transition: color .3s;
+    }
+    .footer-col ul a:hover { color: var(--gold); }
+    .newsletter-form {
+      display: flex; gap: .5rem; margin-top: .75rem;
+    }
+    .newsletter-form input {
+      flex: 1; padding: .65rem 1rem;
+      border-radius: .75rem; border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.05);
+      color: #fff; font-size: .85rem;
+      outline: none;
+    }
+    .newsletter-form input::placeholder { color: rgba(255,255,255,.3); }
+    .newsletter-form button {
+      padding: .65rem 1rem;
+      background: var(--red); color: #fff;
+      border: none; border-radius: .75rem;
+      cursor: pointer; font-size: .85rem;
+      transition: background .3s;
+    }
+    .newsletter-form button:hover { background: var(--red2); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top: 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-bottom p { color: rgba(255,255,255,.3); font-size: .82rem; }
+    .footer-bottom .made-by { color: rgba(255,255,255,.2); font-size: .75rem; }
+
+    /* ── WHATSAPP FLOAT ── */
+    .whatsapp-float {
+      position: fixed; bottom: 2rem; left: 2rem;
+      width: 58px; height: 58px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 25px rgba(37,211,102,.4);
+      cursor: pointer;
+      z-index: 999;
+      animation: wa-pulse 2.5s ease-in-out infinite;
+      font-size: 1.6rem;
+    }
+    @keyframes wa-pulse {
+      0%,100% { box-shadow: 0 8px 25px rgba(37,211,102,.4); }
+      50%      { box-shadow: 0 8px 40px rgba(37,211,102,.7); }
+    }
+    .whatsapp-float:hover { transform: scale(1.1); }
+
+    /* ── BACK TO TOP ── */
+    .back-top {
+      position: fixed; bottom: 2rem; right: 2rem;
+      width: 44px; height: 44px;
+      background: var(--red); color: #fff;
+      border: none; border-radius: .75rem;
+      cursor: pointer; font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999;
+      opacity: 0; transform: translateY(20px);
+      transition: all .3s;
+    }
+    .back-top.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.95);
+      z-index: 5000;
+      display: none;
+      align-items: center; justify-content: center;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw; max-height: 90vh;
+      border-radius: 1rem;
+      object-fit: contain;
+    }
+    .lightbox-close {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      background: rgba(255,255,255,.1);
+      border: none; color: #fff;
+      width: 44px; height: 44px;
+      border-radius: .75rem;
+      font-size: 1.3rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .3s;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,.2); }
+
+    /* ── SUCCESS MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.7);
+      z-index: 4000;
+      display: none;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 2rem;
+      padding: 3rem; max-width: 440px; width: 90%;
+      text-align: center;
+      animation: modal-in .4s cubic-bezier(.4,0,.2,1);
+    }
+    @keyframes modal-in {
+      from { transform: scale(.8); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .modal-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem; font-weight: 700;
+      margin-bottom: .75rem;
+    }
+    .modal-text { color: var(--gray); line-height: 1.7; margin-bottom: 2rem; }
+    .modal-close {
+      background: var(--red); color: #fff;
+      border: none; border-radius: 1rem;
+      padding: .85rem 2rem; font-size: 1rem;
+      font-weight: 600; cursor: pointer;
+      transition: all .3s;
+    }
+    .modal-close:hover { background: var(--red2); transform: translateY(-2px); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .specials-grid { grid-template-columns: 1fr 1fr; }
+      .special-card.featured { grid-row: span 1; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .about-img-wrap { max-width: 420px; margin: 0 auto; }
+      .testimonials-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .mobile-nav { display: flex; }
+      section { padding: 4rem 0; }
+      .hero-stats { display: none; }
+      .specials-grid { grid-template-columns: 1fr; }
+      .reservation-wrap { grid-template-columns: 1fr; }
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 150px;
+      }
+      .gallery-item:nth-child(1),
+      .gallery-item:nth-child(4) { grid-column: span 1; grid-row: span 1; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .about-features { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .hero-actions { flex-direction: column; }
+      .btn { justify-content: center; }
+      .menu-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-pizza">🍕</div>
+  <div class="loader-text">La Bella Napoli</div>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <span>🍕</span>
+    <div class="nav-logo-text">
+      <span class="brand">La Bella Napoli</span>
+      <span class="tagline">Depuis 1987 · Naples</span>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#menu">Menu</a>
+    <a href="#specials">Spécialités</a>
+    <a href="#about">Notre Histoire</a>
+    <a href="#gallery">Galerie</a>
+    <a href="#testimonials">Avis</a>
+    <a href="#reservation" class="nav-cta">Réserver</a>
+    <button class="cart-btn" onclick="toggleCart()">
+      🛒 Panier <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+  <div style="display:flex;align-items:center;gap:.75rem;">
+    <button class="cart-btn" onclick="toggleCart()" style="display:none" id="mobileCartBtn">
+      🛒 <span class="cart-count" id="mobileCartCount">0</span>
+    </button>
+    <div class="hamburger" onclick="toggleMobileNav()" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileNav()"></div>
+<div class="mobile-nav" id="mobileNav">
+  <button class="close-mobile" onclick="toggleMobileNav()">✕</button>
+  <a href="#menu"         onclick="toggleMobileNav()">🍕 Menu</a>
+  <a href="#specials"     onclick="toggleMobileNav()">⭐ Spécialités</a>
+  <a href="#about"        onclick="toggleMobileNav()">📖 Notre Histoire</a>
+  <a href="#gallery"      onclick="toggleMobileNav()">📸 Galerie</a>
+  <a href="#testimonials" onclick="toggleMobileNav()">💬 Avis Clients</a>
+  <a href="#reservation"  onclick="toggleMobileNav()" style="color:var(--gold)">📅 Réserver une Table</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-particles" id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-badge">⭐ Meilleure Pizzeria de la Ville 2024</div>
+    <h1 class="hero-title">
+      L'Âme de<br><span class="accent">Naples</span><br>dans chaque pizza
+    </h1>
+    <p class="hero-sub">
+      Pizzas artisanales cuites au feu de bois, pâte maturée 72h, ingrédients importés directement d'Italie. Une expérience culinaire authentique depuis 1987.
+    </p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn btn-primary">🍕 Voir le Menu</a>
+      <a href="#reservation" class="btn btn-outline">📅 Réserver une Table</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">37</span><span class="stat-label">Ans d'expérience</span></div>
+    <div class="stat"><span class="stat-num">50k+</span><span class="stat-label">Clients satisfaits</span></div>
+    <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Note Google</span></div>
+    <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Ingrédients frais</span></div>
+  </div>
+  <div class="scroll-indicator">Découvrir</div>
+</section>
+
+<!-- BANNER -->
+<div class="banner">
+  <div class="banner-inner" id="bannerInner"></div>
+</div>
+
+<!-- MENU SECTION -->
+<section id="menu">
+  <div class="container">
+    <div class="menu-header">
+      <div>
+        <div class="section-tag">Notre Carte</div>
+        <h2 class="section-title">Pizzas Artisanales</h2>
+        <p class="section-sub">Chaque pizza est préparée à la commande avec amour et savoir-faire napolitain.</p>
+        <div class="menu-tabs">
+          <button class="tab active" onclick="filterMenu('all', this)">🍽️ Tout</button>
+          <button class="tab" onclick="filterMenu('classic', this)">🍕 Classiques</button>
+          <button class="tab" onclick="filterMenu('premium', this)">⭐ Premium</button>
+          <button class="tab" onclick="filterMenu('vege', this)">🌿 Végétarien</button>
+          <button class="tab" onclick="filterMenu('dessert', this)">🍰 Desserts</button>
+        </div>
+      </div>
+      <div class="menu-search">
+        <span>🔍</span>
+        <input type="text" id="menuSearch" placeholder="Chercher une pizza…" oninput="searchMenu(this.value)" />
+      </div>
+    </div>
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap reveal-left">
+        <div class="about-img-main">
+          <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80" alt="Notre four à bois" loading="lazy" />
+        </div>
+        <div class="about-img-badge">
+          <div class="num">37</div>
+          <div class="label">ans de passion</div>
+        </div>
+      </div>
+      <div class="about-content reveal-right">
+        <div class="section-tag">Notre Histoire</div>
+        <h2 class="section-title">Une tradition napolitaine transmise de père en fils</h2>
+        <p>En 1987, Giuseppe Ferrara quittait Naples pour partager la vraie pizza napolitaine avec le monde. Installé dans notre ville, il a apporté avec lui son four à bois centenaire, ses recettes de famille et surtout, une passion inébranlable pour l'authenticité.</p>
+        <p>Aujourd'hui, son petit-fils Marco perpétue cette tradition avec le même amour du métier. Chaque jour, notre équipe sélectionne à la main les meilleures tomates San Marzano, la mozzarella di bufala campana DOP et la farine tipo 00 importée de Naples.</p>
+        <div class="about-features">
+          <div class="feature-item">
+            <div class="feature-icon">🔥</div>
+            <span class="feature-text">Four à bois à 485°C</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🌾</div>
+            <span class="feature-text">Farine tipo 00 de Naples</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🧀</div>
+            <span class="feature-text">Mozzarella DOP bufala</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🍅</div>
+            <span class="feature-text">Tomates San Marzano</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">⏱️</div>
+            <span class="feature-text">Pâte maturée 72h</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🤌</div>
+            <span class="feature-text">Étalée à la main</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECIALS SECTION -->
+<section id="specials">
+  <div class="container">
+    <div class="specials-header reveal">
+      <div class="section-tag" style="justify-content:center;color:var(--gold)">Coups de Cœur</div>
+      <h2 class="section-title" style="color:#fff">Nos Spécialités Signatures</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,.6);margin:0 auto">Des créations uniques imaginées par notre Chef Marco, qui vous emmènent directement à Naples.</p>
+    </div>
+    <div class="specials-grid">
+      <div class="special-card featured reveal">
+        <img class="special-img" src="https://images.unsplash.com/photo-1628840042765-356cda07504e?w=800&q=80" alt="Reine Noire" loading="lazy" />
+        <div class="special-body">
+          <div class="special-name">🖤 La Reine Noire</div>
+          <div class="special-desc">Pâte au charbon actif, stracciatella, truffe noire, jambon de Parme 24 mois, roquette, copeaux de parmesan DOP. Notre création signature.</div>
+          <div class="special-footer">
+            <div class="special-price">24€</div>
+            <span class="special-badge">Chef's Choice</span>
+          </div>
+        </div>
+      </div>
+      <div class="special-card reveal">
+        <img class="special-img" src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80" alt="Diavola Fuoco" loading="lazy" />
+        <div class="special-body">
+          <div class="special-name">🔥 Diavola Fuoco</div>
+          <div class="special-desc">Sauce pomodoro épicée, mozzarella fior di latte, salami piccante, piments jalapeños, huile pimentée calabraise.</div>
+          <div class="special-footer">
+            <div class="special-price">18€</div>
+            <span class="special-badge">Pimentée</span>
+          </div>
+        </div>
+      </div>
+      <div class="special-card reveal">
+        <img class="special-img" src="https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=600&q=80" alt="Bianca Estate" loading="lazy" />
+        <div class="special-body">
+          <div class="special-name">☁️ Bianca Estate</div>
+          <div class="special-desc">Base crème fraîche, mozzarella di bufala, courgettes grillées, ricotta, basilic frais, fleurs de courgettes.</div>
+          <div class="special-footer">
+            <div class="special-price">19€</div>
+            <span class="special-badge">Saisonnière</span>
+          </div>
+        </div>
+      </div>
+      <div class="special-card reveal">
+        <img class="special-img" src="https://images.unsplash.com/photo-1594007654729-407eeec4be8a?w=600&q=80" alt="Quattro Stagioni" loading="lazy" />
+        <div class="special-body">
+          <div class="special-name">🍄 Quattro Stagioni</div>
+          <div class="special-desc">Quatre saisons, quatre saveurs : champignons, artichauts, olives noires et jambon, séparés sur une base tomate.</div>
+          <div class="special-footer">
+            <div class="special-price">20€</div>
+            <span class="special-badge">Tradition</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="testimonials-header reveal">
+      <div class="section-tag">Avis Clients</div>
+      <h2 class="section-title">Ce que disent nos clients</h2>
+      <p class="section-sub" style="margin:0 auto">Plus de 2 000 avis 5 étoiles sur Google et TripAdvisor. La parole est à nos clients.</p>
+    </div>
+    <div class="testimonials-grid" id="reviewsGrid"></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" style="background:var(--light)">
+  <div class="container">
+    <div class="gallery-header reveal">
+      <div class="section-tag">Notre Pizzeria</div>
+      <h2 class="section-title">Un voyage en images</h2>
+    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
+</section>
+
+<!-- RESERVATION -->
+<section id="reservation">
+  <div class="container">
+    <div class="reservation-wrap">
+      <div class="reservation-info reveal-left">
+        <div class="section-tag">Réservation</div>
+        <h2 class="section-title">Réservez votre table</h2>
+        <p>Assurez-vous une place dans notre salle chaleureuse pour une soirée inoubliable. Nous acceptons les groupes jusqu'à 25 personnes.</p>
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-card-icon">📍</div>
+            <div class="info-card-text">
+              <strong>Notre adresse</strong>
+              <span>12 Rue de Naples, 75001 Paris</span>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">⏰</div>
+            <div class="info-card-text">
+              <strong>Horaires d'ouverture</strong>
+              <span>Mar–Dim · 12h–14h30 & 19h–23h</span>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">📞</div>
+            <div class="info-card-text">
+              <strong>Réservation par téléphone</strong>
+              <span>+33 1 23 45 67 89</span>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">🚗</div>
+            <div class="info-card-text">
+              <strong>Parking</strong>
+              <span>Parking gratuit · 50 places disponibles</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reservation-form reveal-right">
+        <h3 class="form-title">📅 Réserver une Table</h3>
+        <form id="reservationForm" onsubmit="submitReservation(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Prénom</label>
+              <input type="text" placeholder="Marco" required />
+            </div>
+            <div class="form-group">
+              <label>Nom</label>
+              <input type="text" placeholder="Ferrara" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" placeholder="marco@email.com" required />
+            </div>
+            <div class="form-group">
+              <label>Téléphone</label>
+              <input type="tel" placeholder="+33 6 …" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" required />
+            </div>
+            <div class="form-group">
+              <label>Heure</label>
+              <select required>
+                <option value="">Choisir…</option>
+                <option>12:00</option><option>12:30</option><option>13:00</option>
+                <option>13:30</option><option>19:00</option><option>19:30</option>
+                <option>20:00</option><option>20:30</option><option>21:00</option>
+                <option>21:30</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Nombre de personnes</label>
+            <select required>
+              <option value="">Choisir…</option>
+              <option>1 personne</option><option>2 personnes</option>
+              <option>3 personnes</option><option>4 personnes</option>
+              <option>5 personnes</option><option>6+ personnes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Demandes spéciales (optionnel)</label>
+            <textarea placeholder="Allergies, occasion spéciale, préférence de table…"></textarea>
+          </div>
+          <button type="submit" class="form-submit">
+            ✅ Confirmer ma Réservation
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>🛒 Mon Panier</h3>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">
+      <div class="emoji">🍕</div>
+      <p>Votre panier est vide.<br>Ajoutez des pizzas !</p>
+    </div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cartTotal">0,00 €</span>
+    </div>
+    <button class="cart-checkout" onclick="checkout()">Commander · <span id="cartTotalBtn">0,00 €</span></button>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="" />
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <h3 class="modal-title">Réservation Confirmée !</h3>
+    <p class="modal-text">Merci ! Votre table est réservée. Nous vous avons envoyé un email de confirmation. À très bientôt chez La Bella Napoli !</p>
+    <button class="modal-close" onclick="closeModal()">Parfait, merci !</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✅</span>
+  <div class="toast-text" id="toastText">Article ajouté au panier !</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand-logo">🍕 La Bella Napoli</div>
+        <p>L'authenticité napolitaine depuis 1987. Pizzas cuites au feu de bois, ingrédients DOP, savoir-faire artisanal transmis de père en fils.</p>
+        <div class="footer-social">
+          <a href="#" class="social-link">📘</a>
+          <a href="#" class="social-link">📸</a>
+          <a href="#" class="social-link">🎵</a>
+          <a href="#" class="social-link">🐦</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#specials">Spécialités</a></li>
+          <li><a href="#about">Notre Histoire</a></li>
+          <li><a href="#gallery">Galerie</a></li>
+          <li><a href="#reservation">Réservation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Informations</h4>
+        <ul>
+          <li><a href="#">Livraison à domicile</a></li>
+          <li><a href="#">Carte cadeaux</a></li>
+          <li><a href="#">Privatisation</a></li>
+          <li><a href="#">Mentions légales</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Newsletter</h4>
+        <p style="color:rgba(255,255,255,.4);font-size:.85rem;margin-bottom:.75rem">Recevez nos offres et nouveautés directement dans votre boîte mail.</p>
+        <div class="newsletter-form">
+          <input type="email" placeholder="votre@email.com" />
+          <button onclick="subscribeNewsletter()">→</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 La Bella Napoli · Tous droits réservés</p>
+      <p class="made-by">Site réalisé avec ❤️ par votre agence web</p>
+    </div>
+  </div>
+</footer>
+
+<!-- WHATSAPP -->
+<a href="https://wa.me/33123456789?text=Bonjour,%20je%20voudrais%20une%20réservation" class="whatsapp-float" target="_blank" title="Réserver via WhatsApp">💬</a>
+
+<!-- BACK TO TOP -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+/* ═══════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════ */
+const menuItems = [
+  { id:1, name:'Margherita Classica', desc:'Sauce tomate San Marzano, mozzarella fior di latte, basilic frais, huile d\'olive extra vierge.', price:12, cat:'classic', img:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&q=80', tags:['Végétarien','Classique'], rating:4.9, popular:true },
+  { id:2, name:'Napolitana DOC', desc:'Sauce tomate, mozzarella, anchois, câpres de Pantelleria, olives, origan. La vraie recette de Naples.', price:15, cat:'classic', img:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80', tags:['Poisson','Tradition'], rating:4.8 },
+  { id:3, name:'Prosciutto e Funghi', desc:'Sauce tomate, mozzarella, champignons de Paris frais, jambon de Paris, origan de Sicile.', price:14, cat:'classic', img:'https://images.unsplash.com/photo-1528137871618-79d2761e3fd5?w=600&q=80', tags:['Viande','Populaire'], rating:4.7, isNew:false },
+  { id:4, name:'Tartufo Nero', desc:'Base huile d\'olive, stracciatella, truffe noire râpée, champignons sauvages, parmesan 24 mois, roquette.', price:26, cat:'premium', img:'https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?w=600&q=80', tags:['Premium','Truffe'], rating:5.0, isNew:true },
+  { id:5, name:'Burrata & Crudo', desc:'Base tomate, mozzarella, burrata AOP, jambon cru San Daniele 18 mois, tomates cerises, basilic.', price:22, cat:'premium', img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80', tags:['Premium','Charcuterie'], rating:4.9, popular:true },
+  { id:6, name:'Pesto Genovese', desc:'Base pesto alla genovese maison, mozzarella di bufala, pignons de pin torréfiés, tomates cerises, parmesan.', price:17, cat:'vege', img:'https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=600&q=80', tags:['Végétarien','Pesto'], rating:4.8, isNew:true },
+  { id:7, name:'Ortolana', desc:'Légumes grillés de saison, courgettes, poivrons rouges, aubergines, tomates confites, mozzarella, basilic.', price:16, cat:'vege', img:'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=600&q=80', tags:['Végétarien','Légumes'], rating:4.6 },
+  { id:8, name:'Calzone Napoli', desc:'Calzone farci : ricotta, mozzarella, jambon, champignons, sauce tomate, huile d\'olive. Cuit au four à bois.', price:18, cat:'classic', img:'https://images.unsplash.com/photo-1594007654729-407eeec4be8a?w=600&q=80', tags:['Calzone','Généreux'], rating:4.7 },
+  { id:9, name:'Nutella & Fraises', desc:'Pâte dorée au miel, Nutella fondant, fraises fraîches, sucre glace, coulis de framboise. Un dessert irrésistible.', price:10, cat:'dessert', img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80', tags:['Dessert','Sucré'], rating:4.9, popular:true },
+  { id:10, name:'Pizza Bianca Miele', desc:'Pâte au miel de châtaignier, mascarpone, figues fraîches, noix caramélisées, miel d\'acacia. Dessert signature.', price:12, cat:'dessert', img:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80', tags:['Dessert','Figues'], rating:4.8, isNew:true },
+  { id:11, name:'Quattro Formaggi', desc:'Mozzarella, gorgonzola DOP, taleggio, parmesan 36 mois. Quatre fromages italiens d\'exception. Sauce crème.', price:19, cat:'premium', img:'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=600&q=80', tags:['Premium','Fromage'], rating:4.8 },
+  { id:12, name:'Bufala e Basilico', desc:'Sauce tomate DOP, mozzarella di bufala campana, basilic frais, tomates confites maison, huile d\'olive sicilienne.', price:16, cat:'vege', img:'https://images.unsplash.com/photo-1580442151529-343f2f6e0e27?w=600&q=80', tags:['Végétarien','Bufala'], rating:4.9, popular:true },
+];
+
+const reviews = [
+  { name:'Sophie M.', avatar:'👩', stars:5, text:'La meilleure pizza que j\'aie jamais mangée en dehors de Naples ! La pâte est incroyable, légère et moelleuse. Le service est chaleureux et l\'ambiance est parfaite. Je reviens chaque semaine !', date:'Il y a 2 jours', platform:'Google' },
+  { name:'Thomas B.', avatar:'👨', stars:5, text:'Un coup de cœur total. La Reine Noire est une révélation gastronomique. Le rapport qualité/prix est excellent pour une pizza de cette qualité. Réservation indispensable le week-end !', date:'Il y a 1 semaine', platform:'TripAdvisor' },
+  { name:'Marie-Claire L.', avatar:'👩‍🦳', stars:5, text:'Nous venons en famille tous les dimanches depuis 3 ans. La qualité est toujours au rendez-vous. Les enfants adorent la Margherita et nous les adultes on se régale avec les spécialités premium.', date:'Il y a 2 semaines', platform:'Google' },
+];
+
+const galleryImages = [
+  { url:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=900&q=80', label:'Notre Margherita Signature' },
+  { url:'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80', label:'Le four à bois artisanal' },
+  { url:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80', label:'Pizzas au feu de bois' },
+  { url:'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=900&q=80', label:'La Reine Noire à la truffe' },
+  { url:'https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?w=600&q=80', label:'Notre salle chaleureuse' },
+  { url:'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=600&q=80', label:'Pizza Végétarienne' },
+  { url:'https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=600&q=80', label:'Pesto Genovese' },
+];
+
+const bannerItems = [
+  '🚚 Livraison gratuite dès 30€', '⭐ Noté 4.9/5 sur Google',
+  '🍕 Pâte maturée 72h', '🔥 Four à bois à 485°C',
+  '🧀 Mozzarella DOP', '🌿 100% Ingrédients frais',
+  '🇮🇹 Recettes authentiques de Naples', '📞 Réservation : +33 1 23 45 67 89',
+];
+
+/* ═══════════════════════════════════════════
+   CART STATE
+═══════════════════════════════════════════ */
+let cart = [];
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', () => {
+  // Loader
+  setTimeout(() => document.getElementById('loader').classList.add('done'), 1800);
+
+  // Particles
+  const p = document.getElementById('particles');
+  const emojis = ['🍕','🍅','🧀','🌿','🔥','🫒','🍷','🌶️','🫕'];
+  for (let i = 0; i < 18; i++) {
+    const el = document.createElement('div');
+    el.className = 'particle';
+    el.textContent = emojis[i % emojis.length];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.top  = Math.random() * 100 + '%';
+    el.style.animationDelay = Math.random() * 5 + 's';
+    el.style.animationDuration = (6 + Math.random() * 6) + 's';
+    el.style.fontSize = (.8 + Math.random() * 1.5) + 'rem';
+    p.appendChild(el);
+  }
+
+  // Banner
+  const bi = document.getElementById('bannerInner');
+  const doubled = [...bannerItems, ...bannerItems];
+  doubled.forEach(t => {
+    const span = document.createElement('div');
+    span.className = 'banner-item';
+    span.innerHTML = t;
+    bi.appendChild(span);
+  });
+
+  // Render
+  renderMenu('all');
+  renderReviews();
+  renderGallery();
+
+  // Mobile cart button visibility
+  document.getElementById('mobileCartBtn').style.display = 'flex';
+
+  // Reveal observer
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: .12 });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => obs.observe(el));
+});
+
+/* ═══════════════════════════════════════════
+   NAVBAR SCROLL
+═══════════════════════════════════════════ */
+window.addEventListener('scroll', () => {
+  const nav  = document.getElementById('navbar');
+  const back = document.getElementById('backTop');
+  nav.classList.toggle('scrolled', scrollY > 60);
+  back.classList.toggle('visible', scrollY > 400);
+});
+
+/* ═══════════════════════════════════════════
+   MOBILE NAV
+═══════════════════════════════════════════ */
+function toggleMobileNav() {
+  document.getElementById('mobileNav').classList.toggle('open');
+  document.getElementById('mobileOverlay').classList.toggle('open');
+}
+
+/* ═══════════════════════════════════════════
+   MENU RENDER
+═══════════════════════════════════════════ */
+let currentFilter = 'all';
+
+function renderMenu(filter, items) {
+  const data = items || menuItems.filter(i => filter === 'all' || i.cat === filter);
+  const grid = document.getElementById('menuGrid');
+  if (!data.length) {
+    grid.innerHTML = '<p style="text-align:center;color:var(--gray);grid-column:1/-1;padding:3rem">Aucun résultat trouvé 😔</p>';
+    return;
+  }
+  grid.innerHTML = data.map(item => `
+    <div class="menu-card reveal" style="transition-delay:${Math.random()*0.2}s">
+      <div class="menu-card-img" style="background-image:url('${item.img}')">
+        ${item.isNew ? '<span class="badge-new">Nouveau</span>' : ''}
+        ${item.popular && !item.isNew ? '<span class="badge-pop">⭐ Populaire</span>' : ''}
+        <div class="rating">★ ${item.rating}</div>
+      </div>
+      <div class="menu-card-body">
+        <h3 class="menu-card-name">${item.name}</h3>
+        <div class="menu-card-tags">${item.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <p class="menu-card-desc">${item.desc}</p>
+        <div class="menu-card-footer">
+          <div class="menu-card-price">${item.price}€ <span>/ pièce</span></div>
+          <button class="add-btn" onclick="addToCart(${item.id})">+ Ajouter</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Re-observe new cards
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: .1 });
+  grid.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+function filterMenu(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('menuSearch').value = '';
+  renderMenu(cat);
+}
+
+function searchMenu(q) {
+  const filtered = menuItems.filter(i =>
+    (currentFilter === 'all' || i.cat === currentFilter) &&
+    (i.name.toLowerCase().includes(q.toLowerCase()) ||
+     i.desc.toLowerCase().includes(q.toLowerCase()) ||
+     i.tags.some(t => t.toLowerCase().includes(q.toLowerCase())))
+  );
+  renderMenu(currentFilter, filtered);
+}
+
+/* ═══════════════════════════════════════════
+   REVIEWS RENDER
+═══════════════════════════════════════════ */
+function renderReviews() {
+  document.getElementById('reviewsGrid').innerHTML = reviews.map(r => `
+    <div class="review-card reveal">
+      <div class="review-platform">${r.platform}</div>
+      <div class="review-stars">${'★'.repeat(r.stars)}</div>
+      <p class="review-text">"${r.text}"</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">${r.avatar}</div>
+        <div>
+          <div class="reviewer-name">${r.name}</div>
+          <div class="reviewer-date">${r.date}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ═══════════════════════════════════════════
+   GALLERY RENDER
+═══════════════════════════════════════════ */
+function renderGallery() {
+  document.getElementById('galleryGrid').innerHTML = galleryImages.map(img => `
+    <div class="gallery-item reveal" onclick="openLightbox('${img.url}')">
+      <img src="${img.url}" alt="${img.label}" loading="lazy" />
+      <div class="gallery-item-overlay">
+        <span class="gallery-item-label">🔍 ${img.label}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ═══════════════════════════════════════════
+   CART
+═══════════════════════════════════════════ */
+function addToCart(id) {
+  const item = menuItems.find(i => i.id === id);
+  const existing = cart.find(c => c.id === id);
+  if (existing) existing.qty++;
+  else cart.push({ ...item, qty: 1 });
+  updateCart();
+  showToast('🍕', `${item.name} ajouté au panier !`);
+}
+
+function updateCart() {
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  const fmt = n => n.toFixed(2).replace('.', ',') + ' €';
+
+  document.getElementById('cartCount').textContent = count;
+  document.getElementById('mobileCartCount').textContent = count;
+  document.getElementById('cartTotal').textContent = fmt(total);
+  document.getElementById('cartTotalBtn').textContent = fmt(total);
+
+  const el = document.getElementById('cartItems');
+  if (!cart.length) {
+    el.innerHTML = '<div class="cart-empty"><div class="emoji">🍕</div><p>Votre panier est vide.<br>Ajoutez des pizzas !</p></div>';
+    return;
+  }
+  el.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img class="cart-item-img" src="${item.img}" alt="${item.name}" />
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">${(item.price * item.qty).toFixed(2).replace('.',',')} €</div>
+      </div>
+      <div class="cart-item-qty">
+        <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+        <span class="qty-num">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${item.id}, +1)">+</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function changeQty(id, delta) {
+  const idx = cart.findIndex(c => c.id === id);
+  if (idx === -1) return;
+  cart[idx].qty += delta;
+  if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  updateCart();
+}
+
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+}
+
+function checkout() {
+  if (!cart.length) { showToast('⚠️', 'Votre panier est vide !'); return; }
+  cart = [];
+  updateCart();
+  toggleCart();
+  showToast('🎉', 'Commande envoyée avec succès !');
+}
+
+/* ═══════════════════════════════════════════
+   RESERVATION
+═══════════════════════════════════════════ */
+function submitReservation(e) {
+  e.preventDefault();
+  document.getElementById('successModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('successModal').classList.remove('open');
+  document.getElementById('reservationForm').reset();
+}
+
+/* ═══════════════════════════════════════════
+   LIGHTBOX
+═══════════════════════════════════════════ */
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+let toastTimer;
+function showToast(icon, text) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastText').textContent = text;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ═══════════════════════════════════════════
+   NEWSLETTER
+═══════════════════════════════════════════ */
+function subscribeNewsletter() {
+  showToast('📧', 'Inscription réussie ! Merci 🎉');
+}
+
+/* ═══════════════════════════════════════════
+   KEYBOARD
+═══════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeLightbox();
+    closeModal();
+    if (document.getElementById('cartSidebar').classList.contains('open')) toggleCart();
+    if (document.getElementById('mobileNav').classList.contains('open')) toggleMobileNav();
+  }
+});
+</script>
+</body>
+</html>
