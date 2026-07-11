@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bella Napoli | Pizzeria Artisanale — Feu de bois</title>
+  <meta name="description" content="Bella Napoli — Pizzeria artisanale au feu de bois. Pâte maison 48h, ingrédients frais, livraison rapide. Commandez sur WhatsApp." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%95%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#0d0a08;
+      --bg-2:#161009;
+      --card:#1d1510;
+      --card-2:#251a12;
+      --line:rgba(255,178,102,.14);
+      --cream:#f5ead9;
+      --muted:#b8a893;
+      --flame:#ff6b2c;
+      --flame-2:#ffa53c;
+      --basil:#5fbf6e;
+      --tomato:#e5432e;
+      --wa:#25d366;
+      --r:18px;
+      --shadow:0 24px 60px -20px rgba(0,0,0,.65);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Inter',sans-serif;
+      background:var(--bg);
+      color:var(--cream);
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+    }
+    h1,h2,h3,.serif{font-family:'Playfair Display',serif}
+    img{display:block;max-width:100%}
+    a{color:inherit;text-decoration:none}
+    button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+    .wrap{width:min(1180px,92%);margin-inline:auto}
+
+    /* ============ décor grain + halos ============ */
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:
+        radial-gradient(900px 500px at 85% -10%, rgba(255,107,44,.13), transparent 60%),
+        radial-gradient(700px 460px at -10% 30%, rgba(229,67,46,.08), transparent 60%);
+    }
+
+    /* ============ topbar ============ */
+    .topbar{
+      background:linear-gradient(90deg,var(--tomato),#c9331f);
+      font-size:.82rem;font-weight:600;letter-spacing:.02em;
+      text-align:center;padding:.5rem 1rem;position:relative;z-index:60;
+    }
+    .topbar b{color:#ffe3a0}
+
+    /* ============ header ============ */
+    header{
+      position:sticky;top:0;z-index:50;
+      background:rgba(13,10,8,.82);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
+    .logo{display:flex;align-items:center;gap:.65rem;font-family:'Playfair Display',serif;font-weight:800;font-size:1.35rem}
+    .logo .badge{
+      width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:1.35rem;
+      background:linear-gradient(135deg,var(--flame),var(--tomato));
+      box-shadow:0 8px 20px -6px rgba(255,107,44,.55);
+    }
+    .logo small{display:block;font-family:'Inter',sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.28em;color:var(--flame-2);text-transform:uppercase}
+    .nav-links{display:flex;gap:2rem;font-size:.92rem;font-weight:500;color:var(--muted)}
+    .nav-links a{transition:color .2s}
+    .nav-links a:hover{color:var(--flame-2)}
+    .nav-cta{display:flex;align-items:center;gap:.8rem}
+    .cart-btn{
+      position:relative;display:flex;align-items:center;gap:.5rem;
+      background:var(--card-2);border:1px solid var(--line);border-radius:999px;
+      padding:.55rem 1.1rem;font-weight:600;font-size:.9rem;transition:.2s;
+    }
+    .cart-btn:hover{border-color:var(--flame);transform:translateY(-1px)}
+    .cart-count{
+      position:absolute;top:-7px;right:-7px;min-width:22px;height:22px;border-radius:999px;
+      background:var(--tomato);display:grid;place-items:center;
+      font-size:.72rem;font-weight:700;padding-inline:5px;
+      transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+    }
+    .cart-count.pop{transform:scale(1.45)}
+    @media(max-width:840px){.nav-links{display:none}}
+
+    /* ============ hero ============ */
+    .hero{position:relative;padding:5.5rem 0 6.5rem;overflow:hidden}
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:4rem;align-items:center;position:relative;z-index:2}
+    .kicker{
+      display:inline-flex;align-items:center;gap:.55rem;
+      background:rgba(255,107,44,.1);border:1px solid rgba(255,107,44,.35);
+      color:var(--flame-2);border-radius:999px;padding:.45rem 1.1rem;
+      font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    }
+    .kicker .dot{width:8px;height:8px;border-radius:50%;background:var(--flame);animation:pulse 1.6s infinite}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,44,.6)}50%{box-shadow:0 0 0 7px rgba(255,107,44,0)}}
+    .hero h1{font-size:clamp(2.6rem,5.4vw,4.4rem);line-height:1.05;margin:1.4rem 0 1.2rem;font-weight:800}
+    .hero h1 em{
+      font-style:italic;
+      background:linear-gradient(100deg,var(--flame) 0%,var(--flame-2) 55%,#ffd27a 100%);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .hero p.lead{color:var(--muted);font-size:1.08rem;line-height:1.75;max-width:32rem}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2.2rem}
+    .btn{
+      display:inline-flex;align-items:center;gap:.6rem;border-radius:999px;
+      padding:.95rem 1.9rem;font-weight:700;font-size:.98rem;transition:.22s;
+    }
+    .btn-fire{
+      background:linear-gradient(120deg,var(--flame),var(--tomato));color:#fff;
+      box-shadow:0 16px 34px -10px rgba(255,107,44,.55);
+    }
+    .btn-fire:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 22px 44px -10px rgba(255,107,44,.7)}
+    .btn-ghost{border:1px solid var(--line);background:rgba(255,255,255,.03)}
+    .btn-ghost:hover{border-color:var(--flame-2);color:var(--flame-2)}
+    .hero-stats{display:flex;gap:2.6rem;margin-top:2.8rem}
+    .stat b{font-size:1.7rem;font-family:'Playfair Display',serif;color:var(--flame-2)}
+    .stat span{display:block;font-size:.8rem;color:var(--muted);margin-top:.2rem}
+
+    .hero-visual{position:relative;display:grid;place-items:center}
+    .pizza-ring{
+      position:absolute;width:118%;aspect-ratio:1;border-radius:50%;
+      border:1.5px dashed rgba(255,165,60,.28);
+      animation:spin 40s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .pizza-ring i{
+      position:absolute;font-style:normal;font-size:1.5rem;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));
+    }
+    .hero-img{
+      width:min(430px,88%);aspect-ratio:1;border-radius:50%;object-fit:cover;
+      box-shadow:0 40px 90px -20px rgba(0,0,0,.8),0 0 0 12px rgba(255,107,44,.07),0 0 90px -8px rgba(255,107,44,.35);
+      animation:float 7s ease-in-out infinite;
+    }
+    @keyframes float{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-16px) rotate(1.5deg)}}
+    .hero-chip{
+      position:absolute;background:rgba(22,16,9,.92);border:1px solid var(--line);
+      border-radius:14px;padding:.7rem 1rem;font-size:.85rem;font-weight:600;
+      display:flex;align-items:center;gap:.55rem;box-shadow:var(--shadow);
+      backdrop-filter:blur(8px);
+    }
+    .chip-1{top:6%;left:-2%;animation:float 6s ease-in-out infinite .6s}
+    .chip-2{bottom:9%;right:-3%;animation:float 6.5s ease-in-out infinite 1.2s}
+    .hero-chip .em{font-size:1.3rem}
+    .hero-chip small{display:block;font-weight:400;color:var(--muted);font-size:.72rem}
+    @media(max-width:900px){
+      .hero{padding:3.5rem 0 4rem}
+      .hero-grid{grid-template-columns:1fr;gap:3.4rem}
+      .hero-visual{order:-1}
+      .hero-img{width:min(320px,80%)}
+    }
+
+    /* marquee */
+    .marquee{
+      border-block:1px solid var(--line);background:var(--bg-2);
+      overflow:hidden;padding:.95rem 0;position:relative;z-index:2;
+    }
+    .marquee-track{display:flex;gap:3rem;width:max-content;animation:slide 26s linear infinite;font-weight:600;font-size:.9rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+    .marquee-track span{display:flex;align-items:center;gap:.7rem;white-space:nowrap}
+    .marquee-track .fl{color:var(--flame)}
+    @keyframes slide{to{transform:translateX(-50%)}}
+
+    /* ============ sections ============ */
+    section{padding:5.5rem 0;position:relative;z-index:1}
+    .sec-head{text-align:center;max-width:44rem;margin:0 auto 3.4rem}
+    .sec-head .kicker{margin-bottom:1.1rem}
+    .sec-head h2{font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.12}
+    .sec-head h2 em{font-style:italic;color:var(--flame-2)}
+    .sec-head p{color:var(--muted);margin-top:1rem;line-height:1.7}
+
+    /* reveal on scroll */
+    .rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+    .rv.in{opacity:1;transform:none}
+
+    /* ============ menu ============ */
+    .menu-tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:.7rem;margin-bottom:2.8rem}
+    .tab{
+      border:1px solid var(--line);border-radius:999px;padding:.6rem 1.4rem;
+      font-weight:600;font-size:.9rem;color:var(--muted);transition:.2s;background:var(--card);
+    }
+    .tab:hover{color:var(--cream);border-color:var(--flame-2)}
+    .tab.active{
+      background:linear-gradient(120deg,var(--flame),var(--tomato));color:#fff;border-color:transparent;
+      box-shadow:0 10px 24px -8px rgba(255,107,44,.5);
+    }
+    .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:1.6rem}
+    .dish{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+      overflow:hidden;transition:transform .25s,box-shadow .25s,border-color .25s;
+      display:flex;flex-direction:column;
+    }
+    .dish:hover{transform:translateY(-6px);border-color:rgba(255,165,60,.4);box-shadow:var(--shadow)}
+    .dish-img{position:relative;aspect-ratio:4/3;overflow:hidden}
+    .dish-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+    .dish:hover .dish-img img{transform:scale(1.08)}
+    .dish-tag{
+      position:absolute;top:12px;left:12px;font-size:.7rem;font-weight:700;letter-spacing:.05em;
+      padding:.32rem .7rem;border-radius:999px;text-transform:uppercase;backdrop-filter:blur(6px);
+    }
+    .tag-hot{background:rgba(229,67,46,.9)}
+    .tag-top{background:rgba(255,165,60,.92);color:#3a2000}
+    .tag-veg{background:rgba(95,191,110,.9);color:#08300f}
+    .dish-body{padding:1.2rem 1.25rem 1.35rem;display:flex;flex-direction:column;flex:1}
+    .dish h3{font-size:1.18rem;font-weight:700}
+    .dish p{color:var(--muted);font-size:.86rem;line-height:1.6;margin:.5rem 0 1rem;flex:1}
+    .dish-foot{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+    .price{font-family:'Playfair Display',serif;font-weight:800;font-size:1.3rem;color:var(--flame-2)}
+    .price small{font-size:.72rem;color:var(--muted);font-family:'Inter',sans-serif;font-weight:500}
+    .add-btn{
+      display:inline-flex;align-items:center;gap:.4rem;
+      background:rgba(255,107,44,.12);border:1px solid rgba(255,107,44,.4);color:var(--flame-2);
+      border-radius:999px;padding:.5rem 1.05rem;font-weight:700;font-size:.85rem;transition:.2s;
+    }
+    .add-btn:hover{background:linear-gradient(120deg,var(--flame),var(--tomato));color:#fff;border-color:transparent}
+    .add-btn.added{background:var(--basil);border-color:transparent;color:#06280d}
+
+    /* ============ pourquoi nous ============ */
+    .why{background:var(--bg-2);border-block:1px solid var(--line)}
+    .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.5rem}
+    .why-card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+      padding:2rem 1.6rem;transition:.25s;text-align:left;
+    }
+    .why-card:hover{transform:translateY(-5px);border-color:rgba(255,165,60,.4)}
+    .why-card .ic{
+      width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:1.6rem;
+      background:linear-gradient(135deg,rgba(255,107,44,.22),rgba(229,67,46,.18));
+      border:1px solid rgba(255,107,44,.3);margin-bottom:1.1rem;
+    }
+    .why-card h3{font-size:1.12rem;margin-bottom:.5rem}
+    .why-card p{color:var(--muted);font-size:.88rem;line-height:1.65}
+
+    /* ============ avis ============ */
+    .rev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+    .rev{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+      padding:1.8rem;display:flex;flex-direction:column;gap:1rem;transition:.25s;
+    }
+    .rev:hover{transform:translateY(-4px)}
+    .stars{color:#ffc24b;letter-spacing:2px}
+    .rev p{color:var(--cream);font-size:.95rem;line-height:1.7;font-style:italic;flex:1}
+    .rev-who{display:flex;align-items:center;gap:.8rem}
+    .rev-who .av{
+      width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;
+      background:linear-gradient(135deg,var(--flame),var(--tomato));font-size:1rem;
+    }
+    .rev-who b{display:block;font-size:.92rem}
+    .rev-who span{font-size:.78rem;color:var(--muted)}
+
+    /* ============ contact ============ */
+    .contact-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:2rem;align-items:stretch}
+    .contact-card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:2.4rem;
+    }
+    .contact-card h3{font-size:1.6rem;margin-bottom:1.6rem}
+    .info-row{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--line);align-items:flex-start}
+    .info-row:last-child{border:none}
+    .info-row .ic{font-size:1.4rem;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:rgba(255,107,44,.12);border:1px solid rgba(255,107,44,.3);flex-shrink:0}
+    .info-row b{display:block;margin-bottom:.2rem}
+    .info-row span{color:var(--muted);font-size:.9rem;line-height:1.55}
+    .hours{background:linear-gradient(160deg,var(--card-2),var(--card));border:1px solid var(--line);border-radius:var(--r);padding:2.4rem;display:flex;flex-direction:column}
+    .hours h3{font-size:1.6rem;margin-bottom:1.4rem}
+    .hrow{display:flex;justify-content:space-between;padding:.75rem 0;border-bottom:1px dashed var(--line);font-size:.94rem}
+    .hrow span{color:var(--muted)}
+    .hrow b{color:var(--flame-2)}
+    .hours .btn{margin-top:auto;justify-content:center}
+    @media(max-width:840px){.contact-grid{grid-template-columns:1fr}}
+
+    /* ============ footer ============ */
+    footer{border-top:1px solid var(--line);background:var(--bg-2);padding:2.6rem 0;position:relative;z-index:1}
+    .foot{display:flex;flex-wrap:wrap;gap:1.4rem;align-items:center;justify-content:space-between;color:var(--muted);font-size:.88rem}
+    .foot .logo{font-size:1.1rem}
+    .foot .logo .badge{width:34px;height:34px;font-size:1.05rem}
+
+    /* ============ WhatsApp flottant ============ */
+    .wa-float{
+      position:fixed;bottom:22px;right:22px;z-index:70;
+      width:60px;height:60px;border-radius:50%;display:grid;place-items:center;
+      background:var(--wa);box-shadow:0 14px 34px -8px rgba(37,211,102,.65);
+      transition:transform .2s;animation:waPulse 2.4s infinite;
+    }
+    .wa-float:hover{transform:scale(1.1)}
+    @keyframes waPulse{0%,100%{box-shadow:0 14px 34px -8px rgba(37,211,102,.65),0 0 0 0 rgba(37,211,102,.5)}50%{box-shadow:0 14px 34px -8px rgba(37,211,102,.65),0 0 0 14px rgba(37,211,102,0)}}
+    .wa-float svg{width:32px;height:32px;fill:#fff}
+
+    /* ============ panier (drawer) ============ */
+    .overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);
+      z-index:80;opacity:0;pointer-events:none;transition:opacity .3s;
+    }
+    .overlay.open{opacity:1;pointer-events:auto}
+    .drawer{
+      position:fixed;top:0;right:0;bottom:0;width:min(420px,94vw);z-index:90;
+      background:var(--bg-2);border-left:1px solid var(--line);
+      transform:translateX(105%);transition:transform .38s cubic-bezier(.32,.72,.24,1);
+      display:flex;flex-direction:column;
+    }
+    .drawer.open{transform:none}
+    .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:1.4rem 1.5rem;border-bottom:1px solid var(--line)}
+    .drawer-head h3{font-size:1.35rem}
+    .drawer-close{font-size:1.5rem;color:var(--muted);transition:.2s}
+    .drawer-close:hover{color:var(--tomato);transform:rotate(90deg)}
+    .drawer-body{flex:1;overflow-y:auto;padding:1.2rem 1.5rem;display:flex;flex-direction:column;gap:1rem}
+    .empty-cart{text-align:center;color:var(--muted);margin-top:4rem}
+    .empty-cart .em{font-size:3.4rem;display:block;margin-bottom:1rem;filter:grayscale(.4)}
+    .cart-item{
+      display:flex;gap:.9rem;background:var(--card);border:1px solid var(--line);
+      border-radius:14px;padding:.85rem;align-items:center;
+    }
+    .cart-item img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0}
+    .ci-info{flex:1;min-width:0}
+    .ci-info b{display:block;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ci-info span{font-size:.84rem;color:var(--flame-2);font-weight:700}
+    .qty{display:flex;align-items:center;gap:.55rem}
+    .qty button{
+      width:28px;height:28px;border-radius:8px;background:var(--card-2);
+      border:1px solid var(--line);font-weight:700;transition:.15s;display:grid;place-items:center;
+    }
+    .qty button:hover{border-color:var(--flame);color:var(--flame-2)}
+    .qty b{min-width:1.2rem;text-align:center;font-size:.95rem}
+    .drawer-foot{border-top:1px solid var(--line);padding:1.3rem 1.5rem;background:var(--bg)}
+    .total-row{display:flex;justify-content:space-between;margin-bottom:1.1rem;font-size:1.05rem}
+    .total-row b{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--flame-2)}
+    .wa-order{
+      width:100%;display:flex;align-items:center;justify-content:center;gap:.6rem;
+      background:var(--wa);color:#04240f;font-weight:800;font-size:1rem;
+      border-radius:14px;padding:1rem;transition:.2s;
+    }
+    .wa-order:hover{transform:translateY(-2px);box-shadow:0 16px 34px -10px rgba(37,211,102,.55)}
+    .wa-order:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+    .wa-order svg{width:22px;height:22px;fill:#04240f}
+    .drawer-note{text-align:center;font-size:.76rem;color:var(--muted);margin-top:.7rem}
+
+    /* toast */
+    .toast{
+      position:fixed;bottom:96px;left:50%;transform:translate(-50%,20px);z-index:95;
+      background:var(--card-2);border:1px solid rgba(95,191,110,.5);color:var(--cream);
+      border-radius:999px;padding:.7rem 1.4rem;font-size:.9rem;font-weight:600;
+      opacity:0;pointer-events:none;transition:.3s;box-shadow:var(--shadow);
+      display:flex;align-items:center;gap:.5rem;white-space:nowrap;
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+  </style>
+</head>
+<body>
+
+  <div class="topbar">🔥 Offre du moment : <b>2 pizzas achetées = 1 boisson offerte</b> — Livraison gratuite dès 150 DH</div>
+
+  <header>
+    <nav class="nav wrap">
+      <a href="#" class="logo">
+        <span class="badge">🍕</span>
+        <span>Bella Napoli<small>Feu de bois</small></span>
+      </a>
+      <div class="nav-links">
+        <a href="#menu">La Carte</a>
+        <a href="#pourquoi">Notre Savoir-faire</a>
+        <a href="#avis">Avis</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="nav-cta">
+        <button class="cart-btn" id="openCart" aria-label="Ouvrir le panier">
+          🛒 <span class="hide-sm">Panier</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-grid wrap">
+      <div>
+        <span class="kicker"><span class="dot"></span> Ouvert — commandez maintenant</span>
+        <h1>La vraie pizza <em>au feu de bois</em>, chez vous en 30&nbsp;min.</h1>
+        <p class="lead">Pâte maturée 48 heures, mozzarella fior di latte, tomates San Marzano et cuisson à 450°C dans notre four napolitain. Chaque pizza est une œuvre d'art.</p>
+        <div class="hero-actions">
+          <a href="#menu" class="btn btn-fire">🍕 Voir la carte</a>
+          <a href="#" class="btn btn-ghost" data-wa="Bonjour ! Je souhaite passer une commande 🍕">💬 Commander sur WhatsApp</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><b>4.9★</b><span>+800 avis clients</span></div>
+          <div class="stat"><b>30 min</b><span>Livraison moyenne</span></div>
+          <div class="stat"><b>100%</b><span>Ingrédients frais</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="pizza-ring">
+          <i style="top:-14px;left:50%">🍅</i>
+          <i style="top:50%;right:-14px">🧀</i>
+          <i style="bottom:-14px;left:50%">🌿</i>
+          <i style="top:50%;left:-14px">🫒</i>
+        </div>
+        <img class="hero-img" src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=900&q=80" alt="Pizza artisanale au feu de bois" />
+        <div class="hero-chip chip-1"><span class="em">🔥</span><span>Four à 450°C<small>Cuisson 90 secondes</small></span></div>
+        <div class="hero-chip chip-2"><span class="em">🛵</span><span>Livraison rapide<small>Suivi sur WhatsApp</small></span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee">
+    <div class="marquee-track" id="marquee">
+      <span><i class="fl">✦</i> Pâte maturée 48h</span>
+      <span><i class="fl">✦</i> Four napolitain au feu de bois</span>
+      <span><i class="fl">✦</i> Mozzarella Fior di Latte</span>
+      <span><i class="fl">✦</i> Livraison en 30 minutes</span>
+      <span><i class="fl">✦</i> Ingrédients 100% frais</span>
+    </div>
+  </div>
+
+  <!-- ================= MENU ================= -->
+  <section id="menu">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="kicker">🍕 La Carte</span>
+        <h2>Des recettes <em>signature</em>, préparées avec passion</h2>
+        <p>Cliquez sur « Ajouter », composez votre panier, et envoyez votre commande directement sur WhatsApp. Simple et rapide.</p>
+      </div>
+      <div class="menu-tabs rv" id="menuTabs"></div>
+      <div class="menu-grid" id="menuGrid"></div>
+    </div>
+  </section>
+
+  <!-- ================= POURQUOI ================= -->
+  <section class="why" id="pourquoi">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="kicker">⭐ Notre savoir-faire</span>
+        <h2>Pourquoi tout le quartier <em>en parle</em></h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card rv"><div class="ic">🔥</div><h3>Feu de bois véritable</h3><p>Notre four napolitain monte à 450°C pour une pâte croustillante dehors, moelleuse dedans. Cuisson en 90 secondes chrono.</p></div>
+        <div class="why-card rv"><div class="ic">🌾</div><h3>Pâte maturée 48h</h3><p>Farine italienne type 00, levée lente de 48 heures. Une pâte légère et digeste, comme à Naples.</p></div>
+        <div class="why-card rv"><div class="ic">🍅</div><h3>Produits frais du jour</h3><p>Tomates San Marzano, basilic frais, mozzarella artisanale. Zéro surgelé, zéro compromis.</p></div>
+        <div class="why-card rv"><div class="ic">🛵</div><h3>Livraison express</h3><p>Commandez sur WhatsApp, on vous livre chaud en 30 minutes en moyenne. Suivi en temps réel.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= AVIS ================= -->
+  <section id="avis">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="kicker">💬 Ils nous adorent</span>
+        <h2>+800 clients <em>conquis</em></h2>
+      </div>
+      <div class="rev-grid">
+        <div class="rev rv">
+          <div class="stars">★★★★★</div>
+          <p>« La meilleure pizza de la ville, sans hésiter. La pâte est incroyable et la livraison toujours à l'heure. Je commande chaque semaine ! »</p>
+          <div class="rev-who"><div class="av">YM</div><div><b>Yassine M.</b><span>Client fidèle · il y a 2 jours</span></div></div>
+        </div>
+        <div class="rev rv">
+          <div class="stars">★★★★★</div>
+          <p>« Commande sur WhatsApp ultra simple, pizza arrivée encore fumante. La Quattro Formaggi est une tuerie. Bravo à l'équipe ! »</p>
+          <div class="rev-who"><div class="av">SB</div><div><b>Salma B.</b><span>Google Maps · il y a 1 semaine</span></div></div>
+        </div>
+        <div class="rev rv">
+          <div class="stars">★★★★★</div>
+          <p>« On sent le vrai feu de bois, rien à voir avec les chaînes. Le rapport qualité-prix est imbattable. Je recommande les yeux fermés. »</p>
+          <div class="rev-who"><div class="av">KA</div><div><b>Karim A.</b><span>Client fidèle · il y a 3 jours</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section id="contact" class="why">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="kicker">📍 Nous trouver</span>
+        <h2>Passez nous voir, ou <em>faites-vous livrer</em></h2>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-card rv">
+          <h3>Coordonnées</h3>
+          <div class="info-row"><div class="ic">📍</div><div><b>Adresse</b><span>12 Avenue Hassan II, Casablanca</span></div></div>
+          <div class="info-row"><div class="ic">📞</div><div><b>Téléphone</b><span>+212 6 00 00 00 00</span></div></div>
+          <div class="info-row"><div class="ic">💬</div><div><b>WhatsApp</b><span>Commande et livraison — réponse en quelques minutes</span></div></div>
+          <div class="info-row"><div class="ic">🛵</div><div><b>Zone de livraison</b><span>Casablanca et environs — gratuite dès 150 DH</span></div></div>
+        </div>
+        <div class="hours rv">
+          <h3>Horaires d'ouverture</h3>
+          <div class="hrow"><span>Lundi — Jeudi</span><b>11h30 – 23h00</b></div>
+          <div class="hrow"><span>Vendredi — Samedi</span><b>11h30 – 00h30</b></div>
+          <div class="hrow"><span>Dimanche</span><b>17h00 – 23h00</b></div>
+          <a href="#" class="btn btn-fire" data-wa="Bonjour ! Je souhaite passer une commande 🍕" style="margin-top:1.6rem">💬 Commander maintenant</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot wrap">
+      <a href="#" class="logo"><span class="badge">🍕</span><span>Bella Napoli</span></a>
+      <span>© 2026 Bella Napoli — Pizzeria artisanale au feu de bois</span>
+      <span>Site démo réalisé avec ❤️</span>
+    </div>
+  </footer>
+
+  <!-- WhatsApp flottant -->
+  <a href="#" class="wa-float" data-wa="Bonjour ! J'ai une question 🍕" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <!-- Panier -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="drawer" aria-label="Panier">
+    <div class="drawer-head">
+      <h3>Votre panier 🛒</h3>
+      <button class="drawer-close" id="closeCart" aria-label="Fermer">✕</button>
+    </div>
+    <div class="drawer-body" id="cartBody"></div>
+    <div class="drawer-foot">
+      <div class="total-row"><span>Total</span><b id="cartTotal">0 DH</b></div>
+      <button class="wa-order" id="waOrder" disabled>
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Commander sur WhatsApp
+      </button>
+      <div class="drawer-note">Votre commande sera envoyée sur WhatsApp — paiement à la livraison.</div>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast">✅ Ajouté au panier !</div>
+
+  <script>
+  /* ==========================================================
+     CONFIGURATION — à personnaliser pour chaque client
+     ========================================================== */
+  const CONFIG = {
+    nom: "Bella Napoli",
+    // Numéro WhatsApp au format international, sans + ni espaces
+    whatsapp: "212600000000",
+    devise: "DH",
+  };
+
+  /* ============ MENU ============ */
+  const MENU = [
+    { id:1, cat:"Classiques", nom:"Margherita", desc:"Tomates San Marzano, mozzarella fior di latte, basilic frais, huile d'olive extra vierge.", prix:55, img:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=700&q=80", tag:"top" },
+    { id:2, cat:"Classiques", nom:"Pepperoni", desc:"Sauce tomate, double mozzarella, pepperoni légèrement piquant, origan.", prix:75, img:"https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=700&q=80", tag:"hot" },
+    { id:3, cat:"Classiques", nom:"Quattro Formaggi", desc:"Mozzarella, gorgonzola, parmesan 24 mois, chèvre, touche de miel.", prix:85, img:"https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=700&q=80", tag:"top" },
+    { id:4, cat:"Signatures", nom:"La Royale", desc:"Viande hachée, champignons, poivrons, olives, œuf, fromage fondant.", prix:95, img:"https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=700&q=80", tag:"hot" },
+    { id:5, cat:"Signatures", nom:"Fruits de Mer", desc:"Crevettes, calamars, moules, ail, persil, citron — la mer sur pâte au feu de bois.", prix:110, img:"https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?auto=format&fit=crop&w=700&q=80" },
+    { id:6, cat:"Signatures", nom:"Poulet Fumé BBQ", desc:"Poulet fumé maison, sauce BBQ, oignons caramélisés, cheddar affiné.", prix:90, img:"https://images.unsplash.com/photo-1565564194296-6446e7dd131d?auto=format&fit=crop&w=700&q=80", tag:"top" },
+    { id:7, cat:"Végétariennes", nom:"Végétarienne du Chef", desc:"Légumes grillés du jour, roquette, tomates cerises, mozzarella, pesto maison.", prix:70, img:"https://images.unsplash.com/photo-1511689660979-10d2b1aada49?auto=format&fit=crop&w=700&q=80", tag:"veg" },
+    { id:8, cat:"Végétariennes", nom:"Champignons & Truffe", desc:"Crème de truffe, champignons de saison, mozzarella, parmesan, roquette.", prix:95, img:"https://images.unsplash.com/photo-1552539618-7eec9b4d1796?auto=format&fit=crop&w=700&q=80", tag:"veg" },
+    { id:9, cat:"Desserts & Boissons", nom:"Tiramisu Maison", desc:"Le vrai tiramisu italien : mascarpone, café, cacao. Préparé chaque matin.", prix:35, img:"https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=700&q=80" },
+    { id:10, cat:"Desserts & Boissons", nom:"Pizza Nutella & Banane", desc:"Pâte au feu de bois, Nutella fondant, banane, éclats de noisettes.", prix:45, img:"https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&w=700&q=80", tag:"top" },
+    { id:11, cat:"Desserts & Boissons", nom:"Limonade Artisanale", desc:"Citron pressé minute, menthe fraîche, une touche de gingembre.", prix:20, img:"https://images.unsplash.com/photo-1523677011781-c91d1bbe2f9e?auto=format&fit=crop&w=700&q=80" },
+    { id:12, cat:"Classiques", nom:"Napolitaine", desc:"Tomates, anchois, câpres, olives noires, origan — la recette originelle.", prix:65, img:"https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=700&q=80" },
+  ];
+  const TAGS = { hot:{cls:"tag-hot",txt:"🌶 Épicé"}, top:{cls:"tag-top",txt:"⭐ Best-seller"}, veg:{cls:"tag-veg",txt:"🌿 Végé"} };
+  const CATS = ["Tout", ...new Set(MENU.map(m=>m.cat))];
+
+  /* ============ état ============ */
+  let cart = {};       // id -> quantité
+  let activeCat = "Tout";
+
+  const $ = s => document.querySelector(s);
+  const fmt = n => n + " " + CONFIG.devise;
+
+  /* ============ rendu menu ============ */
+  function renderTabs(){
+    $("#menuTabs").innerHTML = CATS.map(c =>
+      `<button class="tab ${c===activeCat?"active":""}" data-cat="${c}">${c}</button>`).join("");
+  }
+  function renderMenu(){
+    const items = MENU.filter(m => activeCat==="Tout" || m.cat===activeCat);
+    $("#menuGrid").innerHTML = items.map(m => `
+      <article class="dish rv in">
+        <div class="dish-img">
+          <img src="${m.img}" alt="${m.nom}" loading="lazy" />
+          ${m.tag ? `<span class="dish-tag ${TAGS[m.tag].cls}">${TAGS[m.tag].txt}</span>` : ""}
+        </div>
+        <div class="dish-body">
+          <h3>${m.nom}</h3>
+          <p>${m.desc}</p>
+          <div class="dish-foot">
+            <span class="price">${m.prix}<small> ${CONFIG.devise}</small></span>
+            <button class="add-btn" data-add="${m.id}">+ Ajouter</button>
+          </div>
+        </div>
+      </article>`).join("");
+  }
+
+  /* ============ panier ============ */
+  function cartEntries(){ return Object.entries(cart).map(([id,q]) => ({item:MENU.find(m=>m.id==id), q})); }
+  function cartTotal(){ return cartEntries().reduce((s,e)=>s+e.item.prix*e.q,0); }
+  function cartCount(){ return Object.values(cart).reduce((s,q)=>s+q,0); }
+
+  function renderCart(){
+    const entries = cartEntries();
+    const badge = $("#cartCount");
+    badge.textContent = cartCount();
+    badge.classList.add("pop"); setTimeout(()=>badge.classList.remove("pop"),250);
+    $("#cartTotal").textContent = fmt(cartTotal());
+    $("#waOrder").disabled = entries.length===0;
+    $("#cartBody").innerHTML = entries.length===0
+      ? `<div class="empty-cart"><span class="em">🍕</span>Votre panier est vide.<br/>Ajoutez une pizza pour commencer !</div>`
+      : entries.map(({item,q}) => `
+        <div class="cart-item">
+          <img src="${item.img}" alt="${item.nom}" />
+          <div class="ci-info"><b>${item.nom}</b><span>${fmt(item.prix*q)}</span></div>
+          <div class="qty">
+            <button data-dec="${item.id}">−</button><b>${q}</b><button data-inc="${item.id}">+</button>
+          </div>
+        </div>`).join("");
+  }
+
+  function addToCart(id, btn){
+    cart[id] = (cart[id]||0)+1;
+    renderCart();
+    if(btn){
+      btn.classList.add("added"); btn.textContent = "✓ Ajouté";
+      setTimeout(()=>{ btn.classList.remove("added"); btn.textContent = "+ Ajouter"; },900);
+    }
+    const t = $("#toast");
+    t.classList.add("show");
+    clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("show"),1500);
+  }
+
+  /* ============ WhatsApp ============ */
+  function waLink(msg){ return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`; }
+  function orderMessage(){
+    const lines = cartEntries().map(({item,q}) => `• ${q}x ${item.nom} — ${fmt(item.prix*q)}`);
+    return `🍕 *Nouvelle commande — ${CONFIG.nom}*\n\n${lines.join("\n")}\n\n💰 *Total : ${fmt(cartTotal())}*\n\n📍 Adresse de livraison : \n📞 Téléphone : `;
+  }
+
+  /* ============ drawer ============ */
+  function openCart(){ $("#drawer").classList.add("open"); $("#overlay").classList.add("open"); document.body.style.overflow="hidden"; }
+  function closeCart(){ $("#drawer").classList.remove("open"); $("#overlay").classList.remove("open"); document.body.style.overflow=""; }
+
+  /* ============ events ============ */
+  document.addEventListener("click", e => {
+    const add = e.target.closest("[data-add]");
+    if(add) return addToCart(add.dataset.add, add);
+    const inc = e.target.closest("[data-inc]");
+    if(inc){ cart[inc.dataset.inc]++; return renderCart(); }
+    const dec = e.target.closest("[data-dec]");
+    if(dec){
+      const id = dec.dataset.dec;
+      if(--cart[id] <= 0) delete cart[id];
+      return renderCart();
+    }
+    const tab = e.target.closest("[data-cat]");
+    if(tab){ activeCat = tab.dataset.cat; renderTabs(); renderMenu(); return; }
+    const wa = e.target.closest("[data-wa]");
+    if(wa){ e.preventDefault(); window.open(waLink(wa.dataset.wa),"_blank"); }
+  });
+  $("#openCart").addEventListener("click", openCart);
+  $("#closeCart").addEventListener("click", closeCart);
+  $("#overlay").addEventListener("click", closeCart);
+  $("#waOrder").addEventListener("click", () => window.open(waLink(orderMessage()),"_blank"));
+  document.addEventListener("keydown", e => { if(e.key==="Escape") closeCart(); });
+
+  /* ============ marquee duplication ============ */
+  $("#marquee").innerHTML += $("#marquee").innerHTML;
+
+  /* ============ reveal on scroll ============ */
+  const io = new IntersectionObserver(es => es.forEach(en => {
+    if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); }
+  }), {threshold:.12});
+  document.querySelectorAll(".rv").forEach(el => io.observe(el));
+
+  /* ============ init ============ */
+  renderTabs(); renderMenu(); renderCart();
+  </script>
+</body>
+</html>
