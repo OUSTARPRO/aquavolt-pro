@@ -33,6 +33,7 @@ export default function Navbar() {
   const navLinks = [
     { label: T.home, href: "/" },
     { label: T.services, href: isHome ? "#services" : "/#services" },
+    { label: T.catalogueNav, href: isHome ? "#catalogue" : "/#catalogue" },
     { label: T.gallery, href: isHome ? "#gallery" : "/#gallery" },
     { label: T.quote, href: "/devis" },
     { label: T.contact, href: isHome ? "#contact" : "/#contact" },

@@ -42,6 +42,8 @@ export const translations = {
     electricityCategory: "Électricité",
     plumbingCategory: "Plomberie",
     poolCategory: "Piscines",
+    otherCategory: "Autre",
+    maintenanceCategory: "Maintenance",
 
     // Quote Form
     quoteTitle: "Demandez votre devis gratuit",
@@ -91,6 +93,47 @@ export const translations = {
     // WhatsApp
     whatsappMessage: "Bonjour AquaVolt Pro, je suis intéressé par vos services. Pouvez-vous me contacter ?",
 
+    // Catalogue / Pricing
+    catalogueNav: "Catalogue",
+    catalogueTitle: "Catalogue & Tarifs",
+    catalogueSubtitle: "Des offres transparentes et adaptées à chaque budget",
+    cataloguePromoTag: "Promo",
+    catalogueFeaturedTag: "Populaire",
+    catalogueFrom: "À partir de",
+    catalogueMad: "MAD",
+    catalogueYear: "/an",
+    catalogueAll: "Tout voir",
+    catalogueElectricity: "Électricité",
+    cataloguePlumbing: "Plomberie",
+    cataloguePool: "Piscines",
+    catalogueMaintenance: "Maintenance",
+    cataloguePlanBasic: "Basique",
+    cataloguePlanStandard: "Standard",
+    cataloguePlanPremium: "Premium",
+    catalogueCtaQuote: "Demander ce pack",
+    catalogueCtaWhatsapp: "WhatsApp",
+    catalogueSaving: "Économisez",
+    cataloguePriceOriginal: "Prix normal",
+    cataloguePromoExpiry: "Offre limitée",
+    catalogueBadgeNew: "Nouveau",
+    catalogueIncluded: "Inclus",
+    cataloguePromoTitle: "Nos Promotions du Moment",
+    cataloguePromoSubtitle: "Profitez de nos offres exclusives à durée limitée",
+
+    // Admin catalogue
+    catalogueManagement: "Catalogue & Prix",
+    editPrice: "Modifier le prix",
+    togglePromo: "Activer/Désactiver promo",
+    toggleFeatured: "Mettre en avant",
+    exportExcel: "Exporter Excel",
+    exportQuotesExcel: "Exporter les devis (Excel)",
+    exportCatalogueExcel: "Exporter le catalogue (Excel)",
+    exportSuccess: "Export réussi !",
+    price: "Prix (MAD)",
+    originalPriceLabel: "Prix original (MAD)",
+    promoLabelField: "Label promo",
+    featuresLabel: "Fonctionnalités (une par ligne)",
+
     // Admin
     adminTitle: "Tableau de bord Admin",
     galleryManagement: "Gestion de la Galerie",
@@ -115,6 +158,7 @@ export const translations = {
     name: "Nom",
     city: "Ville",
     actions: "Actions",
+    date: "Date",
     noQuotes: "Aucune demande de devis",
   },
   ar: {
@@ -160,6 +204,8 @@ export const translations = {
     electricityCategory: "الكهرباء",
     plumbingCategory: "السباكة",
     poolCategory: "المسابح",
+    otherCategory: "آخر",
+    maintenanceCategory: "الصيانة",
 
     // Quote Form
     quoteTitle: "اطلب عرض السعر المجاني",
@@ -209,6 +255,47 @@ export const translations = {
     // WhatsApp
     whatsappMessage: "مرحباً أكوا فولت برو، أنا مهتم بخدماتكم. هل يمكنكم الاتصال بي؟",
 
+    // Catalogue / Pricing
+    catalogueNav: "الكتالوج",
+    catalogueTitle: "الكتالوج والأسعار",
+    catalogueSubtitle: "عروض شفافة تناسب كل ميزانية",
+    cataloguePromoTag: "عرض",
+    catalogueFeaturedTag: "الأكثر طلباً",
+    catalogueFrom: "ابتداءً من",
+    catalogueMad: "درهم",
+    catalogueYear: "/سنة",
+    catalogueAll: "الكل",
+    catalogueElectricity: "الكهرباء",
+    cataloguePlumbing: "السباكة",
+    cataloguePool: "المسابح",
+    catalogueMaintenance: "الصيانة",
+    cataloguePlanBasic: "أساسي",
+    cataloguePlanStandard: "قياسي",
+    cataloguePlanPremium: "متميز",
+    catalogueCtaQuote: "طلب هذه الباقة",
+    catalogueCtaWhatsapp: "واتساب",
+    catalogueSaving: "وفر",
+    cataloguePriceOriginal: "السعر الأصلي",
+    cataloguePromoExpiry: "عرض محدود",
+    catalogueBadgeNew: "جديد",
+    catalogueIncluded: "مشمول",
+    cataloguePromoTitle: "عروضنا الحالية",
+    cataloguePromoSubtitle: "استفد من عروضنا الحصرية محدودة المدة",
+
+    // Admin catalogue
+    catalogueManagement: "الكتالوج والأسعار",
+    editPrice: "تعديل السعر",
+    togglePromo: "تفعيل/إلغاء العرض",
+    toggleFeatured: "إبراز",
+    exportExcel: "تصدير Excel",
+    exportQuotesExcel: "تصدير الطلبات (Excel)",
+    exportCatalogueExcel: "تصدير الكتالوج (Excel)",
+    exportSuccess: "تم التصدير بنجاح!",
+    price: "السعر (درهم)",
+    originalPriceLabel: "السعر الأصلي (درهم)",
+    promoLabelField: "تسمية العرض",
+    featuresLabel: "المميزات (واحدة في كل سطر)",
+
     // Admin
     adminTitle: "لوحة تحكم المشرف",
     galleryManagement: "إدارة المعرض",
@@ -233,6 +320,7 @@ export const translations = {
     name: "الاسم",
     city: "المدينة",
     actions: "إجراءات",
+    date: "التاريخ",
     noQuotes: "لا توجد طلبات عروض أسعار",
   },
 } as const;
