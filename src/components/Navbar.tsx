@@ -11,6 +11,7 @@ import {
   LogOut,
   Shield,
   MessageSquare,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -34,6 +35,7 @@ export default function Navbar() {
     { label: T.home, href: "/" },
     { label: T.services, href: isHome ? "#services" : "/#services" },
     { label: T.gallery, href: isHome ? "#gallery" : "/#gallery" },
+    { label: T.catalogue, href: "/catalogue", highlight: true },
     { label: T.quote, href: "/devis" },
     { label: T.contact, href: isHome ? "#contact" : "/#contact" },
   ];
@@ -66,15 +68,26 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="px-3 py-2 text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors rounded-md hover:bg-white/5"
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.highlight ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="px-3 py-2 text-sm font-semibold text-violet-400 hover:text-violet-300 transition-colors rounded-md hover:bg-violet-500/10 flex items-center gap-1.5"
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="px-3 py-2 text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors rounded-md hover:bg-white/5"
+                >
+                  {link.label}
+                </a>
+              )
+            )}
             {isAdmin && (
               <Link
                 to="/admin"
@@ -147,16 +160,28 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="lg:hidden bg-slate-950/98 backdrop-blur-xl border-t border-emerald-500/10">
           <div className="px-4 py-3 space-y-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="block px-3 py-2.5 text-sm font-medium text-slate-300 hover:text-emerald-400 hover:bg-white/5 rounded-md"
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.highlight ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2.5 text-sm font-semibold text-violet-400 hover:bg-violet-500/10 rounded-md"
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="block px-3 py-2.5 text-sm font-medium text-slate-300 hover:text-emerald-400 hover:bg-white/5 rounded-md"
+                >
+                  {link.label}
+                </a>
+              )
+            )}
             {isAdmin && (
               <Link
                 to="/admin"
