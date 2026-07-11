@@ -61,6 +61,30 @@ export const translations = {
     successMessage: "Votre demande a été envoyée avec succès ! Nous vous contacterons dans les 24h.",
     other: "Autre",
 
+    // Catalogue
+    catalogue: "Catalogue",
+    catalogueTitle: "Catalogue Sites Web & Services Digitaux",
+    catalogueSubtitle:
+      "Des sites web professionnels, une gestion complète et des fichiers Excel automatisés. Prix transparents, promotions incluses.",
+    catalogueWebsites: "Création de Sites Web",
+    catalogueWebsitesDesc: "Choisissez le pack adapté à votre activité",
+    catalogueManagement: "Gestion & Maintenance",
+    catalogueManagementDesc: "Un manager dédié s'occupe de votre site chaque mois",
+    catalogueExcel: "Excel Automatisé",
+    catalogueExcelDesc: "Gagnez du temps avec des fichiers Excel intelligents",
+    catalogueOptions: "Options à la carte",
+    catalogueOptionsDesc: "Complétez votre pack selon vos besoins",
+    orderNow: "Commander",
+    onQuote: "Sur devis",
+    contactUs: "Nous contacter",
+    popular: "Populaire",
+    promo: "Promotions en cours",
+    currency: "DH",
+    addOption: "Ajouter",
+    catalogueCtaTitle: "Un projet en tête ?",
+    catalogueCtaText:
+      "Parlez-nous de votre projet sur WhatsApp et recevez un devis gratuit en 24h.",
+
     // Testimonials
     testimonialsTitle: "Ils nous font confiance",
     testimonialsSubtitle: "Des clients satisfaits à travers le Maroc",
@@ -178,6 +202,30 @@ export const translations = {
     submit: "إرسال الطلب",
     successMessage: "تم إرسال طلبك بنجاح! سنتصل بك في غضون 24 ساعة.",
     other: "آخر",
+
+    // Catalogue
+    catalogue: "الكتالوج",
+    catalogueTitle: "كتالوج المواقع والخدمات الرقمية",
+    catalogueSubtitle:
+      "مواقع ويب احترافية، إدارة كاملة وملفات إكسل مؤتمتة. أسعار شفافة مع عروض ترويجية.",
+    catalogueWebsites: "إنشاء مواقع الويب",
+    catalogueWebsitesDesc: "اختر الباقة المناسبة لنشاطك",
+    catalogueManagement: "الإدارة والصيانة",
+    catalogueManagementDesc: "مدير مخصص يهتم بموقعك كل شهر",
+    catalogueExcel: "إكسل مؤتمت",
+    catalogueExcelDesc: "وفر وقتك مع ملفات إكسل ذكية",
+    catalogueOptions: "خيارات إضافية",
+    catalogueOptionsDesc: "أكمل باقتك حسب احتياجاتك",
+    orderNow: "اطلب الآن",
+    onQuote: "حسب الطلب",
+    contactUs: "اتصل بنا",
+    popular: "الأكثر طلبا",
+    promo: "عروض ترويجية جارية",
+    currency: "درهم",
+    addOption: "أضف",
+    catalogueCtaTitle: "لديك مشروع؟",
+    catalogueCtaText:
+      "حدثنا عن مشروعك عبر واتساب واحصل على عرض سعر مجاني خلال 24 ساعة.",
 
     // Testimonials
     testimonialsTitle: "يثقون بنا",
