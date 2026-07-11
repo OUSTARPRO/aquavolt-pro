@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Bella Napoli — La vraie pizza napolitaine, cuite au feu de bois. Démo de site vitrine premium." />
+<title>Bella Napoli · Pizzeria Artisanale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #120a08;
+    --bg-soft: #1c110d;
+    --card: #241511;
+    --cream: #f7ecd9;
+    --muted: #c9b89f;
+    --tomato: #e63925;
+    --tomato-2: #ff6a3d;
+    --basil: #4c8b52;
+    --gold: #f5b13d;
+    --ring: rgba(245, 177, 61, .35);
+    --radius: 22px;
+    --shadow: 0 30px 60px -20px rgba(0,0,0,.65);
+    --font-head: "Playfair Display", Georgia, serif;
+    --font-body: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--cream);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+  section { position: relative; }
+  ::selection { background: var(--tomato); color: #fff; }
+
+  .wrap { width: min(1180px, 92vw); margin-inline: auto; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: .55rem;
+    font-size: .72rem; letter-spacing: .28em; text-transform: uppercase;
+    font-weight: 700; color: var(--gold);
+  }
+  .eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--gold); border-radius: 2px; }
+  h1, h2, h3 { font-family: var(--font-head); line-height: 1.08; font-weight: 800; }
+  .btn {
+    display: inline-flex; align-items: center; gap: .6rem; cursor: pointer;
+    font-weight: 700; font-size: .95rem; border: none; border-radius: 999px;
+    padding: .95rem 1.7rem; transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--tomato-2), var(--tomato));
+    color: #fff; box-shadow: 0 16px 34px -12px rgba(230,57,37,.75);
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 22px 40px -12px rgba(230,57,37,.9); }
+  .btn-ghost {
+    background: rgba(247,236,217,.06); color: var(--cream);
+    border: 1px solid rgba(247,236,217,.18); backdrop-filter: blur(6px);
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-3px); }
+
+  /* ---------- NAV ---------- */
+  header {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    transition: background .35s ease, padding .35s ease, box-shadow .35s ease;
+    padding: 1.3rem 0;
+  }
+  header.scrolled {
+    background: rgba(18,10,8,.82); backdrop-filter: blur(14px);
+    padding: .75rem 0; box-shadow: 0 10px 30px -18px rgba(0,0,0,.9);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: .7rem; font-family: var(--font-head); font-weight: 800; font-size: 1.35rem; }
+  .brand .dot { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--tomato-2), var(--tomato)); font-size: 1.2rem; box-shadow: 0 0 0 4px rgba(230,57,37,.18); }
+  .brand small { display: block; font-family: var(--font-body); font-size: .6rem; letter-spacing: .32em; color: var(--gold); font-weight: 600; }
+  .nav-links { display: flex; align-items: center; gap: 2rem; }
+  .nav-links a { font-size: .92rem; font-weight: 500; color: var(--muted); position: relative; transition: color .2s; }
+  .nav-links a::after { content: ""; position: absolute; left: 0; bottom: -6px; height: 2px; width: 0; background: var(--gold); transition: width .3s; }
+  .nav-links a:hover { color: var(--cream); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta { display: flex; align-items: center; gap: 1rem; }
+  .burger { display: none; flex-direction: column; gap: 5px; background: none; border: 0; cursor: pointer; }
+  .burger span { width: 26px; height: 2px; background: var(--cream); border-radius: 2px; transition: .3s; }
+
+  /* ---------- HERO ---------- */
+  .hero { min-height: 100vh; display: flex; align-items: center; overflow: hidden; padding-top: 90px; }
+  .hero::before {
+    content: ""; position: absolute; inset: 0; z-index: -2;
+    background:
+      radial-gradient(60% 55% at 78% 30%, rgba(230,57,37,.28), transparent 60%),
+      radial-gradient(50% 50% at 12% 80%, rgba(76,139,82,.18), transparent 60%),
+      linear-gradient(160deg, #180d0a 0%, #120a08 55%, #0d0605 100%);
+  }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 3rem; }
+  .hero h1 { font-size: clamp(2.8rem, 6vw, 5rem); margin: 1.2rem 0 1.1rem; }
+  .hero h1 em { color: var(--tomato-2); font-style: italic; }
+  .hero p.lead { font-size: 1.12rem; color: var(--muted); max-width: 34rem; margin-bottom: 2rem; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+  .hero-stats { display: flex; gap: 2.4rem; margin-top: 3rem; flex-wrap: wrap; }
+  .hero-stats .num { font-family: var(--font-head); font-size: 2rem; font-weight: 800; color: var(--gold); }
+  .hero-stats .lbl { font-size: .78rem; color: var(--muted); letter-spacing: .05em; }
+
+  .pizza-stage { position: relative; display: grid; place-items: center; }
+  .pizza-plate {
+    width: min(430px, 78vw); aspect-ratio: 1; border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 50%, #f4c777 0 32%, #e8a94e 33% 60%, #c9762c 61% 78%, #8a4a1c 79% 100%);
+    box-shadow: inset 0 0 60px rgba(0,0,0,.35), var(--shadow);
+    position: relative; animation: spin 40s linear infinite;
+  }
+  .pizza-plate::after {
+    content: ""; position: absolute; inset: 12%;
+    border-radius: 50%; background: radial-gradient(circle at 50% 45%, #d94f36 0 55%, #c53c25 100%);
+    box-shadow: inset 0 0 40px rgba(0,0,0,.35);
+  }
+  .topping { position: absolute; font-size: 1.9rem; z-index: 2; filter: drop-shadow(0 4px 6px rgba(0,0,0,.4)); }
+  .pizza-halo {
+    position: absolute; width: 116%; aspect-ratio: 1; border-radius: 50%;
+    border: 1px dashed rgba(245,177,61,.35); animation: spin 60s linear infinite reverse;
+  }
+  .badge-float {
+    position: absolute; background: rgba(28,17,13,.85); backdrop-filter: blur(8px);
+    border: 1px solid rgba(245,177,61,.3); border-radius: 16px; padding: .7rem 1rem;
+    display: flex; align-items: center; gap: .6rem; font-size: .82rem; box-shadow: var(--shadow);
+    animation: floaty 5s ease-in-out infinite;
+  }
+  .badge-float .big { font-size: 1.4rem; }
+  .badge-a { top: 6%; left: -4%; }
+  .badge-b { bottom: 10%; right: -6%; animation-delay: 1.5s; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  @media (prefers-reduced-motion: reduce) { .pizza-plate, .pizza-halo, .badge-float { animation: none !important; } }
+
+  .marquee {
+    border-block: 1px solid rgba(247,236,217,.08); background: var(--bg-soft);
+    overflow: hidden; white-space: nowrap; padding: .9rem 0;
+  }
+  .marquee-track { display: inline-flex; gap: 3rem; animation: scroll 22s linear infinite; font-family: var(--font-head); font-style: italic; color: var(--muted); }
+  .marquee-track span { display: inline-flex; align-items: center; gap: 3rem; }
+  .marquee-track span::after { content: "🍕"; }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* ---------- SECTION SHELL ---------- */
+  .sec { padding: 6.5rem 0; }
+  .sec-head { max-width: 40rem; margin-bottom: 3.2rem; }
+  .sec-head h2 { font-size: clamp(2rem, 4vw, 3.1rem); margin: .8rem 0; }
+  .sec-head p { color: var(--muted); }
+  .center { text-align: center; margin-inline: auto; }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(34px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- MENU ---------- */
+  .filters { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin-bottom: 2.6rem; }
+  .chip {
+    border: 1px solid rgba(247,236,217,.16); background: transparent; color: var(--muted);
+    padding: .5rem 1.15rem; border-radius: 999px; font-weight: 600; font-size: .85rem; cursor: pointer; transition: .25s;
+  }
+  .chip.active, .chip:hover { background: var(--tomato); color: #fff; border-color: var(--tomato); }
+  .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
+  .dish {
+    background: var(--card); border: 1px solid rgba(247,236,217,.07); border-radius: var(--radius);
+    padding: 1.5rem; display: flex; flex-direction: column; gap: .5rem;
+    transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; position: relative; overflow: hidden;
+  }
+  .dish::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 100% 0, rgba(230,57,37,.16), transparent 55%); opacity: 0; transition: .3s; }
+  .dish:hover { transform: translateY(-8px); border-color: rgba(245,177,61,.35); box-shadow: var(--shadow); }
+  .dish:hover::before { opacity: 1; }
+  .dish .emoji { font-size: 2.6rem; }
+  .dish .row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .dish h3 { font-size: 1.28rem; }
+  .dish .price { font-family: var(--font-head); font-weight: 800; color: var(--gold); font-size: 1.28rem; white-space: nowrap; }
+  .dish p { color: var(--muted); font-size: .9rem; }
+  .dish .tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: .2rem; }
+  .tag { font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; padding: .2rem .55rem; border-radius: 6px; }
+  .tag.veg { background: rgba(76,139,82,.18); color: #8fd196; }
+  .tag.hot { background: rgba(230,57,37,.18); color: #ff8f7a; }
+  .tag.new { background: rgba(245,177,61,.18); color: var(--gold); }
+  .dish .add {
+    margin-top: .8rem; align-self: flex-start; background: rgba(247,236,217,.07); color: var(--cream);
+    border: 1px solid rgba(247,236,217,.16); border-radius: 999px; padding: .5rem 1rem; font-weight: 700; font-size: .82rem; cursor: pointer; transition: .25s;
+  }
+  .dish .add:hover { background: var(--tomato); border-color: var(--tomato); color: #fff; }
+
+  /* ---------- STORY ---------- */
+  .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+  .story-visual {
+    border-radius: var(--radius); min-height: 420px; position: relative; overflow: hidden;
+    background: linear-gradient(160deg, #3a1c12, #1c110d);
+    border: 1px solid rgba(247,236,217,.08); display: grid; place-items: center;
+  }
+  .story-visual .oven { font-size: 8rem; filter: drop-shadow(0 20px 30px rgba(230,57,37,.5)); animation: floaty 6s ease-in-out infinite; }
+  .story-visual .flames { position: absolute; bottom: 0; left: 0; right: 0; height: 40%;
+    background: radial-gradient(60% 100% at 50% 100%, rgba(255,106,61,.55), transparent 70%); filter: blur(6px); }
+  .feature-list { list-style: none; display: grid; gap: 1.2rem; margin-top: 1.8rem; }
+  .feature-list li { display: flex; gap: 1rem; align-items: flex-start; }
+  .feature-list .ic { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+    background: rgba(245,177,61,.14); font-size: 1.3rem; }
+  .feature-list b { display: block; font-size: 1.02rem; }
+  .feature-list span { color: var(--muted); font-size: .9rem; }
+
+  /* ---------- GALLERY ---------- */
+  .gallery { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 190px; gap: 1rem; }
+  .gcell { border-radius: 18px; overflow: hidden; position: relative; display: grid; place-items: center;
+    font-size: 3.4rem; border: 1px solid rgba(247,236,217,.07); transition: transform .35s ease; }
+  .gcell:hover { transform: scale(1.03); }
+  .gcell::after { content: attr(data-label); position: absolute; inset: auto 0 0 0; padding: .6rem .8rem;
+    font-family: var(--font-body); font-size: .78rem; font-weight: 600; color: var(--cream);
+    background: linear-gradient(transparent, rgba(0,0,0,.75)); }
+  .g1 { grid-column: span 2; grid-row: span 2; font-size: 6rem; background: linear-gradient(150deg,#5a2a18,#2a1610); }
+  .g2 { background: linear-gradient(150deg,#4c8b52,#243a26); }
+  .g3 { background: linear-gradient(150deg,#e63925,#6d1b12); }
+  .g4 { background: linear-gradient(150deg,#f5b13d,#8a5c14); }
+  .g5 { grid-column: span 2; background: linear-gradient(150deg,#3a1c12,#1c110d); }
+
+  /* ---------- REVIEWS ---------- */
+  .reviews { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.4rem; }
+  .review { background: var(--card); border: 1px solid rgba(247,236,217,.07); border-radius: var(--radius); padding: 1.8rem; }
+  .stars { color: var(--gold); letter-spacing: .15em; margin-bottom: .8rem; }
+  .review p { color: var(--cream); font-size: .98rem; }
+  .review .who { display: flex; align-items: center; gap: .8rem; margin-top: 1.3rem; }
+  .avatar { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #fff;
+    background: linear-gradient(135deg, var(--tomato-2), var(--tomato)); }
+  .review .who b { font-size: .92rem; }
+  .review .who span { display: block; font-size: .78rem; color: var(--muted); }
+
+  /* ---------- RESERVATION ---------- */
+  .reserve { background: var(--bg-soft); }
+  .reserve-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+  .form-card { background: var(--card); border: 1px solid rgba(247,236,217,.08); border-radius: var(--radius); padding: 2.2rem; box-shadow: var(--shadow); }
+  .field { margin-bottom: 1.1rem; }
+  .field label { display: block; font-size: .82rem; font-weight: 600; margin-bottom: .4rem; color: var(--muted); }
+  .field input, .field select {
+    width: 100%; background: rgba(18,10,8,.6); border: 1px solid rgba(247,236,217,.14); color: var(--cream);
+    border-radius: 12px; padding: .8rem 1rem; font-family: inherit; font-size: .95rem; transition: border-color .2s, box-shadow .2s;
+  }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 4px var(--ring); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-note { font-size: .78rem; color: var(--muted); margin-top: .4rem; }
+  .contact-info { display: grid; gap: 1.4rem; }
+  .info-row { display: flex; gap: 1rem; align-items: flex-start; }
+  .info-row .ic { width: 46px; height: 46px; border-radius: 12px; background: rgba(230,57,37,.14); display: grid; place-items: center; font-size: 1.3rem; flex: 0 0 auto; }
+  .info-row b { display: block; }
+  .info-row span { color: var(--muted); font-size: .92rem; }
+
+  /* ---------- CTA STRIP ---------- */
+  .cta-strip { background: linear-gradient(135deg, var(--tomato), #a5271a); text-align: center; padding: 4.5rem 0; }
+  .cta-strip h2 { font-size: clamp(2rem,4vw,3rem); color: #fff; }
+  .cta-strip p { color: rgba(255,255,255,.85); margin: .8rem 0 1.8rem; }
+  .cta-strip .btn-ghost { border-color: rgba(255,255,255,.6); color: #fff; }
+  .cta-strip .btn-ghost:hover { background: #fff; color: var(--tomato); }
+
+  /* ---------- FOOTER ---------- */
+  footer { background: #0d0605; padding: 4rem 0 2rem; }
+  .foot-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 2.5rem; }
+  footer h4 { font-family: var(--font-body); font-size: .82rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  footer ul { list-style: none; display: grid; gap: .6rem; }
+  footer a { color: var(--muted); font-size: .9rem; }
+  footer a:hover { color: var(--cream); }
+  .foot-bottom { border-top: 1px solid rgba(247,236,217,.08); margin-top: 3rem; padding-top: 1.6rem;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: .82rem; color: var(--muted); }
+  .socials { display: flex; gap: .7rem; }
+  .socials a { width: 38px; height: 38px; border-radius: 10px; background: rgba(247,236,217,.06); display: grid; place-items: center; transition: .25s; }
+  .socials a:hover { background: var(--tomato); }
+
+  /* ---------- CART FAB + TOAST ---------- */
+  .fab {
+    position: fixed; right: 22px; bottom: 22px; z-index: 60;
+    background: linear-gradient(135deg, var(--tomato-2), var(--tomato)); color: #fff;
+    border: none; border-radius: 999px; padding: .95rem 1.3rem; font-weight: 800; cursor: pointer;
+    display: flex; align-items: center; gap: .6rem; box-shadow: 0 18px 36px -12px rgba(230,57,37,.8);
+    transform: translateY(120px); opacity: 0; transition: transform .4s ease, opacity .4s ease;
+  }
+  .fab.show { transform: none; opacity: 1; }
+  .fab .count { background: #fff; color: var(--tomato); border-radius: 999px; min-width: 24px; height: 24px; display: grid; place-items: center; font-size: .8rem; }
+  .toast {
+    position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 140px); z-index: 70;
+    background: #fff; color: #1c110d; padding: .85rem 1.3rem; border-radius: 14px; font-weight: 600; font-size: .9rem;
+    box-shadow: var(--shadow); transition: transform .4s cubic-bezier(.2,.9,.3,1.2); display: flex; align-items: center; gap: .6rem;
+  }
+  .toast.show { transform: translate(-50%, 0); }
+
+  .demo-flag {
+    position: fixed; top: 0; left: 0; z-index: 80; background: var(--gold); color: #1c110d;
+    font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    padding: .3rem .8rem; border-bottom-right-radius: 10px;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 960px) {
+    .hero-grid, .story-grid, .reserve-grid { grid-template-columns: 1fr; }
+    .pizza-stage { order: -1; }
+    .menu-grid, .reviews { grid-template-columns: repeat(2,1fr); }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+    .gallery { grid-template-columns: repeat(2,1fr); }
+    .g1 { grid-column: span 2; }
+    .g5 { grid-column: span 2; }
+  }
+  @media (max-width: 620px) {
+    .nav-links { position: fixed; inset: 0 0 0 auto; width: min(75vw, 300px); background: var(--bg-soft);
+      flex-direction: column; justify-content: center; gap: 1.6rem; transform: translateX(100%); transition: transform .35s ease; padding: 2rem; }
+    .nav-links.open { transform: none; box-shadow: var(--shadow); }
+    .burger { display: flex; }
+    .nav-cta .btn { display: none; }
+    .menu-grid, .reviews, .grid-2 { grid-template-columns: 1fr; }
+    .hero-stats { gap: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+<span class="demo-flag">Démo · maquette</span>
+
+<header id="header">
+  <div class="wrap nav">
+    <a href="#top" class="brand">
+      <span class="dot">🍕</span>
+      <span>Bella Napoli<small>PIZZERIA · 1998</small></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#menu">Menu</a>
+      <a href="#histoire">Notre histoire</a>
+      <a href="#galerie">Galerie</a>
+      <a href="#avis">Avis</a>
+      <a href="#reserver">Réserver</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#reserver" class="btn btn-primary">Commander</a>
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Feu de bois · 100% artisanal</span>
+      <h1>La vraie pizza <em>napolitaine</em>, cuite au feu de bois.</h1>
+      <p class="lead">Pâte maturée 48 h, tomates San Marzano, mozzarella fior di latte. Chaque pizza est une tranche d'Italie, préparée sous vos yeux et servie brûlante.</p>
+      <div class="hero-actions">
+        <a href="#menu" class="btn btn-primary">Découvrir le menu →</a>
+        <a href="#reserver" class="btn btn-ghost">Réserver une table</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="num">25 ans</div><div class="lbl">de savoir-faire</div></div>
+        <div><div class="num">48 h</div><div class="lbl">de maturation</div></div>
+        <div><div class="num">4,9 ★</div><div class="lbl">+1 200 avis Google</div></div>
+      </div>
+    </div>
+    <div class="pizza-stage">
+      <div class="pizza-halo"></div>
+      <div class="pizza-plate">
+        <span class="topping" style="top:22%;left:30%">🍅</span>
+        <span class="topping" style="top:30%;left:62%">🌿</span>
+        <span class="topping" style="top:55%;left:24%">🧀</span>
+        <span class="topping" style="top:60%;left:60%">🍅</span>
+        <span class="topping" style="top:44%;left:46%">🌿</span>
+        <span class="topping" style="top:70%;left:44%">🧀</span>
+      </div>
+      <div class="badge-float badge-a"><span class="big">🔥</span><div><b>Four à 450°C</b><br><span style="color:var(--muted)">Cuisson 90 sec</span></div></div>
+      <div class="badge-float badge-b"><span class="big">🛵</span><div><b>Livraison 30 min</b><br><span style="color:var(--muted)">Ou offerte</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Margherita&nbsp;&nbsp;Diavola&nbsp;&nbsp;Quattro Formaggi&nbsp;&nbsp;Burrata&nbsp;&nbsp;Truffe&nbsp;&nbsp;Calzone&nbsp;&nbsp;Napolitaine</span>
+    <span>Margherita&nbsp;&nbsp;Diavola&nbsp;&nbsp;Quattro Formaggi&nbsp;&nbsp;Burrata&nbsp;&nbsp;Truffe&nbsp;&nbsp;Calzone&nbsp;&nbsp;Napolitaine</span>
+  </div>
+</div>
+
+<!-- MENU -->
+<section class="sec" id="menu">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Notre carte</span>
+      <h2>Des recettes qui sentent bon l'Italie</h2>
+      <p>Sélectionnez une catégorie pour explorer nos spécialités. Ajoutez vos favoris au panier — c'est une démo, alors régalez-vous !</p>
+    </div>
+
+    <div class="filters reveal" id="filters">
+      <button class="chip active" data-filter="all">Tout</button>
+      <button class="chip" data-filter="classique">Classiques</button>
+      <button class="chip" data-filter="signature">Signatures</button>
+      <button class="chip" data-filter="veggie">Végétariennes</button>
+      <button class="chip" data-filter="dessert">Desserts</button>
+    </div>
+
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="sec" id="histoire" style="background:var(--bg-soft)">
+  <div class="wrap story-grid">
+    <div class="reveal">
+      <span class="eyebrow">Depuis 1998</span>
+      <h2 style="font-size:clamp(2rem,4vw,3rem);margin:.8rem 0 1rem">Trois générations, une seule passion</h2>
+      <p style="color:var(--muted)">Nonna Rosa a ouvert notre premier four à Naples. Aujourd'hui, nous perpétuons ses gestes : pétrissage à la main, ingrédients AOP importés chaque semaine, et cette générosité qui fait qu'on se sent en famille dès la première bouchée.</p>
+      <ul class="feature-list">
+        <li><span class="ic">🌾</span><div><b>Pâte maturée 48 heures</b><span>Légère, digeste, croustillante sur les bords.</span></div></li>
+        <li><span class="ic">🇮🇹</span><div><b>Produits AOP importés</b><span>San Marzano, fior di latte, huile de Ligurie.</span></div></li>
+        <li><span class="ic">🔥</span><div><b>Four à bois traditionnel</b><span>Cuisson à 450°C pour ce goût inimitable.</span></div></li>
+      </ul>
+    </div>
+    <div class="story-visual reveal">
+      <div class="flames"></div>
+      <span class="oven">🔥🍕</span>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="sec" id="galerie">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">En images</span>
+      <h2>L'ambiance de la maison</h2>
+      <p>Un décor chaleureux, une terrasse ensoleillée et des plats qui donnent faim au premier regard.</p>
+    </div>
+    <div class="gallery reveal">
+      <div class="gcell g1" data-label="Margherita signature">🍕</div>
+      <div class="gcell g2" data-label="Basilic frais">🌿</div>
+      <div class="gcell g3" data-label="Sortie du four">🔥</div>
+      <div class="gcell g4" data-label="Dessert maison">🍮</div>
+      <div class="gcell g5" data-label="Notre salle & terrasse">🍽️</div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="sec" id="avis" style="background:var(--bg-soft)">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Ils nous adorent</span>
+      <h2>4,9 / 5 sur plus de 1 200 avis</h2>
+    </div>
+    <div class="reviews">
+      <div class="review reveal">
+        <div class="stars">★★★★★</div>
+        <p>« La meilleure pizza de la ville, sans exagérer. La pâte est incroyable et l'accueil est adorable. On reviendra chaque semaine ! »</p>
+        <div class="who"><span class="avatar">SL</span><div><b>Sophie L.</b><span>Cliente régulière</span></div></div>
+      </div>
+      <div class="review reveal">
+        <div class="stars">★★★★★</div>
+        <p>« Un vrai voyage à Naples. La Diavola est parfaitement épicée et la burrata fond en bouche. Service rapide même le samedi soir. »</p>
+        <div class="who"><span class="avatar">KM</span><div><b>Karim M.</b><span>Avis Google</span></div></div>
+      </div>
+      <div class="review reveal">
+        <div class="stars">★★★★★</div>
+        <p>« On a privatisé pour un anniversaire, tout était impeccable. Rapport qualité-prix imbattable et une équipe aux petits soins. »</p>
+        <div class="who"><span class="avatar">EF</span><div><b>Elena F.</b><span>Événement privé</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVATION -->
+<section class="sec reserve" id="reserver">
+  <div class="wrap reserve-grid">
+    <div class="reveal">
+      <span class="eyebrow">Réservation & commande</span>
+      <h2 style="font-size:clamp(2rem,4vw,3rem);margin:.8rem 0 1rem">Réservez votre table en 30 secondes</h2>
+      <p style="color:var(--muted);margin-bottom:1.8rem">Une table pour ce soir ou une commande à emporter ? Laissez-nous vos coordonnées, on s'occupe du reste.</p>
+      <div class="contact-info">
+        <div class="info-row"><span class="ic">📍</span><div><b>Adresse</b><span>12 rue des Oliviers, Vieux-Port</span></div></div>
+        <div class="info-row"><span class="ic">📞</span><div><b>Téléphone</b><span>01 23 45 67 89</span></div></div>
+        <div class="info-row"><span class="ic">🕒</span><div><b>Horaires</b><span>Mar – Dim · 12h – 14h30 & 19h – 23h</span></div></div>
+      </div>
+    </div>
+    <form class="form-card reveal" id="resaForm">
+      <div class="field">
+        <label for="name">Nom</label>
+        <input id="name" type="text" placeholder="Votre nom" required />
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="phone">Téléphone</label>
+          <input id="phone" type="tel" placeholder="06 12 34 56 78" required />
+        </div>
+        <div class="field">
+          <label for="guests">Convives</label>
+          <select id="guests">
+            <option>1 personne</option><option selected>2 personnes</option>
+            <option>3 personnes</option><option>4 personnes</option>
+            <option>5 personnes</option><option>6 personnes et +</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="date">Date</label>
+          <input id="date" type="date" required />
+        </div>
+        <div class="field">
+          <label for="time">Heure</label>
+          <input id="time" type="time" value="20:00" required />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Confirmer ma réservation</button>
+      <p class="form-note">Démo : aucune donnée n'est envoyée. Idéal pour brancher WhatsApp, un email ou votre système de réservation.</p>
+    </form>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<section class="cta-strip">
+  <div class="wrap">
+    <h2>Une petite faim ? 🍕</h2>
+    <p>Commandez en ligne, livraison offerte dès 25 € dans un rayon de 5 km.</p>
+    <a href="#reserver" class="btn btn-ghost">Commander maintenant</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="#top" class="brand" style="margin-bottom:1rem"><span class="dot">🍕</span><span>Bella Napoli</span></a>
+        <p style="color:var(--muted);font-size:.9rem;max-width:22rem">La pizzeria de quartier qui met l'Italie dans votre assiette depuis 1998.</p>
+        <div class="socials" style="margin-top:1.2rem">
+          <a href="#" aria-label="Instagram">📸</a>
+          <a href="#" aria-label="Facebook">👍</a>
+          <a href="#" aria-label="TikTok">🎵</a>
+        </div>
+      </div>
+      <div><h4>Menu</h4><ul><li><a href="#menu">Pizzas</a></li><li><a href="#menu">Antipasti</a></li><li><a href="#menu">Desserts</a></li><li><a href="#menu">Boissons</a></li></ul></div>
+      <div><h4>La maison</h4><ul><li><a href="#histoire">Notre histoire</a></li><li><a href="#galerie">Galerie</a></li><li><a href="#avis">Avis clients</a></li><li><a href="#reserver">Nous trouver</a></li></ul></div>
+      <div><h4>Contact</h4><ul><li><a href="tel:+33123456789">01 23 45 67 89</a></li><li><a href="#">bonjour@bellanapoli.fr</a></li><li><a href="#reserver">Réserver</a></li></ul></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year"></span> Bella Napoli — Démo réalisée pour présentation client.</span>
+      <span>Site vitrine conçu avec ❤️</span>
+    </div>
+  </div>
+</footer>
+
+<button class="fab" id="cartFab"><span>🛒</span> Panier <span class="count" id="cartCount">0</span></button>
+<div class="toast" id="toast"><span>✅</span><span id="toastMsg">Ajouté au panier</span></div>
+
+<script>
+  // Données du menu
+  const MENU = [
+    { name: "Margherita", cat: "classique", price: 11, emoji: "🍕", desc: "San Marzano, fior di latte, basilic frais, huile d'olive.", tags: [["veg","Végé"]] },
+    { name: "Regina", cat: "classique", price: 13, emoji: "🍕", desc: "Tomate, mozzarella, jambon blanc, champignons.", tags: [] },
+    { name: "Diavola", cat: "classique", price: 14, emoji: "🌶️", desc: "Sauce tomate, mozzarella, salami piquant, piment.", tags: [["hot","Épicé"]] },
+    { name: "Truffe & Burrata", cat: "signature", price: 18, emoji: "🍄", desc: "Crème de truffe, burrata crémeuse, roquette, copeaux.", tags: [["new","Nouveau"]] },
+    { name: "Quattro Formaggi", cat: "signature", price: 16, emoji: "🧀", desc: "Mozzarella, gorgonzola, parmesan, fontina.", tags: [["veg","Végé"]] },
+    { name: "Napoli du Chef", cat: "signature", price: 17, emoji: "🐟", desc: "Anchois de Cetara, câpres, olives Taggiasche, origan.", tags: [] },
+    { name: "Ortolana", cat: "veggie", price: 14, emoji: "🥦", desc: "Légumes grillés du marché, pesto maison, mozzarella.", tags: [["veg","Végé"]] },
+    { name: "Verde", cat: "veggie", price: 15, emoji: "🥬", desc: "Épinards, ricotta, pignons, zeste de citron.", tags: [["veg","Végé"],["new","Nouveau"]] },
+    { name: "Tiramisu maison", cat: "dessert", price: 7, emoji: "🍮", desc: "Mascarpone, café espresso, cacao amer.", tags: [] },
+    { name: "Panna Cotta", cat: "dessert", price: 6, emoji: "🍨", desc: "Vanille de Madagascar, coulis de fruits rouges.", tags: [["veg","Végé"]] },
+  ];
+
+  let cart = 0;
+  const grid = document.getElementById("menuGrid");
+
+  function render(filter = "all") {
+    grid.innerHTML = "";
+    MENU.filter(d => filter === "all" || d.cat === filter).forEach((d, i) => {
+      const tags = d.tags.map(t => `<span class="tag ${t[0]}">${t[1]}</span>`).join("");
+      const el = document.createElement("article");
+      el.className = "dish reveal";
+      el.style.transitionDelay = (i * 40) + "ms";
+      el.innerHTML = `
+        <div class="emoji">${d.emoji}</div>
+        <div class="row"><h3>${d.name}</h3><span class="price">${d.price.toFixed(2)} €</span></div>
+        <p>${d.desc}</p>
+        <div class="tags">${tags}</div>
+        <button class="add" data-name="${d.name}">+ Ajouter</button>`;
+      grid.appendChild(el);
+    });
+    observeReveals();
+  }
+
+  // Filtres
+  document.getElementById("filters").addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    render(chip.dataset.filter);
+  });
+
+  // Ajout panier + toast
+  const toast = document.getElementById("toast");
+  const toastMsg = document.getElementById("toastMsg");
+  const fab = document.getElementById("cartFab");
+  const count = document.getElementById("cartCount");
+  let toastTimer;
+
+  grid.addEventListener("click", (e) => {
+    const btn = e.target.closest(".add");
+    if (!btn) return;
+    cart++;
+    count.textContent = cart;
+    fab.classList.add("show");
+    toastMsg.textContent = `« ${btn.dataset.name} » ajouté au panier`;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+  });
+
+  fab.addEventListener("click", () => {
+    toastMsg.textContent = cart ? `${cart} article(s) — commande en démo 🍕` : "Votre panier est vide";
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+  });
+
+  // Formulaire
+  document.getElementById("resaForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    toastMsg.textContent = "Réservation confirmée (démo) — à bientôt !";
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+    e.target.reset();
+  });
+
+  // Header scroll + nav mobile
+  const header = document.getElementById("header");
+  window.addEventListener("scroll", () => header.classList.toggle("scrolled", window.scrollY > 40));
+  const navLinks = document.getElementById("navLinks");
+  document.getElementById("burger").addEventListener("click", () => navLinks.classList.toggle("open"));
+  navLinks.addEventListener("click", (e) => { if (e.target.tagName === "A") navLinks.classList.remove("open"); });
+
+  // Reveal on scroll
+  let io;
+  function observeReveals() {
+    if (!io) {
+      io = new IntersectionObserver((entries) => {
+        entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+      }, { threshold: .15 });
+    }
+    document.querySelectorAll(".reveal:not(.in)").forEach(el => io.observe(el));
+  }
+
+  // Date par défaut = aujourd'hui
+  const dateInput = document.getElementById("date");
+  if (dateInput) dateInput.value = new Date().toISOString().split("T")[0];
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  render();
+  observeReveals();
+</script>
+</body>
+</html>
