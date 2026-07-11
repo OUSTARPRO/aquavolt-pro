@@ -32,6 +32,7 @@ export default function Footer() {
               {[
                 { label: T.home, href: "/" },
                 { label: T.services, href: "#services" },
+                { label: T.catalog, href: "#catalog" },
                 { label: T.quote, href: "/devis" },
                 { label: T.contact, href: "#contact" },
               ].map((link) => (

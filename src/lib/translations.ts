@@ -3,6 +3,7 @@ export const translations = {
     // Navigation
     home: "Accueil",
     services: "Services",
+    catalog: "Catalogue web",
     gallery: "Galerie",
     quote: "Devis",
     contact: "Contact",
@@ -114,6 +115,7 @@ export const translations = {
     rejected: "Refusé",
     name: "Nom",
     city: "Ville",
+    date: "Date",
     actions: "Actions",
     noQuotes: "Aucune demande de devis",
   },
@@ -121,6 +123,7 @@ export const translations = {
     // Navigation
     home: "الرئيسية",
     services: "الخدمات",
+    catalog: "كتالوج المواقع",
     gallery: "المعرض",
     quote: "عرض السعر",
     contact: "اتصل بنا",
@@ -232,6 +235,7 @@ export const translations = {
     rejected: "مرفوض",
     name: "الاسم",
     city: "المدينة",
+    date: "التاريخ",
     actions: "إجراءات",
     noQuotes: "لا توجد طلبات عروض أسعار",
   },
