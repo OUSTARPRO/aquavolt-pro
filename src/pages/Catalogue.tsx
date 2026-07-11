@@ -13,7 +13,6 @@ import {
   Building2,
   Wand2,
   ArrowRight,
-  Loader2,
   Filter,
 } from "lucide-react";
 import { Link } from "react-router";
@@ -251,10 +250,12 @@ export default function Catalogue() {
   const T = translations[language];
   const [activeCategory, setActiveCategory] = useState<Category>("all");
 
-  const { data: apiPackages, isLoading } = trpc.catalog.list.useQuery(undefined, {
+  const { data: apiPackages } = trpc.catalog.list.useQuery(undefined, {
     retry: 1,
+    staleTime: 30000,
   });
 
+  // Show static packages immediately; replace with DB data once loaded
   const packages = (apiPackages && apiPackages.length > 0 ? apiPackages : staticPackages) as typeof staticPackages;
 
   const categories: { key: Category; label: string }[] = [
@@ -363,11 +364,7 @@ export default function Catalogue() {
 
         {/* Packages Grid */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {isLoading ? (
-            <div className="flex justify-center py-20">
-              <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
-            </div>
-          ) : filtered.length === 0 ? (
+          {filtered.length === 0 ? (
             <div className="text-center py-20 text-slate-500">{T.catalogueNoPackages}</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
