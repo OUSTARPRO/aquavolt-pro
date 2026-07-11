@@ -1,17 +1,192 @@
 import { getDb } from "../api/queries/connection";
-// TODO: import tables from "./schema"
+import { websitePackages } from "./schema";
 
 async function seed() {
   const db = getDb();
   console.log("Seeding database...");
 
-  // TODO: insert seed data, e.g.
-  // await db.insert(schema.posts).values([
-  //   { title: "First post", content: "Hello world" },
-  // ]);
+  const packages = [
+    {
+      name: "Starter Vitrine",
+      description: "Idéal pour les artisans, commerçants et petites entreprises souhaitant une présence professionnelle en ligne.",
+      category: "vitrine" as const,
+      price: 1500,
+      oldPrice: null,
+      options: [
+        "1 page Landing Page",
+        "Design responsive mobile/tablette",
+        "Formulaire de contact",
+        "Hébergement 1 an inclus",
+        "Nom de domaine .ma",
+        "SSL gratuit (HTTPS)",
+        "Livraison en 7 jours",
+      ],
+      badge: null,
+      badgeColor: "emerald",
+      promoPercent: null,
+      isActive: true,
+      sortOrder: 0,
+    },
+    {
+      name: "Business Pro",
+      description: "La solution complète pour PME et entrepreneurs avec référencement et analytics intégrés.",
+      category: "vitrine" as const,
+      price: 3500,
+      oldPrice: 4500,
+      options: [
+        "Jusqu'à 10 pages",
+        "Design responsive premium",
+        "SEO on-page optimisé",
+        "Hébergement 1 an inclus",
+        "Nom de domaine + SSL",
+        "Google Analytics",
+        "Blog intégré",
+        "WhatsApp flottant",
+        "Livraison en 14 jours",
+      ],
+      badge: "Populaire",
+      badgeColor: "emerald",
+      promoPercent: 22,
+      isActive: true,
+      sortOrder: 1,
+    },
+    {
+      name: "E-Commerce Standard",
+      description: "Lancez votre boutique en ligne avec paiement sécurisé, gestion des stocks et tableau de bord.",
+      category: "ecommerce" as const,
+      price: 6500,
+      oldPrice: null,
+      options: [
+        "Jusqu'à 100 produits",
+        "Paiement en ligne (CMI / PayPal)",
+        "Gestion des stocks",
+        "Tableau de bord admin",
+        "Paniers abandonnés",
+        "SEO e-commerce",
+        "Hébergement 1 an",
+        "SSL & sécurité avancée",
+      ],
+      badge: null,
+      badgeColor: "violet",
+      promoPercent: null,
+      isActive: true,
+      sortOrder: 2,
+    },
+    {
+      name: "E-Commerce Premium",
+      description: "Solution e-commerce entreprise avec produits illimités, multi-devises et application mobile.",
+      category: "ecommerce" as const,
+      price: 12000,
+      oldPrice: 15000,
+      options: [
+        "Produits illimités",
+        "Multi-devises (MAD, EUR, USD)",
+        "Application mobile PWA",
+        "CRM clients intégré",
+        "Analytics avancés",
+        "Programme de fidélité",
+        "API intégrations tierces",
+        "Support prioritaire 24/7",
+        "Hébergement cloud 2 ans",
+      ],
+      badge: "Best Seller",
+      badgeColor: "amber",
+      promoPercent: 20,
+      isActive: true,
+      sortOrder: 3,
+    },
+    {
+      name: "Portfolio Créatif",
+      description: "Mettez en valeur vos créations avec animations fluides, galerie interactive et formulaire de contact.",
+      category: "portfolio" as const,
+      price: 2200,
+      oldPrice: null,
+      options: [
+        "Galerie projets illimitée",
+        "Animations CSS & GSAP",
+        "Formulaire de contact",
+        "Blog intégré",
+        "SEO optimisé",
+        "Hébergement 1 an",
+        "Nom de domaine",
+      ],
+      badge: "Nouveau",
+      badgeColor: "sky",
+      promoPercent: null,
+      isActive: true,
+      sortOrder: 4,
+    },
+    {
+      name: "Blog Magazine",
+      description: "Publiez du contenu, gérez des catégories et fidélisez votre audience avec newsletter et réseaux sociaux.",
+      category: "blog" as const,
+      price: 2800,
+      oldPrice: 3500,
+      options: [
+        "Articles illimités",
+        "Catégories & tags",
+        "Newsletter intégrée",
+        "Partage réseaux sociaux",
+        "Commentaires modérés",
+        "Google Analytics",
+        "SEO avancé",
+      ],
+      badge: "Promo",
+      badgeColor: "rose",
+      promoPercent: 20,
+      isActive: true,
+      sortOrder: 5,
+    },
+    {
+      name: "Corporate Entreprise",
+      description: "Site institutionnel multilingue avec espace client, intranet et intégrations ERP/CRM professionnels.",
+      category: "corporate" as const,
+      price: 15000,
+      oldPrice: null,
+      options: [
+        "Site multilingue (FR/AR/EN)",
+        "Intranet employés",
+        "Espace client sécurisé",
+        "Tableau de bord RH",
+        "Intégrations ERP/CRM",
+        "API REST documentée",
+        "Hébergement cloud dédié",
+        "Support & maintenance 1 an",
+        "Formation équipe incluse",
+      ],
+      badge: null,
+      badgeColor: "emerald",
+      promoPercent: null,
+      isActive: true,
+      sortOrder: 6,
+    },
+    {
+      name: "Sur Mesure",
+      description: "Développement 100% personnalisé selon vos besoins spécifiques : application web, API, architecture scalable.",
+      category: "custom" as const,
+      price: 0,
+      oldPrice: null,
+      options: [
+        "Analyse & cahier des charges",
+        "Architecture sur mesure",
+        "Développement full-stack",
+        "Tests & QA inclus",
+        "Déploiement & CI/CD",
+        "Documentation technique",
+        "Maintenance & évolutions",
+      ],
+      badge: null,
+      badgeColor: "emerald",
+      promoPercent: null,
+      isActive: true,
+      sortOrder: 7,
+    },
+  ];
 
+  await db.insert(websitePackages).values(packages);
+  console.log(`Inserted ${packages.length} website packages.`);
   console.log("Done.");
-  process.exit(0); // close MySQL connection pool
+  process.exit(0);
 }
 
 seed();

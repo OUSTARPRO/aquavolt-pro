@@ -6,6 +6,9 @@ import {
   text,
   timestamp,
   json,
+  int,
+  boolean,
+  float,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -61,3 +64,23 @@ export type Quote = typeof quotes.$inferSelect;
 export type InsertQuote = typeof quotes.$inferInsert;
 export type ChatLog = typeof chatLogs.$inferSelect;
 export type InsertChatLog = typeof chatLogs.$inferInsert;
+
+export const websitePackages = mysqlTable("website_packages", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  category: mysqlEnum("category", ["vitrine", "ecommerce", "portfolio", "blog", "corporate", "custom"]).notNull().default("vitrine"),
+  price: float("price").notNull(),
+  oldPrice: float("old_price"),
+  options: json("options").$type<string[]>().notNull().default([]),
+  badge: varchar("badge", { length: 100 }),
+  badgeColor: varchar("badge_color", { length: 100 }).default("emerald"),
+  promoPercent: int("promo_percent"),
+  isActive: boolean("is_active").notNull().default(true),
+  sortOrder: int("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+});
+
+export type WebsitePackage = typeof websitePackages.$inferSelect;
+export type InsertWebsitePackage = typeof websitePackages.$inferInsert;

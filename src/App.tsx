@@ -4,11 +4,13 @@ import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import Devis from './pages/Devis'
 import Admin from './pages/Admin'
+import Catalogue from './pages/Catalogue'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/catalogue" element={<Catalogue />} />
       <Route path="/devis" element={<Devis />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/login" element={<Login />} />
