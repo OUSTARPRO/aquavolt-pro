@@ -1,45 +1,86 @@
-import { Link } from "react-router";
-import { useLanguage } from "@/hooks/useLanguage";
-import { translations } from "@/lib/translations";
-import { Zap, Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
+import { Instagram, Facebook, MapPin, Phone, Clock } from "lucide-react";
+
+const MENU_LINKS = [
+  { label: "Pizzas Classiques", href: "#menu" },
+  { label: "Pizzas Spéciales", href: "#menu" },
+  { label: "Végétariennes", href: "#menu" },
+  { label: "Calzones", href: "#menu" },
+  { label: "Nos Offres", href: "#offres" },
+];
+
+const INFO_LINKS = [
+  { label: "Notre Histoire", href: "#histoire" },
+  { label: "Avis Clients", href: "#avis" },
+  { label: "Réservation", href: "#reservation" },
+  { label: "Livraison", href: "#reservation" },
+  { label: "Contact", href: "#reservation" },
+];
 
 export default function Footer() {
-  const { language, dir } = useLanguage();
-  const T = translations[language];
-
   return (
-    <footer className="bg-slate-950 border-t border-white/10 pt-16 pb-8" dir={dir}>
+    <footer className="bg-[#0d0805] border-t border-white/5 pt-16 pb-8 relative overflow-hidden">
+      {/* Background pizza emoji watermark */}
+      <div className="absolute right-10 top-10 text-[15rem] opacity-[0.02] select-none pointer-events-none font-serif">
+        🍕
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg">
-                <Zap className="w-5 h-5 text-white" />
+            <a href="#" className="flex items-center gap-2.5 mb-5 group">
+              <span className="text-3xl group-hover:animate-wiggle">🍕</span>
+              <div>
+                <div className="text-xl font-bold text-white font-playfair leading-none">
+                  La{" "}
+                  <span className="italic text-pizza-red-light">Bella</span>
+                  {" "}Napoli
+                </div>
+                <div className="text-xs text-white/30 tracking-widest uppercase">
+                  Pizzeria Artisanale
+                </div>
               </div>
-              <span className="text-xl font-bold text-white">
-                Aqua<span className="text-emerald-400">Volt</span>
-                <span className="text-teal-300 text-sm ml-0.5">Pro</span>
-              </span>
-            </Link>
-            <p className="text-slate-400 text-sm leading-relaxed">{T.footerDesc}</p>
+            </a>
+            <p className="text-white/40 text-sm leading-relaxed mb-5">
+              Depuis 1987, nous perpétuons la tradition napolitaine avec passion.
+              Four à bois, ingrédients frais, savoir-faire transmis de génération en génération.
+            </p>
+            <div className="flex gap-3">
+              <a
+                href="#"
+                className="w-9 h-9 rounded-lg bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center hover:scale-110 transition-transform"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-4 h-4 text-white" />
+              </a>
+              <a
+                href="#"
+                className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center hover:scale-110 transition-transform"
+                aria-label="Facebook"
+              >
+                <Facebook className="w-4 h-4 text-white" />
+              </a>
+              <a
+                href="https://wa.me/33123456789"
+                className="w-9 h-9 rounded-lg bg-green-600 flex items-center justify-center hover:scale-110 transition-transform"
+                aria-label="WhatsApp"
+              >
+                <span className="text-white text-sm font-bold">W</span>
+              </a>
+            </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Menu */}
           <div>
-            <h3 className="text-white font-semibold mb-4">{T.quickLinks}</h3>
-            <ul className="space-y-2">
-              {[
-                { label: T.home, href: "/" },
-                { label: T.services, href: "#services" },
-                { label: T.quote, href: "/devis" },
-                { label: T.contact, href: "#contact" },
-              ].map((link) => (
-                <li key={link.href}>
+            <h3 className="text-white font-semibold mb-4 font-playfair">Notre Menu</h3>
+            <ul className="space-y-2.5">
+              {MENU_LINKS.map((link) => (
+                <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-slate-400 hover:text-emerald-400 text-sm transition-colors"
+                    className="text-white/40 hover:text-pizza-red-light text-sm transition-colors flex items-center gap-1.5 group"
                   >
+                    <span className="w-1 h-1 rounded-full bg-pizza-red opacity-0 group-hover:opacity-100 transition-opacity" />
                     {link.label}
                   </a>
                 </li>
@@ -47,49 +88,65 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Services */}
+          {/* Infos */}
           <div>
-            <h3 className="text-white font-semibold mb-4">{T.services}</h3>
-            <ul className="space-y-2">
-              {[T.electricity, T.plumbing, T.pool, T.maintenance].map((s) => (
-                <li key={s}>
-                  <span className="text-slate-400 text-sm">{s}</span>
+            <h3 className="text-white font-semibold mb-4 font-playfair">Informations</h3>
+            <ul className="space-y-2.5">
+              {INFO_LINKS.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="text-white/40 hover:text-pizza-red-light text-sm transition-colors flex items-center gap-1.5 group"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-pizza-red opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {link.label}
+                  </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Social */}
+          {/* Contact info */}
           <div>
-            <h3 className="text-white font-semibold mb-4">{T.followUs}</h3>
-            <div className="flex gap-3">
-              {[
-                { icon: Facebook, href: "#" },
-                { icon: Instagram, href: "#" },
-                { icon: Linkedin, href: "#" },
-                { icon: Youtube, href: "#" },
-              ].map((social, i) => (
-                <a
-                  key={i}
-                  href={social.href}
-                  className="w-10 h-10 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-all"
-                >
-                  <social.icon className="w-5 h-5" />
+            <h3 className="text-white font-semibold mb-4 font-playfair">Nous Trouver</h3>
+            <div className="space-y-3">
+              <div className="flex gap-3 text-sm text-white/40">
+                <MapPin className="w-4 h-4 text-pizza-red flex-shrink-0 mt-0.5" />
+                <span>12 Rue de la Paix<br />75001 Paris, France</span>
+              </div>
+              <div className="flex gap-3 text-sm text-white/40">
+                <Phone className="w-4 h-4 text-pizza-red flex-shrink-0 mt-0.5" />
+                <a href="tel:+33123456789" className="hover:text-pizza-red-light transition-colors">
+                  +33 1 23 45 67 89
                 </a>
-              ))}
+              </div>
+              <div className="flex gap-3 text-sm text-white/40">
+                <Clock className="w-4 h-4 text-pizza-red flex-shrink-0 mt-0.5" />
+                <div>
+                  Lun–Ven : 11h30–23h<br />
+                  Sam : 11h30–23h30<br />
+                  Dim : 12h–22h
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />
+
         {/* Bottom */}
-        <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-slate-500 text-sm">
-            © {new Date().getFullYear()} AquaVolt Pro. {T.rights}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-white/20 text-sm">
+            © {new Date().getFullYear()} La Bella Napoli. Tous droits réservés.
           </p>
-          <p className="text-slate-600 text-xs">
-            {language === "fr"
-              ? "Conçu avec expertise pour le Maroc"
-              : "مصمم بخبرة للمغرب"}
+          <div className="flex items-center gap-4 text-white/20 text-xs">
+            <a href="#" className="hover:text-white/40 transition-colors">Mentions légales</a>
+            <span>·</span>
+            <a href="#" className="hover:text-white/40 transition-colors">Politique de confidentialité</a>
+          </div>
+          <p className="text-white/10 text-xs">
+            🔥 Cuit au feu de bois depuis 1987
           </p>
         </div>
       </div>

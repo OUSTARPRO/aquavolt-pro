@@ -1,131 +1,237 @@
-import { useState } from "react";
-import { useLanguage } from "@/hooks/useLanguage";
-import { translations } from "@/lib/translations";
-import { trpc } from "@/providers/trpc";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { X, ZoomIn } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Timer, Percent, ChevronRight, Flame, Gift } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const categories = ["all", "electricity", "plumbing", "pool"] as const;
+function useCountUp(target: number, duration: number = 2000) {
+  const [count, setCount] = useState(0);
+  const [started, setStarted] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
-const fallbackImages = [
-  { id: 1, title: "Éclairage LED Jardin", titleAr: "إضاءة حديقة LED", imageUrl: "/gallery-1.jpg", category: "electricity" as const },
-  { id: 2, title: "Piscine Cascade", titleAr: "مسبح الشلال", imageUrl: "/gallery-2.jpg", category: "pool" as const },
-  { id: 3, title: "Salle de Bain Luxe", titleAr: "حمام فاخر", imageUrl: "/gallery-3.jpg", category: "plumbing" as const },
-  { id: 4, title: "Tableau Électrique", titleAr: "لوحة كهربائية", imageUrl: "/gallery-4.jpg", category: "electricity" as const },
-  { id: 5, title: "Piscine Moderne", titleAr: "مسبح عصري", imageUrl: "/hero-pool.jpg", category: "pool" as const },
-  { id: 6, title: "Installation Sanitaire", titleAr: "تركيب صحي", imageUrl: "/service-plumbing.jpg", category: "plumbing" as const },
-];
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started) {
+          setStarted(true);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [started]);
 
-export default function Gallery() {
-  const { language, dir } = useLanguage();
-  const T = translations[language];
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [selectedImage, setSelectedImage] = useState<{ id: number; title: string; titleAr: string; imageUrl: string; category: string } | null>(null);
+  useEffect(() => {
+    if (!started) return;
+    let start = 0;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [started, target, duration]);
 
-  const { data: dbImages } = trpc.gallery.list.useQuery();
+  return { count, ref };
+}
 
-  const images = dbImages && dbImages.length > 0
-    ? dbImages.map((item) => ({
-        id: item.id,
-        title: item.title,
-        titleAr: item.titleAr || item.title,
-        imageUrl: item.imageUrl,
-        category: item.category as typeof categories[number],
-      }))
-    : fallbackImages;
+function StatCounter({ value, suffix, label, emoji }: { value: number; suffix?: string; label: string; emoji: string }) {
+  const { count, ref } = useCountUp(value);
+  return (
+    <div ref={ref} className="text-center group">
+      <div className="text-5xl sm:text-6xl font-bold font-playfair text-white mb-2 group-hover:text-pizza-red-light transition-colors">
+        {count}{suffix}
+      </div>
+      <div className="text-3xl mb-1">{emoji}</div>
+      <div className="text-white/50 text-sm uppercase tracking-wider">{label}</div>
+    </div>
+  );
+}
 
-  const filtered =
-    activeCategory === "all"
-      ? images
-      : images.filter((img) => img.category === activeCategory);
+function Countdown() {
+  const [time, setTime] = useState({ hours: 2, minutes: 47, seconds: 33 });
 
-  const categoryLabels: Record<string, string> = {
-    all: T.all,
-    electricity: T.electricityCategory,
-    plumbing: T.plumbingCategory,
-    pool: T.poolCategory,
-  };
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime((prev) => {
+        let { hours, minutes, seconds } = prev;
+        seconds--;
+        if (seconds < 0) { seconds = 59; minutes--; }
+        if (minutes < 0) { minutes = 59; hours--; }
+        if (hours < 0) { hours = 23; minutes = 59; seconds = 59; }
+        return { hours, minutes, seconds };
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
-    <section id="gallery" className="py-24 bg-slate-900 relative" dir={dir}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            {T.galleryTitle}
-          </h2>
-          <p className="text-slate-400 text-lg">{T.gallerySubtitle}</p>
+    <div className="flex items-center gap-3">
+      {[
+        { val: time.hours, label: "h" },
+        { val: time.minutes, label: "m" },
+        { val: time.seconds, label: "s" },
+      ].map(({ val, label }, i) => (
+        <div key={i} className="flex items-center gap-1">
+          <div className="bg-black/60 backdrop-blur-sm border border-white/20 rounded-xl px-3 py-2 text-center min-w-[52px]">
+            <div className="text-2xl font-bold text-white font-mono">{pad(val)}</div>
+            <div className="text-xs text-white/40">{label}</div>
+          </div>
+          {i < 2 && <span className="text-pizza-red font-bold text-xl">:</span>}
         </div>
+      ))}
+    </div>
+  );
+}
 
-        {/* Filter tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                activeCategory === cat
-                  ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
-                  : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700"
-              }`}
-            >
-              {categoryLabels[cat]}
-            </button>
-          ))}
+const DEALS = [
+  {
+    badge: "🔥 Happy Hour",
+    title: "Duo Pizza",
+    subtitle: "-30%",
+    description: "2 pizzas classiques pour le prix d'1,7. Valable lundi au mercredi de 11h à 14h.",
+    image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=600&q=80",
+    color: "from-pizza-red/80 to-pizza-red-dark/60",
+    hasClock: true,
+    cta: "En profiter maintenant",
+  },
+  {
+    badge: "🎁 Nouveau",
+    title: "Menu Famiglia",
+    subtitle: "Pour 4",
+    description: "2 grandes pizzas + 1 calzone + 4 boissons + 1 tiramisu. Repas complet en famille.",
+    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80",
+    color: "from-pizza-gold/70 to-amber-700/50",
+    cta: "Commander le menu",
+  },
+  {
+    badge: "🛵 Livraison",
+    title: "Livraison Offerte",
+    subtitle: "Dès 25€",
+    description: "Livraison gratuite dans un rayon de 5 km pour toute commande à partir de 25€.",
+    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80",
+    color: "from-emerald-600/70 to-teal-800/50",
+    cta: "Commander en ligne",
+  },
+];
+
+export default function SpecialsAndStats() {
+  return (
+    <>
+      {/* Stats Section */}
+      <section className="py-20 bg-pizza-brown relative overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=1920&q=80"
+            alt="background"
+            className="w-full h-full object-cover opacity-10"
+          />
+          <div className="absolute inset-0 bg-pizza-brown/80" />
         </div>
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pizza-red/40 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pizza-gold/30 to-transparent" />
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((img) => (
-            <div
-              key={img.id}
-              onClick={() => setSelectedImage(img)}
-              className="group relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer bg-slate-800"
-            >
-              <img
-                src={img.imageUrl}
-                alt={language === "ar" ? img.titleAr : img.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                <p className="text-white font-medium text-sm">
-                  {language === "ar" ? img.titleAr : img.title}
-                </p>
-              </div>
-              <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <ZoomIn className="w-4 h-4 text-white" />
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
+            <StatCounter value={35} suffix="+" label="Pizzas au menu" emoji="🍕" />
+            <StatCounter value={37} label="Ans d'expérience" emoji="👨‍🍳" />
+            <StatCounter value={850} suffix="+" label="Clients par semaine" emoji="😍" />
+            <StatCounter value={4} suffix=".9★" label="Note moyenne" emoji="⭐" />
+          </div>
+        </div>
+      </section>
+
+      {/* Deals Section */}
+      <section id="offres" className="py-24 bg-[#150d06] relative">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pizza-gold/30 to-transparent" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-14">
+            <p className="text-pizza-gold font-medium text-sm uppercase tracking-widest mb-3">
+              — Offres du Moment —
+            </p>
+            <h2 className="text-4xl sm:text-5xl font-bold text-white font-playfair mb-4">
+              Nos <span className="italic text-shimmer">Promotions</span>
+            </h2>
+            <p className="text-white/50 max-w-xl mx-auto">
+              Des offres spéciales renouvelées chaque semaine. Profitez-en avant qu'elles expirent !
+            </p>
+          </div>
+
+          {/* Countdown banner */}
+          <div className="mb-10 p-5 rounded-2xl bg-pizza-red/10 border border-pizza-red/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Timer className="w-6 h-6 text-pizza-red animate-pulse" />
+              <div>
+                <p className="text-white font-semibold">Happy Hour se termine dans :</p>
+                <p className="text-white/50 text-sm">Dépêchez-vous, l'offre expire bientôt !</p>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+            <Countdown />
+          </div>
 
-      {/* Lightbox */}
-      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent className="max-w-4xl bg-slate-950 border-slate-800 p-0 overflow-hidden">
-          <button
-            onClick={() => setSelectedImage(null)}
-            className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70"
-          >
-            <X className="w-4 h-4" />
-          </button>
-          {selectedImage && (
-            <div>
-              <img
-                src={selectedImage.imageUrl}
-                alt={language === "ar" ? selectedImage.titleAr : selectedImage.title}
-                className="w-full h-auto max-h-[70vh] object-contain"
-              />
-              <div className="p-4 bg-slate-950">
-                <p className="text-white font-medium">
-                  {language === "ar" ? selectedImage.titleAr : selectedImage.title}
-                </p>
+          {/* Deals grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {DEALS.map((deal, i) => (
+              <div key={i} className="card-hover group rounded-2xl overflow-hidden relative">
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={deal.image}
+                    alt={deal.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${deal.color} to-transparent`} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#150d06] via-[#150d06]/40 to-transparent" />
+
+                  {/* Discount badge */}
+                  <div className="absolute top-4 right-4">
+                    <div className="w-14 h-14 rounded-full bg-pizza-red flex items-center justify-center shadow-xl animate-pulse-glow">
+                      <span className="text-white font-bold text-xs text-center leading-tight px-1">
+                        {deal.subtitle}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Badge */}
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-sm text-white text-xs font-semibold border border-white/20">
+                      {deal.badge}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-6 bg-[#1a1008] border border-white/5 group-hover:border-pizza-red/20 transition-colors rounded-b-2xl">
+                  <h3 className="text-xl font-bold text-white font-playfair mb-2">
+                    {deal.title}
+                  </h3>
+                  <p className="text-white/50 text-sm mb-4 leading-relaxed">
+                    {deal.description}
+                  </p>
+                  {deal.hasClock && (
+                    <div className="flex items-center gap-2 text-pizza-red text-xs font-medium mb-4">
+                      <Timer className="w-3.5 h-3.5" />
+                      Offre limitée dans le temps
+                    </div>
+                  )}
+                  <a href="#reservation">
+                    <Button className="w-full bg-pizza-red hover:bg-pizza-red-dark text-white rounded-xl font-semibold group">
+                      {deal.cta}
+                      <ChevronRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </a>
+                </div>
               </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-    </section>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
