@@ -6,6 +6,8 @@ import {
   text,
   timestamp,
   json,
+  int,
+  boolean,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -46,6 +48,35 @@ export const quotes = mysqlTable("quotes", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const websitePackages = mysqlTable("website_packages", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  nameAr: varchar("name_ar", { length: 255 }),
+  type: mysqlEnum("type", [
+    "landing",
+    "vitrine",
+    "portfolio",
+    "blog",
+    "ecommerce",
+    "application",
+    "surmesure",
+  ])
+    .default("vitrine")
+    .notNull(),
+  description: text("description"),
+  descriptionAr: text("description_ar"),
+  imageUrl: varchar("image_url", { length: 500 }),
+  price: int("price").notNull(),
+  promoPrice: int("promo_price"),
+  options: json("options").$type<string[]>().notNull(),
+  optionsAr: json("options_ar").$type<string[]>(),
+  deliveryDays: int("delivery_days"),
+  popular: boolean("popular").default(false).notNull(),
+  active: boolean("active").default(true).notNull(),
+  sortOrder: int("sort_order").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const chatLogs = mysqlTable("chat_logs", {
   id: serial("id").primaryKey(),
   sessionId: varchar("session_id", { length: 255 }).notNull(),
@@ -59,5 +90,7 @@ export type GalleryItem = typeof galleryItems.$inferSelect;
 export type InsertGalleryItem = typeof galleryItems.$inferInsert;
 export type Quote = typeof quotes.$inferSelect;
 export type InsertQuote = typeof quotes.$inferInsert;
+export type WebsitePackage = typeof websitePackages.$inferSelect;
+export type InsertWebsitePackage = typeof websitePackages.$inferInsert;
 export type ChatLog = typeof chatLogs.$inferSelect;
 export type InsertChatLog = typeof chatLogs.$inferInsert;
