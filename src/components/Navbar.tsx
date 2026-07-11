@@ -32,6 +32,7 @@ export default function Navbar() {
 
   const navLinks = [
     { label: T.home, href: "/" },
+    { label: language === "fr" ? "Catalogue Web" : "كتالوج الويب", href: "/catalogue" },
     { label: T.services, href: isHome ? "#services" : "/#services" },
     { label: T.gallery, href: isHome ? "#gallery" : "/#gallery" },
     { label: T.quote, href: "/devis" },

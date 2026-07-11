@@ -31,6 +31,10 @@ export default function Footer() {
             <ul className="space-y-2">
               {[
                 { label: T.home, href: "/" },
+                {
+                  label: language === "fr" ? "Catalogue Web" : "كتالوج الويب",
+                  href: "/catalogue",
+                },
                 { label: T.services, href: "#services" },
                 { label: T.quote, href: "/devis" },
                 { label: T.contact, href: "#contact" },
