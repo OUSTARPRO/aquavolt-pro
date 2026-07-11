@@ -5,16 +5,16 @@ import CartDrawer from "@/components/CartDrawer";
 
 const navLinks = [
   { label: "Menu", href: "#menu" },
-  { label: "Spécialités", href: "#specialites" },
-  { label: "Galerie", href: "#galerie" },
-  { label: "Avis", href: "#avis" },
-  { label: "Contact", href: "#contact" },
+  { label: "Offerte", href: "#specialites" },
+  { label: "Galleria", href: "#galerie" },
+  { label: "Recensioni", href: "#avis" },
+  { label: "Contatti", href: "#contact" },
 ];
 
 export default function PizzaNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { count, toggleCart, isOpen } = useCart();
+  const { count, toggleCart } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -29,15 +29,15 @@ export default function PizzaNavbar() {
         <div className="flex items-center gap-6">
           <span className="flex items-center gap-1.5">
             <Clock className="w-3 h-3" />
-            Lun – Dim : 11h30 – 23h00
+            Aperto tutti i giorni: 07:00 – 23:30
           </span>
-          <span className="flex items-center gap-1.5">
+          <a href="tel:+393938998615" className="flex items-center gap-1.5 hover:text-orange-200">
             <Phone className="w-3 h-3" />
-            +33 1 23 45 67 89
-          </span>
+            +39 393 899 8615
+          </a>
         </div>
         <span className="text-orange-400 font-medium animate-pulse">
-          🔥 Livraison gratuite dès 25€ · Commandez maintenant !
+          🔥 Forno a legna · Via Giuseppe Garibaldi, Lipari · Isole Eolie
         </span>
       </div>
 
@@ -53,16 +53,16 @@ export default function PizzaNavbar() {
           {/* Logo */}
           <a href="#" className="flex items-center gap-3 group">
             <div className="relative">
-              <span className="text-4xl pizza-spin cursor-pointer select-none" title="La Bella Pizza">🍕</span>
+              <span className="text-4xl pizza-spin cursor-pointer select-none">🍕</span>
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping opacity-70" />
             </div>
             <div>
-              <p className="font-playfair text-xl font-bold leading-tight">
-                <span className="text-fire">La Bella</span>{" "}
-                <span className="text-white">Pizza</span>
+              <p className="font-playfair text-lg font-bold leading-tight">
+                <span className="text-fire">Pizzeria</span>{" "}
+                <span className="text-white">Siciliana</span>
               </p>
-              <p className="text-[10px] text-orange-400 tracking-[0.2em] uppercase font-medium">
-                Artisanale · Authentique
+              <p className="text-[10px] text-orange-400 tracking-[0.18em] uppercase font-medium">
+                Bar · Lipari · Eolie
               </p>
             </div>
           </a>
@@ -88,13 +88,13 @@ export default function PizzaNavbar() {
               href="#menu"
               className="hidden md:inline-flex items-center gap-2 bg-fire text-white text-sm font-semibold px-5 py-2.5 rounded-full glow-fire-sm hover:opacity-90 transition-all hover:scale-105 active:scale-95"
             >
-              Commander
+              Ordina Ora
             </a>
 
             <button
               onClick={toggleCart}
               className="relative p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-all hover:scale-105 active:scale-95 border border-white/10"
-              aria-label="Panier"
+              aria-label="Carrello"
             >
               <ShoppingCart className="w-5 h-5 text-white" />
               {count > 0 && (
@@ -104,11 +104,9 @@ export default function PizzaNavbar() {
               )}
             </button>
 
-            {/* Mobile menu toggle */}
             <button
               className="md:hidden p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all"
               onClick={() => setMobileOpen((o) => !o)}
-              aria-label="Menu mobile"
             >
               {mobileOpen ? <X className="w-5 h-5 text-white" /> : <Menu className="w-5 h-5 text-white" />}
             </button>
@@ -134,11 +132,12 @@ export default function PizzaNavbar() {
                 className="mt-2 inline-flex items-center justify-center bg-fire text-white font-semibold py-3 rounded-full glow-fire-sm"
                 onClick={() => setMobileOpen(false)}
               >
-                🍕 Commander maintenant
+                🍕 Ordina Adesso
               </a>
-              <div className="text-center text-xs text-orange-400 mt-2">
-                <p>📞 +33 1 23 45 67 89</p>
-                <p>🕐 Ouvert tous les jours 11h30 – 23h00</p>
+              <div className="text-center text-xs text-orange-400 mt-2 space-y-1">
+                <p>📞 +39 393 899 8615</p>
+                <p>📍 Via Giuseppe Garibaldi, Lipari</p>
+                <p>🕐 Aperto tutti i giorni 07:00 – 23:30</p>
               </div>
             </div>
           </div>

@@ -1,9 +1,9 @@
 import { Heart, Phone, MapPin, Mail, Instagram, Facebook } from "lucide-react";
 
 const FOOTER_LINKS = {
-  "Notre Carte": ["Pizzas", "Pastas", "Entrées", "Desserts", "Boissons"],
-  "La Pizzeria": ["Notre Histoire", "Notre Chef", "Le Four à Bois", "Ingrédients", "Franchise"],
-  "Services": ["Livraison", "À Emporter", "Sur Place", "Traiteur", "Événements"],
+  "La Carta": ["Pizze", "Antipasti & Fritti", "Insalate", "Dolci", "Bar & Cocktail"],
+  "La Pizzeria": ["La Nostra Storia", "Il Forno a Legna", "Gli Ingredienti", "Dove Siamo", "Lavora con Noi"],
+  "Servizi": ["Asporto", "Prenotazione Tavolo", "Aperitivo", "Eventi Privati", "Catering"],
 };
 
 export default function PizzaFooter() {
@@ -19,16 +19,28 @@ export default function PizzaFooter() {
               <span className="text-4xl">🍕</span>
               <div>
                 <p className="font-playfair text-xl font-bold">
-                  <span className="text-fire">La Bella</span>{" "}
-                  <span className="text-white">Pizza</span>
+                  <span className="text-fire">Pizzeria</span>{" "}
+                  <span className="text-white">Siciliana</span>
                 </p>
-                <p className="text-[10px] text-orange-400 tracking-[0.2em] uppercase">Artisanale · Authentique</p>
+                <p className="text-[10px] text-orange-400 tracking-[0.18em] uppercase">Bar · Lipari · Eolie</p>
               </div>
             </div>
             <p className="text-white/50 text-sm leading-relaxed">
-              Depuis 2012, nous perpétuons la tradition napolitaine avec passion.
-              Chaque pizza est une œuvre d'art culinaire.
+              Nel cuore di Lipari, sulla Via Garibaldi, il profumo del forno a legna
+              e i sapori autentici della Sicilia vi aspettano ogni giorno.
             </p>
+
+            {/* Map link */}
+            <a
+              href="https://maps.google.com/?q=Pizzeria+Siciliana+Bar+Lipari"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-xs text-orange-400 hover:text-orange-300 transition-colors"
+            >
+              <MapPin className="w-3 h-3" />
+              Vedi su Google Maps 🗺️
+            </a>
+
             <div className="flex gap-3">
               <a href="#" className="w-9 h-9 rounded-xl bg-white/5 hover:bg-pink-600/30 border border-white/10 hover:border-pink-500/50 flex items-center justify-center transition-all group">
                 <Instagram className="w-4 h-4 text-white/60 group-hover:text-pink-400 transition-colors" />
@@ -37,7 +49,7 @@ export default function PizzaFooter() {
                 <Facebook className="w-4 h-4 text-white/60 group-hover:text-blue-400 transition-colors" />
               </a>
               <a
-                href="https://wa.me/33123456789"
+                href="https://wa.me/393938998615"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-xl bg-white/5 hover:bg-green-600/30 border border-white/10 hover:border-green-500/50 flex items-center justify-center transition-all group"
@@ -56,9 +68,7 @@ export default function PizzaFooter() {
               <ul className="space-y-2.5">
                 {links.map((link) => (
                   <li key={link}>
-                    <a href="#" className="text-white/40 text-sm hover:text-orange-400 transition-colors">
-                      {link}
-                    </a>
+                    <a href="#" className="text-white/40 text-sm hover:text-orange-400 transition-colors">{link}</a>
                   </li>
                 ))}
               </ul>
@@ -68,30 +78,29 @@ export default function PizzaFooter() {
 
         {/* Contact bar */}
         <div className="flex flex-wrap gap-6 py-8 border-y border-white/5 mb-8">
-          <a href="tel:+33123456789" className="flex items-center gap-2 text-white/50 hover:text-orange-400 transition-colors text-sm">
+          <a href="tel:+393938998615" className="flex items-center gap-2 text-white/50 hover:text-orange-400 transition-colors text-sm">
             <Phone className="w-4 h-4" />
-            +33 1 23 45 67 89
+            +39 393 899 8615
           </a>
           <span className="flex items-center gap-2 text-white/50 text-sm">
             <MapPin className="w-4 h-4" />
-            12 Rue de la Paix, Paris 1er
+            Via Giuseppe Garibaldi · 98055 Lipari ME
           </span>
-          <a href="mailto:contact@labella-pizza.fr" className="flex items-center gap-2 text-white/50 hover:text-orange-400 transition-colors text-sm">
+          <a href="mailto:info@pizzeriasiciliana-lipari.it" className="flex items-center gap-2 text-white/50 hover:text-orange-400 transition-colors text-sm">
             <Mail className="w-4 h-4" />
-            contact@labella-pizza.fr
+            info@pizzeriasiciliana-lipari.it
           </a>
         </div>
 
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-white/30 text-xs">
-          <p>© {year} La Bella Pizza · Tous droits réservés</p>
+          <p>© {year} Pizzeria Siciliana Bar · Tutti i diritti riservati</p>
           <p className="flex items-center gap-1">
-            Fait avec <Heart className="w-3 h-3 text-red-500 fill-red-500 mx-0.5" /> et beaucoup de 🍅
+            Fatto con <Heart className="w-3 h-3 text-red-500 fill-red-500 mx-0.5" /> da Lipari per il mondo 🌋
           </p>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-white/60 transition-colors">Mentions légales</a>
-            <a href="#" className="hover:text-white/60 transition-colors">CGV</a>
-            <a href="#" className="hover:text-white/60 transition-colors">Confidentialité</a>
+            <a href="#" className="hover:text-white/60 transition-colors">Note Legali</a>
+            <a href="#" className="hover:text-white/60 transition-colors">Privacy</a>
           </div>
         </div>
       </div>
