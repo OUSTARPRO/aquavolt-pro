@@ -12,6 +12,9 @@ export default function WhatsAppButton() {
     "/devis": language === "fr"
       ? "Je souhaite demander un devis détaillé"
       : "أريد طلب عرض سعر مفصل",
+    "/catalogue": language === "fr"
+      ? "Je suis intéressé par la création d'un site web"
+      : "أنا مهتم بإنشاء موقع إلكتروني",
     "/": language === "fr"
       ? "Je suis intéressé par vos services"
       : "أنا مهتم بخدماتكم",

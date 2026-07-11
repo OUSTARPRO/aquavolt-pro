@@ -4,15 +4,21 @@ import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import Devis from './pages/Devis'
 import Admin from './pages/Admin'
+import Catalogue from './pages/Catalogue'
+import { Toaster } from '@/components/ui/sonner'
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/devis" element={<Devis />} />
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/devis" element={<Devis />} />
+        <Route path="/catalogue" element={<Catalogue />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Toaster position="top-center" richColors />
+    </>
   )
 }

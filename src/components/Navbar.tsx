@@ -34,6 +34,7 @@ export default function Navbar() {
     { label: T.home, href: "/" },
     { label: T.services, href: isHome ? "#services" : "/#services" },
     { label: T.gallery, href: isHome ? "#gallery" : "/#gallery" },
+    { label: T.catalog, href: "/catalogue" },
     { label: T.quote, href: "/devis" },
     { label: T.contact, href: isHome ? "#contact" : "/#contact" },
   ];
