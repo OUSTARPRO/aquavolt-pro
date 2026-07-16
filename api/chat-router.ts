@@ -30,6 +30,34 @@ FOURCHETTES INDICATIVES (à mentionner avec prudence) :
 - Piscine : projet sur mesure, visite technique obligatoire
 - Contrat maintenance : mensuel ou annuel disponible`;
 
+/**
+ * Sends a chat message to an n8n webhook and returns the assistant reply.
+ * The n8n workflow should return JSON: { "reply": "..." }
+ */
+async function callN8nChatWebhook(
+  messages: Array<{ role: string; content: string }>,
+  language: string
+): Promise<string> {
+  const webhookUrl = process.env.N8N_CHAT_WEBHOOK_URL!;
+  const response = await fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages, language, systemPrompt: SYSTEM_PROMPT }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`n8n webhook responded with status ${response.status}`);
+  }
+
+  const data = (await response.json()) as { reply?: string; output?: string; text?: string };
+  // Support multiple common n8n response shapes
+  const reply = data.reply ?? data.output ?? data.text;
+  if (typeof reply !== "string" || !reply) {
+    throw new Error("n8n webhook returned no reply field");
+  }
+  return reply;
+}
+
 export const chatRouter = createRouter({
   sendMessage: publicQuery
     .input(
@@ -44,13 +72,24 @@ export const chatRouter = createRouter({
       })
     )
     .mutation(async ({ input }) => {
+      const errorReply =
+        input.language === "ar"
+          ? "عذراً، خدمة الدردشة غير متوفرة حالياً. يرجى الاتصال بنا على الواتساب."
+          : "Désolé, le service de chat n'est pas disponible pour le moment. Veuillez nous contacter via WhatsApp.";
+
+      // Prefer n8n webhook when configured
+      if (process.env.N8N_CHAT_WEBHOOK_URL) {
+        try {
+          const reply = await callN8nChatWebhook(input.messages, input.language);
+          return { reply, backend: "n8n" };
+        } catch (error) {
+          console.error("n8n chat webhook error:", error);
+          // Fall through to OpenAI fallback
+        }
+      }
+
       if (!process.env.OPENAI_API_KEY) {
-        return {
-          reply:
-            input.language === "ar"
-              ? "عذراً، خدمة الدردشة غير متوفرة حالياً. يرجى الاتصال بنا على الواتساب."
-              : "Désolé, le service de chat n'est pas disponible pour le moment. Veuillez nous contacter via WhatsApp.",
-        };
+        return { reply: errorReply, backend: "none" };
       }
 
       const langPrompt =
@@ -70,7 +109,7 @@ export const chatRouter = createRouter({
         });
 
         const reply = response.choices[0]?.message?.content || "Erreur";
-        return { reply };
+        return { reply, backend: "openai" };
       } catch (error) {
         console.error("OpenAI error:", error);
         return {
@@ -78,6 +117,7 @@ export const chatRouter = createRouter({
             input.language === "ar"
               ? "حدث خطأ. يرجى المحاولة مرة أخرى أو الاتصال بنا مباشرة."
               : "Une erreur s'est produite. Veuillez réessayer ou nous contacter directement.",
+          backend: "error",
         };
       }
     }),

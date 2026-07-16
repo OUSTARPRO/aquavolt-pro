@@ -33,6 +33,10 @@ import {
   X,
   Check,
   RefreshCw,
+  Webhook,
+  CheckCircle2,
+  XCircle,
+  Send,
 } from "lucide-react";
 
 export default function Admin() {
@@ -42,7 +46,7 @@ export default function Admin() {
   });
   const { language, dir } = useLanguage();
   const T = translations[language];
-  const [tab, setTab] = useState<"gallery" | "quotes">("gallery");
+  const [tab, setTab] = useState<"gallery" | "quotes" | "n8n">("gallery");
 
   const isAdmin = user?.role === "admin";
 
@@ -103,9 +107,26 @@ export default function Admin() {
               <FileText className="w-4 h-4" />
               {T.quotesManagement}
             </button>
+            <button
+              onClick={() => setTab("n8n")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                tab === "n8n"
+                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  : "bg-slate-900 text-slate-400 border border-white/10 hover:text-white"
+              }`}
+            >
+              <Webhook className="w-4 h-4" />
+              n8n
+            </button>
           </div>
 
-          {tab === "gallery" ? <GalleryManager /> : <QuotesManager />}
+          {tab === "gallery" ? (
+            <GalleryManager />
+          ) : tab === "quotes" ? (
+            <QuotesManager />
+          ) : (
+            <N8nManager />
+          )}
         </div>
       </main>
     </div>
@@ -257,6 +278,222 @@ function GalleryManager() {
       ) : (
         <div className="text-center py-12 text-slate-500">{T.noImages}</div>
       )}
+    </div>
+  );
+}
+
+function N8nManager() {
+  const { language } = useLanguage();
+  const isFr = language === "fr";
+
+  const { data: status, isLoading: statusLoading, refetch } = trpc.n8n.status.useQuery();
+  const testChat = trpc.n8n.testChatWebhook.useMutation();
+  const testQuote = trpc.n8n.testQuoteWebhook.useMutation();
+
+  const webhooks = [
+    {
+      key: "chat" as const,
+      label: isFr ? "Webhook Chatbot" : "ويبهوك الدردشة",
+      description: isFr
+        ? "Remplace OpenAI par un workflow n8n pour traiter les conversations du chat."
+        : "يستبدل OpenAI بسير عمل n8n لمعالجة محادثات الدردشة.",
+      envVar: "N8N_CHAT_WEBHOOK_URL",
+      configured: status?.chatWebhookConfigured ?? false,
+      testMutation: testChat,
+      onTest: () => testChat.mutate(),
+    },
+    {
+      key: "quote" as const,
+      label: isFr ? "Webhook Devis" : "ويبهوك طلب العرض",
+      description: isFr
+        ? "Déclenche un workflow n8n à chaque nouveau devis (notifications WhatsApp, email, CRM…)."
+        : "يشغّل سير عمل n8n عند كل طلب عرض جديد (إشعارات واتساب، بريد إلكتروني، CRM…).",
+      envVar: "N8N_QUOTE_WEBHOOK_URL",
+      configured: status?.quoteWebhookConfigured ?? false,
+      testMutation: testQuote,
+      onTest: () => testQuote.mutate(),
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Header card */}
+      <div className="bg-slate-900 border border-white/10 rounded-xl p-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-9 h-9 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+            <Webhook className="w-5 h-5 text-orange-400" />
+          </div>
+          <h2 className="text-lg font-semibold text-white">
+            {isFr ? "Intégration n8n" : "تكامل n8n"}
+          </h2>
+        </div>
+        <p className="text-slate-400 text-sm">
+          {isFr
+            ? "Connectez AquaVolt Pro à n8n pour automatiser les notifications, CRM et réponses IA. Ajoutez les variables d'environnement ci-dessous à votre fichier .env puis redémarrez le serveur."
+            : "اربط AquaVolt Pro بـ n8n لأتمتة الإشعارات وCRM وردود الذكاء الاصطناعي. أضف متغيرات البيئة أدناه إلى ملف .env ثم أعد تشغيل الخادم."}
+        </p>
+      </div>
+
+      {/* Webhook cards */}
+      {statusLoading ? (
+        <div className="flex justify-center py-10">
+          <Loader2 className="w-6 h-6 text-emerald-400 animate-spin" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {webhooks.map((wh) => {
+            const result =
+              wh.key === "chat"
+                ? testChat.data
+                : testQuote.data;
+            const isPending =
+              wh.key === "chat"
+                ? testChat.isPending
+                : testQuote.isPending;
+
+            return (
+              <div
+                key={wh.key}
+                className="bg-slate-900 border border-white/10 rounded-xl p-5 space-y-4"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-white font-semibold text-sm">{wh.label}</h3>
+                    <p className="text-slate-400 text-xs mt-1 leading-relaxed">
+                      {wh.description}
+                    </p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    {wh.configured ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+                        <CheckCircle2 className="w-3 h-3" />
+                        {isFr ? "Configuré" : "مُعدّ"}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-slate-800 border border-white/10 text-slate-500 text-xs font-medium">
+                        <XCircle className="w-3 h-3" />
+                        {isFr ? "Non configuré" : "غير مُعدّ"}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Env var hint */}
+                <div className="bg-slate-950 rounded-lg p-3 border border-white/5">
+                  <p className="text-slate-500 text-xs mb-1">
+                    {isFr ? "Variable d'environnement" : "متغير البيئة"}
+                  </p>
+                  <code className="text-emerald-300 text-xs font-mono break-all">
+                    {wh.envVar}=https://your-n8n.com/webhook/...
+                  </code>
+                </div>
+
+                {/* Test button */}
+                <div className="space-y-2">
+                  <Button
+                    size="sm"
+                    onClick={wh.onTest}
+                    disabled={!wh.configured || isPending}
+                    className="w-full bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/20 hover:border-orange-500/40"
+                  >
+                    {isPending ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+                    ) : (
+                      <Send className="w-3.5 h-3.5 mr-1.5" />
+                    )}
+                    {isFr ? "Tester le webhook" : "اختبار الويبهوك"}
+                  </Button>
+
+                  {result && (
+                    <div
+                      className={`rounded-lg p-3 text-xs border ${
+                        result.success
+                          ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-300"
+                          : "bg-red-500/5 border-red-500/20 text-red-300"
+                      }`}
+                    >
+                      {result.success ? (
+                        <span>
+                          ✓ {isFr ? "Succès" : "نجاح"}
+                          {result.response && (
+                            <pre className="mt-1 text-slate-400 whitespace-pre-wrap break-all">
+                              {JSON.stringify(result.response, null, 2)}
+                            </pre>
+                          )}
+                        </span>
+                      ) : (
+                        <span>
+                          ✗ {isFr ? "Erreur" : "خطأ"}: {result.error}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* How it works */}
+      <div className="bg-slate-900 border border-white/10 rounded-xl p-6">
+        <h3 className="text-white font-semibold mb-4">
+          {isFr ? "Comment ça marche ?" : "كيف يعمل؟"}
+        </h3>
+        <div className="space-y-3 text-sm text-slate-400">
+          <div className="flex gap-3">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center justify-center font-bold">
+              1
+            </span>
+            <p>
+              {isFr
+                ? "Créez un workflow n8n avec un nœud «Webhook» (méthode POST)."
+                : "أنشئ سير عمل n8n بعقدة «Webhook» (طريقة POST)."}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center justify-center font-bold">
+              2
+            </span>
+            <p>
+              {isFr
+                ? "Copiez l'URL du webhook et ajoutez-la dans votre .env (N8N_CHAT_WEBHOOK_URL ou N8N_QUOTE_WEBHOOK_URL)."
+                : "انسخ رابط الويبهوك وأضفه في .env (N8N_CHAT_WEBHOOK_URL أو N8N_QUOTE_WEBHOOK_URL)."}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center justify-center font-bold">
+              3
+            </span>
+            <p>
+              {isFr
+                ? "Pour le chatbot : n8n reçoit {messages, language, systemPrompt} et doit retourner {\"reply\": \"...\"}."
+                : "للدردشة: يستقبل n8n {messages, language, systemPrompt} ويجب أن يُرجع {\"reply\": \"...\"}."}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center justify-center font-bold">
+              4
+            </span>
+            <p>
+              {isFr
+                ? "Pour les devis : n8n reçoit {event: \"new_quote\", timestamp, data: {...}} pour envoyer des notifications."
+                : "للعروض: يستقبل n8n {event: \"new_quote\", timestamp, data: {...}} لإرسال الإشعارات."}
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void refetch()}
+            className="border-white/10 text-slate-400 hover:text-white text-xs"
+          >
+            <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+            {isFr ? "Actualiser le statut" : "تحديث الحالة"}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
