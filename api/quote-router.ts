@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createRouter, publicQuery, adminQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import { quotes } from "@db/schema";
+import { sendQuoteWebhook } from "./lib/n8n";
 
 export const quoteRouter = createRouter({
   create: publicQuery
@@ -18,7 +19,7 @@ export const quoteRouter = createRouter({
     )
     .mutation(async ({ input }) => {
       const db = getDb();
-      await db.insert(quotes).values({
+      const result = await db.insert(quotes).values({
         serviceType: input.serviceType,
         city: input.city,
         details: input.details || null,
@@ -26,6 +27,23 @@ export const quoteRouter = createRouter({
         email: input.email || null,
         phone: input.phone,
       });
+
+      void sendQuoteWebhook({
+        event: "quote.created",
+        timestamp: new Date().toISOString(),
+        data: {
+          id: Number(result[0].insertId),
+          serviceType: input.serviceType,
+          city: input.city,
+          details: input.details || null,
+          name: input.name,
+          email: input.email || null,
+          phone: input.phone,
+          status: "new",
+          createdAt: new Date().toISOString(),
+        },
+      });
+
       return { success: true };
     }),
 
