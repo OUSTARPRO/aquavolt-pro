@@ -1,4 +1,4 @@
-import { eq, desc, asc } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 import { z } from "zod";
 import { createRouter, publicQuery, adminQuery } from "./middleware";
 import { getDb } from "./queries/connection";

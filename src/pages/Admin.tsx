@@ -39,6 +39,9 @@ import {
   Download,
   ToggleLeft,
   ToggleRight,
+  ShoppingBag,
+  Star,
+  Package,
 } from "lucide-react";
 
 export default function Admin() {
@@ -48,7 +51,7 @@ export default function Admin() {
   });
   const { language, dir } = useLanguage();
   const T = translations[language];
-  const [tab, setTab] = useState<"gallery" | "quotes" | "catalogue">("gallery");
+  const [tab, setTab] = useState<"gallery" | "quotes" | "catalogue" | "products">("gallery");
 
   const isAdmin = user?.role === "admin";
 
@@ -120,9 +123,20 @@ export default function Admin() {
               <LayoutGrid className="w-4 h-4" />
               {T.catalogueManagement}
             </button>
+            <button
+              onClick={() => setTab("products")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                tab === "products"
+                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  : "bg-slate-900 text-slate-400 border border-white/10 hover:text-white"
+              }`}
+            >
+              <ShoppingBag className="w-4 h-4" />
+              {T.shopProductManagement}
+            </button>
           </div>
 
-          {tab === "gallery" ? <GalleryManager /> : tab === "quotes" ? <QuotesManager /> : <CatalogueManager />}
+          {tab === "gallery" ? <GalleryManager /> : tab === "quotes" ? <QuotesManager /> : tab === "catalogue" ? <CatalogueManager /> : <ProductsManager />}
         </div>
       </main>
     </div>
@@ -751,6 +765,274 @@ function CatalogueManager() {
         </div>
       ) : (
         <div className="text-center py-12 text-slate-500">{T.catalogueNoPackages}</div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// PRODUCTS MANAGER
+// ─────────────────────────────────────────────────────────────
+const emptyProduct = {
+  name: "", nameAr: "", description: "", descriptionAr: "",
+  price: 0, oldPrice: null as number | null, promoPercent: null as number | null,
+  category: "", imageUrl: "", images: "", tags: "",
+  stock: 0, sku: "", isActive: true, isFeatured: false, sortOrder: 0,
+};
+
+function ProductsManager() {
+  const { language, dir } = useLanguage();
+  const T = translations[language];
+  const utils = trpc.useUtils();
+  const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
+  const [form, setForm] = useState({ ...emptyProduct });
+
+  const { data: prods, isLoading } = trpc.product.listAll.useQuery();
+
+  const createMutation = trpc.product.create.useMutation({
+    onSuccess: () => { utils.product.listAll.invalidate(); utils.product.list.invalidate(); resetForm(); },
+  });
+  const updateMutation = trpc.product.update.useMutation({
+    onSuccess: () => { utils.product.listAll.invalidate(); utils.product.list.invalidate(); resetForm(); },
+  });
+  const deleteMutation = trpc.product.delete.useMutation({
+    onSuccess: () => { utils.product.listAll.invalidate(); utils.product.list.invalidate(); },
+  });
+  const toggleActiveMutation = trpc.product.toggleActive.useMutation({
+    onSuccess: () => { utils.product.listAll.invalidate(); utils.product.list.invalidate(); },
+  });
+  const toggleFeaturedMutation = trpc.product.toggleFeatured.useMutation({
+    onSuccess: () => { utils.product.listAll.invalidate(); utils.product.list.invalidate(); },
+  });
+
+  function resetForm() { setShowForm(false); setEditId(null); setForm({ ...emptyProduct }); }
+
+  function startEdit(p: NonNullable<typeof prods>[number]) {
+    setForm({
+      name: p.name, nameAr: p.nameAr ?? "",
+      description: p.description ?? "", descriptionAr: p.descriptionAr ?? "",
+      price: p.price, oldPrice: p.oldPrice ?? null, promoPercent: p.promoPercent ?? null,
+      category: p.category, imageUrl: p.imageUrl ?? "",
+      images: (p.images as string[]).join("\n"),
+      tags: (p.tags as string[]).join("\n"),
+      stock: p.stock, sku: p.sku ?? "",
+      isActive: p.isActive, isFeatured: p.isFeatured, sortOrder: p.sortOrder,
+    });
+    setEditId(p.id);
+    setShowForm(true);
+  }
+
+  function handleSubmit() {
+    const payload = {
+      name: form.name, nameAr: form.nameAr || null,
+      description: form.description || null, descriptionAr: form.descriptionAr || null,
+      price: form.price, oldPrice: form.oldPrice, promoPercent: form.promoPercent,
+      category: form.category || "general",
+      imageUrl: form.imageUrl || null,
+      images: form.images.split("\n").map((s: string) => s.trim()).filter(Boolean),
+      tags: form.tags.split("\n").map((s: string) => s.trim()).filter(Boolean),
+      stock: form.stock, sku: form.sku || null,
+      isActive: form.isActive, isFeatured: form.isFeatured, sortOrder: form.sortOrder,
+    };
+    if (editId !== null) updateMutation.mutate({ id: editId, ...payload });
+    else createMutation.mutate(payload);
+  }
+
+  function exportExcel() {
+    if (!prods) return;
+    const rows = prods.map(p => ({
+      ID: p.id, Nom: p.name, "Nom AR": p.nameAr ?? "",
+      Catégorie: p.category, Description: p.description ?? "",
+      "Prix (€)": p.price, "Ancien Prix (€)": p.oldPrice ?? "",
+      "Remise %": p.promoPercent ?? "", Stock: p.stock, SKU: p.sku ?? "",
+      Tags: (p.tags as string[]).join(", "),
+      "Image URL": p.imageUrl ?? "",
+      "Mis en avant": p.isFeatured ? "Oui" : "Non",
+      Actif: p.isActive ? "Oui" : "Non",
+      "Créé le": new Date(p.createdAt).toLocaleDateString("fr-FR"),
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [
+      {wch:6},{wch:28},{wch:28},{wch:14},{wch:50},{wch:10},
+      {wch:14},{wch:10},{wch:8},{wch:16},{wch:30},{wch:40},{wch:12},{wch:8},{wch:12}
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Produits");
+    XLSX.writeFile(wb, `produits-boutique-${new Date().toISOString().split("T")[0]}.xlsx`);
+  }
+
+  const isSaving = createMutation.isPending || updateMutation.isPending;
+
+  return (
+    <div dir={dir}>
+      <div className="flex justify-between items-center mb-6">
+        <Button
+          onClick={() => { resetForm(); setShowForm(!showForm); }}
+          className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white gap-2"
+        >
+          {showForm && !editId ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          {showForm && !editId ? T.cancel : T.shopAddProduct}
+        </Button>
+        <Button variant="outline" onClick={exportExcel} className="border-white/10 text-slate-400 hover:text-white gap-2">
+          <Download className="w-4 h-4" /> {T.shopExportExcel}
+        </Button>
+      </div>
+
+      {showForm && (
+        <div className="bg-slate-900 border border-white/10 rounded-xl p-6 mb-8">
+          <h3 className="text-lg font-semibold text-white mb-5">
+            {editId ? T.shopEditProduct : T.shopAddProduct}
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductName}</label>
+              <Input value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="bg-slate-800 border-white/10 text-white" />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductNameAr}</label>
+              <Input value={form.nameAr} onChange={e => setForm(f => ({...f, nameAr: e.target.value}))} className="bg-slate-800 border-white/10 text-white" dir="rtl" />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductDesc}</label>
+              <Textarea value={form.description} onChange={e => setForm(f => ({...f, description: e.target.value}))} className="bg-slate-800 border-white/10 text-white" rows={2} />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductCategory}</label>
+              <Input value={form.category} onChange={e => setForm(f => ({...f, category: e.target.value}))} placeholder="Électricité, Plomberie, Piscines..." className="bg-slate-800 border-white/10 text-white" />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductSku}</label>
+              <Input value={form.sku} onChange={e => setForm(f => ({...f, sku: e.target.value}))} className="bg-slate-800 border-white/10 text-white" />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductPrice}</label>
+              <Input type="number" value={form.price} onChange={e => setForm(f => ({...f, price: Number(e.target.value)}))} className="bg-slate-800 border-white/10 text-white" />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductOldPrice}</label>
+              <Input type="number" value={form.oldPrice ?? ""} onChange={e => setForm(f => ({...f, oldPrice: e.target.value ? Number(e.target.value) : null}))} className="bg-slate-800 border-white/10 text-white" />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductPromo}</label>
+              <Input type="number" min={0} max={100} value={form.promoPercent ?? ""} onChange={e => setForm(f => ({...f, promoPercent: e.target.value ? Number(e.target.value) : null}))} className="bg-slate-800 border-white/10 text-white" />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductStock}</label>
+              <Input type="number" min={0} value={form.stock} onChange={e => setForm(f => ({...f, stock: Number(e.target.value)}))} className="bg-slate-800 border-white/10 text-white" />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductImage}</label>
+              <Input value={form.imageUrl} onChange={e => setForm(f => ({...f, imageUrl: e.target.value}))} placeholder="https://..." className="bg-slate-800 border-white/10 text-white" />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductTags}</label>
+              <Textarea value={form.tags} onChange={e => setForm(f => ({...f, tags: e.target.value}))} className="bg-slate-800 border-white/10 text-white font-mono text-sm" rows={3} placeholder={"câble\nélectricité\nsécurité"} />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopProductImages}</label>
+              <Textarea value={form.images} onChange={e => setForm(f => ({...f, images: e.target.value}))} className="bg-slate-800 border-white/10 text-white font-mono text-sm" rows={3} placeholder={"https://image1.jpg\nhttps://image2.jpg"} />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.shopSortOrder}</label>
+              <Input type="number" value={form.sortOrder} onChange={e => setForm(f => ({...f, sortOrder: Number(e.target.value)}))} className="bg-slate-800 border-white/10 text-white" />
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-slate-400">{T.shopProductActive}</label>
+                <button onClick={() => setForm(f => ({...f, isActive: !f.isActive}))} className={`transition-colors ${form.isActive ? "text-emerald-400" : "text-slate-600"}`}>
+                  {form.isActive ? <ToggleRight className="w-7 h-7" /> : <ToggleLeft className="w-7 h-7" />}
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-slate-400">{T.shopProductFeatured}</label>
+                <button onClick={() => setForm(f => ({...f, isFeatured: !f.isFeatured}))} className={`transition-colors ${form.isFeatured ? "text-amber-400" : "text-slate-600"}`}>
+                  <Star className={`w-5 h-5 ${form.isFeatured ? "fill-amber-400" : ""}`} />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="mt-5 flex justify-end gap-2">
+            <Button variant="outline" onClick={resetForm} className="border-white/10 text-slate-400"><X className="w-4 h-4 mr-1" />{T.cancel}</Button>
+            <Button onClick={handleSubmit} disabled={!form.name || form.price <= 0 || isSaving} className="bg-emerald-500 hover:bg-emerald-400 text-white">
+              {isSaving && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+              <Check className="w-4 h-4 mr-1" />{T.save}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {isLoading ? (
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 text-emerald-400 animate-spin" /></div>
+      ) : prods && prods.length > 0 ? (
+        <div className="bg-slate-900 border border-white/10 rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-white/10 hover:bg-transparent">
+                  <TableHead className="text-slate-400">Image</TableHead>
+                  <TableHead className="text-slate-400">Produit</TableHead>
+                  <TableHead className="text-slate-400">Catégorie</TableHead>
+                  <TableHead className="text-slate-400">Prix</TableHead>
+                  <TableHead className="text-slate-400">Stock</TableHead>
+                  <TableHead className="text-slate-400">Vedette</TableHead>
+                  <TableHead className="text-slate-400">Statut</TableHead>
+                  <TableHead className="text-slate-400 text-right">{T.actions}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {prods.map(p => (
+                  <TableRow key={p.id} className="border-white/10 hover:bg-white/5">
+                    <TableCell>
+                      {p.imageUrl ? (
+                        <img src={p.imageUrl} alt={p.name} className="w-10 h-10 rounded-lg object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center">
+                          <Package className="w-4 h-4 text-slate-600" />
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-white font-medium text-sm">{p.name}</div>
+                      {p.sku && <div className="text-slate-600 text-xs">{p.sku}</div>}
+                    </TableCell>
+                    <TableCell className="text-slate-300 text-sm">{p.category}</TableCell>
+                    <TableCell>
+                      <span className="text-white font-semibold">{p.price} €</span>
+                      {p.oldPrice && <span className="ml-1 text-slate-600 line-through text-xs">{p.oldPrice} €</span>}
+                      {p.promoPercent && <span className="ml-1 text-rose-400 text-xs font-bold">-{p.promoPercent}%</span>}
+                    </TableCell>
+                    <TableCell>
+                      <span className={`text-sm font-semibold ${p.stock > 0 ? "text-emerald-400" : "text-red-400"}`}>{p.stock}</span>
+                    </TableCell>
+                    <TableCell>
+                      <button onClick={() => toggleFeaturedMutation.mutate({id: p.id, isFeatured: !p.isFeatured})} className={`transition-colors ${p.isFeatured ? "text-amber-400" : "text-slate-600"}`}>
+                        <Star className={`w-5 h-5 ${p.isFeatured ? "fill-amber-400" : ""}`} />
+                      </button>
+                    </TableCell>
+                    <TableCell>
+                      <button onClick={() => toggleActiveMutation.mutate({id: p.id, isActive: !p.isActive})} className={`transition-colors ${p.isActive ? "text-emerald-400" : "text-slate-600"}`}>
+                        {p.isActive ? <ToggleRight className="w-6 h-6" /> : <ToggleLeft className="w-6 h-6" />}
+                      </button>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => startEdit(p)} className="w-7 h-7 rounded-lg hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-400 flex items-center justify-center transition-colors">
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button onClick={() => deleteMutation.mutate({id: p.id})} className="w-7 h-7 rounded-lg hover:bg-red-500/10 text-slate-400 hover:text-red-400 flex items-center justify-center transition-colors">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      ) : (
+        <div className="text-center py-12 text-slate-500">{T.shopNoProducts}</div>
       )}
     </div>
   );

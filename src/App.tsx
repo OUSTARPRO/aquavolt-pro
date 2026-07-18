@@ -5,12 +5,14 @@ import NotFound from './pages/NotFound'
 import Devis from './pages/Devis'
 import Admin from './pages/Admin'
 import Catalogue from './pages/Catalogue'
+import Boutique from './pages/Boutique'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/catalogue" element={<Catalogue />} />
+      <Route path="/boutique" element={<Boutique />} />
       <Route path="/devis" element={<Devis />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/login" element={<Login />} />

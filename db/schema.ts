@@ -84,3 +84,28 @@ export const websitePackages = mysqlTable("website_packages", {
 
 export type WebsitePackage = typeof websitePackages.$inferSelect;
 export type InsertWebsitePackage = typeof websitePackages.$inferInsert;
+
+export const products = mysqlTable("products", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  nameAr: varchar("name_ar", { length: 255 }),
+  description: text("description"),
+  descriptionAr: text("description_ar"),
+  price: float("price").notNull(),
+  oldPrice: float("old_price"),
+  promoPercent: int("promo_percent"),
+  category: varchar("category", { length: 100 }).notNull().default("general"),
+  imageUrl: varchar("image_url", { length: 500 }),
+  images: json("images").$type<string[]>().notNull().default([]),
+  tags: json("tags").$type<string[]>().notNull().default([]),
+  stock: int("stock").notNull().default(0),
+  sku: varchar("sku", { length: 100 }),
+  isActive: boolean("is_active").notNull().default(true),
+  isFeatured: boolean("is_featured").notNull().default(false),
+  sortOrder: int("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+});
+
+export type Product = typeof products.$inferSelect;
+export type InsertProduct = typeof products.$inferInsert;
