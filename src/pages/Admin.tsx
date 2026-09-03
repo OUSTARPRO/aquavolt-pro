@@ -273,6 +273,29 @@ function QuotesManager() {
     onSuccess: () => utils.quote.list.invalidate(),
   });
 
+  const [showOrderForm, setShowOrderForm] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+  const [orderForm, setOrderForm] = useState({
+    serviceType: "other" as "electricity" | "plumbing" | "pool" | "maintenance" | "other",
+    city: "",
+    details: "",
+    name: "",
+    email: "",
+    phone: "",
+  });
+
+  const createOrder = trpc.quote.create.useMutation({
+    onSuccess: () => {
+      utils.quote.list.invalidate();
+      setOrderSuccess(true);
+      setOrderForm({ serviceType: "other", city: "", details: "", name: "", email: "", phone: "" });
+      setTimeout(() => {
+        setOrderSuccess(false);
+        setShowOrderForm(false);
+      }, 2000);
+    },
+  });
+
   const statusColors: Record<string, string> = {
     new: "bg-blue-500/10 text-blue-400 border-blue-500/20",
     contacted: "bg-amber-500/10 text-amber-400 border-amber-500/20",
@@ -281,9 +304,24 @@ function QuotesManager() {
     rejected: "bg-red-500/10 text-red-400 border-red-500/20",
   };
 
+  const serviceTypes = [
+    { value: "electricity", label: T.electricityCategory },
+    { value: "plumbing", label: T.plumbingCategory },
+    { value: "pool", label: T.poolCategory },
+    { value: "maintenance", label: T.maintenanceCategory },
+    { value: "other", label: T.otherCategory },
+  ] as const;
+
   return (
     <div dir={dir}>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end gap-2 mb-4">
+        <Button
+          onClick={() => { setShowOrderForm(!showOrderForm); setOrderSuccess(false); }}
+          className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white"
+        >
+          {showOrderForm ? <X className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+          {showOrderForm ? T.cancel : T.createOrder}
+        </Button>
         <Button
           variant="outline"
           onClick={() => utils.quote.list.invalidate()}
@@ -293,6 +331,97 @@ function QuotesManager() {
           {language === "fr" ? "Actualiser" : "تحديث"}
         </Button>
       </div>
+
+      {showOrderForm && (
+        <div className="bg-slate-900 border border-white/10 rounded-xl p-6 mb-8">
+          <h3 className="text-lg font-semibold text-white mb-4">{T.createOrderTitle}</h3>
+
+          {orderSuccess && (
+            <div className="flex items-center gap-2 text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-4 py-3 mb-4 text-sm">
+              <Check className="w-4 h-4 flex-shrink-0" />
+              {T.createOrderSuccess}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.name}</label>
+              <Input
+                value={orderForm.name}
+                onChange={(e) => setOrderForm((f) => ({ ...f, name: e.target.value }))}
+                className="bg-slate-800 border-white/10 text-white"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.phone}</label>
+              <Input
+                value={orderForm.phone}
+                onChange={(e) => setOrderForm((f) => ({ ...f, phone: e.target.value }))}
+                className="bg-slate-800 border-white/10 text-white"
+                dir="ltr"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.email}</label>
+              <Input
+                value={orderForm.email}
+                onChange={(e) => setOrderForm((f) => ({ ...f, email: e.target.value }))}
+                type="email"
+                className="bg-slate-800 border-white/10 text-white"
+                dir="ltr"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.city}</label>
+              <Input
+                value={orderForm.city}
+                onChange={(e) => setOrderForm((f) => ({ ...f, city: e.target.value }))}
+                className="bg-slate-800 border-white/10 text-white"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.adminSelectService}</label>
+              <Select
+                value={orderForm.serviceType}
+                onValueChange={(v) => setOrderForm((f) => ({ ...f, serviceType: v as typeof f.serviceType }))}
+              >
+                <SelectTrigger className="bg-slate-800 border-white/10 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-white/10">
+                  {serviceTypes.map((s) => (
+                    <SelectItem key={s.value} value={s.value} className="text-white hover:bg-emerald-500/10">
+                      {s.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="sm:col-span-2">
+              <label className="text-sm text-slate-400 mb-1 block">{T.projectDetails}</label>
+              <Textarea
+                value={orderForm.details}
+                onChange={(e) => setOrderForm((f) => ({ ...f, details: e.target.value }))}
+                className="bg-slate-800 border-white/10 text-white"
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <div className="mt-4 flex justify-end">
+            <Button
+              onClick={() => createOrder.mutate(orderForm)}
+              disabled={!orderForm.name || !orderForm.phone || !orderForm.city || createOrder.isPending}
+              className="bg-emerald-500 hover:bg-emerald-400 text-white"
+            >
+              {createOrder.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+              <Check className="w-4 h-4 mr-2" />
+              {T.save}
+            </Button>
+          </div>
+        </div>
+      )}
+
 
       {isLoading ? (
         <div className="flex justify-center py-12">

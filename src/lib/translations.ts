@@ -116,6 +116,15 @@ export const translations = {
     city: "Ville",
     actions: "Actions",
     noQuotes: "Aucune demande de devis",
+
+    // Admin – Create order for client
+    createOrder: "Passer une commande client",
+    createOrderTitle: "Nouvelle commande pour un client",
+    createOrderSuccess: "Commande créée avec succès !",
+    adminSelectService: "Type de service",
+    otherCategory: "Autre",
+    maintenanceCategory: "Maintenance",
+    date: "Date",
   },
   ar: {
     // Navigation
@@ -234,6 +243,15 @@ export const translations = {
     city: "المدينة",
     actions: "إجراءات",
     noQuotes: "لا توجد طلبات عروض أسعار",
+
+    // Admin – Create order for client
+    createOrder: "إنشاء طلب للعميل",
+    createOrderTitle: "طلب جديد لعميل",
+    createOrderSuccess: "تم إنشاء الطلب بنجاح!",
+    adminSelectService: "نوع الخدمة",
+    otherCategory: "آخر",
+    maintenanceCategory: "الصيانة",
+    date: "التاريخ",
   },
 } as const;
 
