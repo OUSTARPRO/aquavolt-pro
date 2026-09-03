@@ -35,6 +35,7 @@ export default function Navbar() {
     { label: T.services, href: isHome ? "#services" : "/#services" },
     { label: T.gallery, href: isHome ? "#gallery" : "/#gallery" },
     { label: T.quote, href: "/devis" },
+    { label: T.order, href: "/commande" },
     { label: T.contact, href: isHome ? "#contact" : "/#contact" },
   ];
 
@@ -107,6 +108,15 @@ export default function Navbar() {
               >
                 <MessageSquare className="w-4 h-4 mr-1.5" />
                 {T.quote}
+              </Button>
+            </Link>
+            <Link to="/commande">
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10"
+              >
+                {T.order}
               </Button>
             </Link>
 

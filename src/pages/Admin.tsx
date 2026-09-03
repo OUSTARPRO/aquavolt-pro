@@ -33,6 +33,7 @@ import {
   X,
   Check,
   RefreshCw,
+  Package,
 } from "lucide-react";
 
 export default function Admin() {
@@ -42,7 +43,7 @@ export default function Admin() {
   });
   const { language, dir } = useLanguage();
   const T = translations[language];
-  const [tab, setTab] = useState<"gallery" | "quotes">("gallery");
+  const [tab, setTab] = useState<"gallery" | "quotes" | "orders">("gallery");
 
   const isAdmin = user?.role === "admin";
 
@@ -103,9 +104,26 @@ export default function Admin() {
               <FileText className="w-4 h-4" />
               {T.quotesManagement}
             </button>
+            <button
+              onClick={() => setTab("orders")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                tab === "orders"
+                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  : "bg-slate-900 text-slate-400 border border-white/10 hover:text-white"
+              }`}
+            >
+              <Package className="w-4 h-4" />
+              {T.ordersManagement}
+            </button>
           </div>
 
-          {tab === "gallery" ? <GalleryManager /> : <QuotesManager />}
+          {tab === "gallery" ? (
+            <GalleryManager />
+          ) : tab === "quotes" ? (
+            <QuotesManager />
+          ) : (
+            <OrdersManager />
+          )}
         </div>
       </main>
     </div>
@@ -362,6 +380,121 @@ function QuotesManager() {
         </div>
       ) : (
         <div className="text-center py-12 text-slate-500">{T.noQuotes}</div>
+      )}
+    </div>
+  );
+}
+
+type OrderLine = {
+  productId: string;
+  nameFr: string;
+  nameAr: string;
+  quantity: number;
+  unitPriceMad: number;
+  lineTotalMad: number;
+};
+
+function OrdersManager() {
+  const { language, dir } = useLanguage();
+  const T = translations[language];
+  const utils = trpc.useUtils();
+  const { data: orders, isLoading } = trpc.order.list.useQuery();
+  const updateStatus = trpc.order.updateStatus.useMutation({
+    onSuccess: () => utils.order.list.invalidate(),
+  });
+  const deleteOrder = trpc.order.delete.useMutation({
+    onSuccess: () => utils.order.list.invalidate(),
+  });
+
+  const statusColors: Record<string, string> = {
+    new: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    confirmed: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    preparing: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+    delivered: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    cancelled: "bg-red-500/10 text-red-400 border-red-500/20",
+  };
+
+  return (
+    <div dir={dir}>
+      <div className="flex justify-end mb-4">
+        <Button
+          variant="outline"
+          onClick={() => utils.order.list.invalidate()}
+          className="border-white/10 text-slate-400 hover:text-white"
+        >
+          <RefreshCw className="w-4 h-4 mr-2" />
+          {language === "fr" ? "Actualiser" : "تحديث"}
+        </Button>
+      </div>
+
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+          <Loader2 className="w-6 h-6 text-emerald-400 animate-spin" />
+        </div>
+      ) : orders && orders.length > 0 ? (
+        <div className="space-y-4">
+          {orders.map((order) => {
+            const lines = (order.items as OrderLine[]) ?? [];
+            return (
+              <div key={order.id} className="bg-slate-900 border border-white/10 rounded-xl p-5">
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 mb-4">
+                  <div>
+                    <p className="text-white font-semibold">{order.clientName}</p>
+                    <p className="text-slate-400 text-sm">
+                      {order.city} · {order.clientPhone}
+                      {order.orderedBy ? ` · ${order.orderedBy}` : ""}
+                    </p>
+                    {order.address && <p className="text-slate-500 text-xs mt-1">{order.address}</p>}
+                    {order.notes && <p className="text-slate-500 text-xs mt-1">{order.notes}</p>}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-emerald-400 font-bold tabular-nums">
+                      {order.totalMad.toLocaleString(language === "fr" ? "fr-MA" : "ar-MA")} MAD
+                    </span>
+                    <Select
+                      value={order.status}
+                      onValueChange={(v) =>
+                        updateStatus.mutate({ id: order.id, status: v as typeof order.status })
+                      }
+                    >
+                      <SelectTrigger
+                        className={`h-7 text-xs border ${statusColors[order.status]} bg-transparent w-[160px]`}
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-800 border-white/10">
+                        {["new", "confirmed", "preparing", "delivered", "cancelled"].map((s) => (
+                          <SelectItem key={s} value={s} className="text-white text-xs">
+                            {T[s as keyof typeof T] || s}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <button
+                      onClick={() => deleteOrder.mutate({ id: order.id })}
+                      className="w-7 h-7 rounded-lg hover:bg-red-500/10 text-slate-400 hover:text-red-400 flex items-center justify-center"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+                <ul className="text-sm text-slate-300 space-y-1">
+                  {lines.map((line) => (
+                    <li key={line.productId}>
+                      {(language === "fr" ? line.nameFr : line.nameAr) || line.productId} × {line.quantity}{" "}
+                      — {line.lineTotalMad} MAD
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-slate-600 text-xs mt-3">
+                  {new Date(order.createdAt).toLocaleString(language === "fr" ? "fr-FR" : "ar-MA")}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-center py-12 text-slate-500">{T.noOrders}</div>
       )}
     </div>
   );

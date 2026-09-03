@@ -93,6 +93,16 @@ export default function Services() {
             </div>
           ))}
         </div>
+
+        <div className="mt-10 text-center">
+          <Link
+            to="/commande"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 hover:bg-emerald-500/20 transition-colors"
+          >
+            {T.orderTitle}
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );

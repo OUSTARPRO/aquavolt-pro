@@ -33,6 +33,7 @@ export default function Footer() {
                 { label: T.home, href: "/" },
                 { label: T.services, href: "#services" },
                 { label: T.quote, href: "/devis" },
+                { label: T.order, href: "/commande" },
                 { label: T.contact, href: "#contact" },
               ].map((link) => (
                 <li key={link.href}>
