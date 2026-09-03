@@ -4,12 +4,14 @@ import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import Devis from './pages/Devis'
 import Admin from './pages/Admin'
+import Complements from './pages/Complements'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/devis" element={<Devis />} />
+      <Route path="/complements" element={<Complements />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/login" element={<Login />} />
       <Route path="*" element={<NotFound />} />

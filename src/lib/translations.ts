@@ -91,6 +91,31 @@ export const translations = {
     // WhatsApp
     whatsappMessage: "Bonjour AquaVolt Pro, je suis intéressé par vos services. Pouvez-vous me contacter ?",
 
+    // Compléments
+    complements: "Compléments",
+    complementsTitle: "Compléments & Accessoires",
+    complementsSubtitle:
+      "Commandez les produits d'entretien et accessoires pour vos clients, livrés partout au Maroc",
+    indicativePriceNote:
+      "Prix indicatifs — la disponibilité et le prix final sont confirmés par WhatsApp.",
+    addProduct: "Ajouter",
+    currency: "DH",
+    articles: "article(s)",
+    estimatedTotal: "Total estimé",
+    orderNow: "Commander",
+    clearCart: "Vider le panier",
+    orderTitle: "Finaliser la commande",
+    orderSubtitle: "Renseignez les coordonnées du client pour la livraison",
+    clientName: "Nom du client",
+    clientPhone: "Téléphone du client",
+    deliveryCity: "Ville de livraison",
+    orderNote: "Note (optionnel)",
+    sendOrder: "Envoyer via WhatsApp",
+    orderSuccessTitle: "Commande envoyée !",
+    orderSuccessDesc:
+      "Votre commande a été transmise via WhatsApp. Nous confirmerons la disponibilité et la livraison rapidement.",
+    newOrder: "Nouvelle commande",
+
     // Admin
     adminTitle: "Tableau de bord Admin",
     galleryManagement: "Gestion de la Galerie",
@@ -209,6 +234,31 @@ export const translations = {
 
     // WhatsApp
     whatsappMessage: "مرحباً أكوا فولت برو، أنا مهتم بخدماتكم. هل يمكنكم الاتصال بي؟",
+
+    // Compléments
+    complements: "المستلزمات",
+    complementsTitle: "المستلزمات والإكسسوارات",
+    complementsSubtitle:
+      "اطلب منتجات الصيانة والإكسسوارات لعملائك، مع التوصيل في جميع أنحاء المغرب",
+    indicativePriceNote:
+      "أسعار استرشادية — يتم تأكيد التوفر والسعر النهائي عبر واتساب.",
+    addProduct: "أضف",
+    currency: "درهم",
+    articles: "منتج",
+    estimatedTotal: "المجموع التقديري",
+    orderNow: "اطلب الآن",
+    clearCart: "إفراغ السلة",
+    orderTitle: "إتمام الطلب",
+    orderSubtitle: "أدخل معلومات العميل للتوصيل",
+    clientName: "اسم العميل",
+    clientPhone: "هاتف العميل",
+    deliveryCity: "مدينة التوصيل",
+    orderNote: "ملاحظة (اختياري)",
+    sendOrder: "إرسال عبر واتساب",
+    orderSuccessTitle: "تم إرسال الطلب!",
+    orderSuccessDesc:
+      "تم إرسال طلبك عبر واتساب. سنؤكد التوفر والتوصيل في أقرب وقت.",
+    newOrder: "طلب جديد",
 
     // Admin
     adminTitle: "لوحة تحكم المشرف",
