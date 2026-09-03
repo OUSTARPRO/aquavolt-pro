@@ -6,6 +6,7 @@ import {
   text,
   timestamp,
   json,
+  int,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -52,6 +53,26 @@ export const chatLogs = mysqlTable("chat_logs", {
   messages: json("messages").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const suppliesOrders = mysqlTable("supplies_orders", {
+  id: serial("id").primaryKey(),
+  clientName: varchar("client_name", { length: 255 }).notNull(),
+  clientPhone: varchar("client_phone", { length: 50 }).notNull(),
+  clientCity: varchar("client_city", { length: 255 }),
+  quoteId: int("quote_id"),
+  category: mysqlEnum("category", ["electricity", "plumbing", "pool", "other"]).default("other").notNull(),
+  items: json("items").notNull(),
+  notes: text("notes"),
+  status: mysqlEnum("status", ["pending", "ordered", "delivered", "cancelled"]).default("pending").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type SuppliesOrder = typeof suppliesOrders.$inferSelect;
+export type InsertSuppliesOrder = typeof suppliesOrders.$inferInsert;
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
