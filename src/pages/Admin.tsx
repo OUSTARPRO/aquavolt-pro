@@ -33,6 +33,8 @@ import {
   X,
   Check,
   RefreshCw,
+  ShoppingCart,
+  Minus,
 } from "lucide-react";
 
 export default function Admin() {
@@ -42,7 +44,7 @@ export default function Admin() {
   });
   const { language, dir } = useLanguage();
   const T = translations[language];
-  const [tab, setTab] = useState<"gallery" | "quotes">("gallery");
+  const [tab, setTab] = useState<"gallery" | "quotes" | "orders">("gallery");
 
   const isAdmin = user?.role === "admin";
 
@@ -80,7 +82,7 @@ export default function Admin() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-8">
+          <div className="flex flex-wrap gap-2 mb-8">
             <button
               onClick={() => setTab("gallery")}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
@@ -103,9 +105,26 @@ export default function Admin() {
               <FileText className="w-4 h-4" />
               {T.quotesManagement}
             </button>
+            <button
+              onClick={() => setTab("orders")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                tab === "orders"
+                  ? "bg-teal-500/10 text-teal-400 border border-teal-500/20"
+                  : "bg-slate-900 text-slate-400 border border-white/10 hover:text-white"
+              }`}
+            >
+              <ShoppingCart className="w-4 h-4" />
+              {T.complementsManagement}
+            </button>
           </div>
 
-          {tab === "gallery" ? <GalleryManager /> : <QuotesManager />}
+          {tab === "gallery" ? (
+            <GalleryManager />
+          ) : tab === "quotes" ? (
+            <QuotesManager />
+          ) : (
+            <ComplementsManager />
+          )}
         </div>
       </main>
     </div>
@@ -256,6 +275,317 @@ function GalleryManager() {
         </div>
       ) : (
         <div className="text-center py-12 text-slate-500">{T.noImages}</div>
+      )}
+    </div>
+  );
+}
+
+type OrderItem = { name: string; quantity: number; unit: string };
+
+function ComplementsManager() {
+  const { language, dir } = useLanguage();
+  const T = translations[language];
+  const utils = trpc.useUtils();
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({
+    clientName: "",
+    clientPhone: "",
+    clientCity: "",
+    notes: "",
+    items: [{ name: "", quantity: 1, unit: "unité" }] as OrderItem[],
+  });
+  const [successMsg, setSuccessMsg] = useState(false);
+
+  const { data: orders, isLoading } = trpc.order.list.useQuery();
+  const createOrder = trpc.order.create.useMutation({
+    onSuccess: () => {
+      utils.order.list.invalidate();
+      setShowForm(false);
+      setForm({ clientName: "", clientPhone: "", clientCity: "", notes: "", items: [{ name: "", quantity: 1, unit: "unité" }] });
+      setSuccessMsg(true);
+      setTimeout(() => setSuccessMsg(false), 3000);
+    },
+  });
+  const updateStatus = trpc.order.updateStatus.useMutation({
+    onSuccess: () => utils.order.list.invalidate(),
+  });
+  const deleteOrder = trpc.order.delete.useMutation({
+    onSuccess: () => utils.order.list.invalidate(),
+  });
+
+  const statusColors: Record<string, string> = {
+    pending: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    ordered: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    delivered: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    cancelled: "bg-red-500/10 text-red-400 border-red-500/20",
+  };
+
+  const statusLabel: Record<string, string> = {
+    pending: T.orderPending,
+    ordered: T.orderOrdered,
+    delivered: T.orderDelivered,
+    cancelled: T.orderCancelled,
+  };
+
+  const updateItem = (idx: number, field: keyof OrderItem, value: string | number) => {
+    setForm((f) => {
+      const items = [...f.items];
+      items[idx] = { ...items[idx], [field]: value };
+      return { ...f, items };
+    });
+  };
+
+  const addItem = () =>
+    setForm((f) => ({ ...f, items: [...f.items, { name: "", quantity: 1, unit: "unité" }] }));
+
+  const removeItem = (idx: number) =>
+    setForm((f) => ({ ...f, items: f.items.filter((_, i) => i !== idx) }));
+
+  const canSubmit =
+    form.clientName.trim() &&
+    form.clientPhone.trim() &&
+    form.clientCity.trim() &&
+    form.items.length > 0 &&
+    form.items.every((it) => it.name.trim() && it.quantity > 0 && it.unit.trim());
+
+  const commonUnits = ["unité", "kg", "L", "boîte", "rouleau", "sac", "pièce"];
+
+  return (
+    <div dir={dir}>
+      {successMsg && (
+        <div className="mb-4 px-4 py-3 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm flex items-center gap-2">
+          <Check className="w-4 h-4" />
+          {T.orderCreated}
+        </div>
+      )}
+
+      <div className="flex justify-between items-center mb-4">
+        <Button
+          variant="outline"
+          onClick={() => utils.order.list.invalidate()}
+          className="border-white/10 text-slate-400 hover:text-white"
+        >
+          <RefreshCw className="w-4 h-4 mr-2" />
+          {language === "fr" ? "Actualiser" : "تحديث"}
+        </Button>
+        <Button
+          onClick={() => setShowForm(!showForm)}
+          className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
+        >
+          {showForm ? <X className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+          {showForm ? T.cancel : T.addOrder}
+        </Button>
+      </div>
+
+      {showForm && (
+        <div className="bg-slate-900 border border-white/10 rounded-xl p-6 mb-8">
+          <h3 className="text-lg font-semibold text-white mb-5 flex items-center gap-2">
+            <ShoppingCart className="w-5 h-5 text-teal-400" />
+            {T.addOrder}
+          </h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.orderClient}</label>
+              <Input
+                value={form.clientName}
+                onChange={(e) => setForm((f) => ({ ...f, clientName: e.target.value }))}
+                className="bg-slate-800 border-white/10 text-white"
+                placeholder={language === "fr" ? "Nom du client" : "اسم العميل"}
+              />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.orderPhone}</label>
+              <Input
+                value={form.clientPhone}
+                onChange={(e) => setForm((f) => ({ ...f, clientPhone: e.target.value }))}
+                className="bg-slate-800 border-white/10 text-white"
+                placeholder="+212..."
+              />
+            </div>
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">{T.orderCity}</label>
+              <Input
+                value={form.clientCity}
+                onChange={(e) => setForm((f) => ({ ...f, clientCity: e.target.value }))}
+                className="bg-slate-800 border-white/10 text-white"
+                placeholder={language === "fr" ? "Ville" : "المدينة"}
+              />
+            </div>
+          </div>
+
+          <div className="mb-5">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-sm text-slate-400">{T.orderItems}</label>
+              <button
+                type="button"
+                onClick={addItem}
+                className="flex items-center gap-1 text-teal-400 hover:text-teal-300 text-sm transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                {T.addItem}
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              {form.items.map((item, idx) => (
+                <div key={idx} className="flex gap-2 items-start">
+                  <Input
+                    value={item.name}
+                    onChange={(e) => updateItem(idx, "name", e.target.value)}
+                    placeholder={language === "fr" ? "Ex: Chlore granulés, pH+, Anti-algues…" : "مثال: كلور، مضاد للطحالب…"}
+                    className="bg-slate-800 border-white/10 text-white flex-1"
+                  />
+                  <Input
+                    type="number"
+                    min={1}
+                    value={item.quantity}
+                    onChange={(e) => updateItem(idx, "quantity", parseFloat(e.target.value) || 1)}
+                    className="bg-slate-800 border-white/10 text-white w-20"
+                  />
+                  <Select
+                    value={item.unit}
+                    onValueChange={(v) => updateItem(idx, "unit", v)}
+                  >
+                    <SelectTrigger className="bg-slate-800 border-white/10 text-white w-28">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-800 border-white/10">
+                      {commonUnits.map((u) => (
+                        <SelectItem key={u} value={u} className="text-white">
+                          {u}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {form.items.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeItem(idx)}
+                      className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-colors"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-5">
+            <label className="text-sm text-slate-400 mb-1 block">{T.orderNotes}</label>
+            <Textarea
+              value={form.notes}
+              onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
+              className="bg-slate-800 border-white/10 text-white"
+              placeholder={language === "fr" ? "Instructions de livraison, remarques…" : "تعليمات التسليم، ملاحظات…"}
+              rows={2}
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <Button
+              onClick={() =>
+                createOrder.mutate({
+                  clientName: form.clientName,
+                  clientPhone: form.clientPhone,
+                  clientCity: form.clientCity,
+                  items: form.items,
+                  notes: form.notes || undefined,
+                })
+              }
+              disabled={!canSubmit || createOrder.isPending}
+              className="bg-teal-500 hover:bg-teal-400 text-white"
+            >
+              {createOrder.isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+              <Check className="w-4 h-4 mr-2" />
+              {T.submitOrder}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+          <Loader2 className="w-6 h-6 text-teal-400 animate-spin" />
+        </div>
+      ) : orders && orders.length > 0 ? (
+        <div className="bg-slate-900 border border-white/10 rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-white/10 hover:bg-transparent">
+                  <TableHead className="text-slate-400">{T.orderClient}</TableHead>
+                  <TableHead className="text-slate-400">{T.orderPhone}</TableHead>
+                  <TableHead className="text-slate-400">{T.orderCity}</TableHead>
+                  <TableHead className="text-slate-400">{T.orderItems}</TableHead>
+                  <TableHead className="text-slate-400">{T.orderStatus}</TableHead>
+                  <TableHead className="text-slate-400">{T.orderDate}</TableHead>
+                  <TableHead className="text-slate-400 text-right">{T.actions}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {orders.map((ord) => {
+                  const items = ord.items as OrderItem[];
+                  return (
+                    <TableRow key={ord.id} className="border-white/10 hover:bg-white/5">
+                      <TableCell className="text-white font-medium">{ord.clientName}</TableCell>
+                      <TableCell className="text-slate-300">{ord.clientPhone}</TableCell>
+                      <TableCell className="text-slate-300">{ord.clientCity}</TableCell>
+                      <TableCell className="text-slate-300 max-w-xs">
+                        <ul className="space-y-0.5">
+                          {items.map((it, i) => (
+                            <li key={i} className="text-xs">
+                              <span className="text-white font-medium">{it.name}</span>
+                              <span className="text-slate-400"> — {it.quantity} {it.unit}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        {ord.notes && (
+                          <p className="text-xs text-slate-500 mt-1 italic">{ord.notes}</p>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Select
+                          value={ord.status}
+                          onValueChange={(v) =>
+                            updateStatus.mutate({ id: ord.id, status: v as typeof ord.status })
+                          }
+                        >
+                          <SelectTrigger
+                            className={`h-7 text-xs border ${statusColors[ord.status]} bg-transparent`}
+                          >
+                            <SelectValue>{statusLabel[ord.status]}</SelectValue>
+                          </SelectTrigger>
+                          <SelectContent className="bg-slate-800 border-white/10">
+                            {(["pending", "ordered", "delivered", "cancelled"] as const).map((s) => (
+                              <SelectItem key={s} value={s} className="text-white text-xs">
+                                {statusLabel[s]}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                      <TableCell className="text-slate-500 text-xs">
+                        {new Date(ord.createdAt).toLocaleDateString(language === "fr" ? "fr-FR" : "ar-MA")}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <button
+                          onClick={() => deleteOrder.mutate({ id: ord.id })}
+                          className="w-7 h-7 rounded-lg hover:bg-red-500/10 text-slate-400 hover:text-red-400 flex items-center justify-center transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      ) : (
+        <div className="text-center py-12 text-slate-500">{T.noOrders}</div>
       )}
     </div>
   );
