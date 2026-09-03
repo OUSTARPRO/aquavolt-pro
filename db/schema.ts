@@ -61,3 +61,28 @@ export type Quote = typeof quotes.$inferSelect;
 export type InsertQuote = typeof quotes.$inferInsert;
 export type ChatLog = typeof chatLogs.$inferSelect;
 export type InsertChatLog = typeof chatLogs.$inferInsert;
+
+export const supplements = mysqlTable("supplements", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  unit: varchar("unit", { length: 50 }).notNull().default("unité"),
+  category: mysqlEnum("category", ["pool", "electricity", "plumbing", "other"]).default("other").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const supplementOrders = mysqlTable("supplement_orders", {
+  id: serial("id").primaryKey(),
+  clientName: varchar("client_name", { length: 255 }).notNull(),
+  clientPhone: varchar("client_phone", { length: 50 }).notNull(),
+  clientCity: varchar("client_city", { length: 255 }).notNull(),
+  items: json("items").notNull(),
+  notes: text("notes"),
+  status: mysqlEnum("status", ["pending", "ordered", "delivered", "cancelled"]).default("pending").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type Supplement = typeof supplements.$inferSelect;
+export type InsertSupplement = typeof supplements.$inferInsert;
+export type SupplementOrder = typeof supplementOrders.$inferSelect;
+export type InsertSupplementOrder = typeof supplementOrders.$inferInsert;
