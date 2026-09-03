@@ -6,6 +6,7 @@ import {
   text,
   timestamp,
   json,
+  double,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -53,6 +54,36 @@ export const chatLogs = mysqlTable("chat_logs", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const complements = mysqlTable("complements", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  nameAr: varchar("name_ar", { length: 255 }),
+  category: mysqlEnum("category", ["electricity", "plumbing", "pool", "other"]).default("other").notNull(),
+  price: double("price").notNull(),
+  unit: varchar("unit", { length: 50 }).default("pièce").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type ComplementOrderItem = {
+  complementId: number;
+  name: string;
+  unit: string;
+  quantity: number;
+  unitPrice: number;
+};
+
+export const complementOrders = mysqlTable("complement_orders", {
+  id: serial("id").primaryKey(),
+  clientName: varchar("client_name", { length: 255 }).notNull(),
+  clientPhone: varchar("client_phone", { length: 50 }).notNull(),
+  city: varchar("city", { length: 255 }),
+  items: json("items").$type<ComplementOrderItem[]>().notNull(),
+  total: double("total").notNull(),
+  notes: text("notes"),
+  status: mysqlEnum("status", ["pending", "ordered", "delivered", "cancelled"]).default("pending").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type GalleryItem = typeof galleryItems.$inferSelect;
@@ -61,3 +92,7 @@ export type Quote = typeof quotes.$inferSelect;
 export type InsertQuote = typeof quotes.$inferInsert;
 export type ChatLog = typeof chatLogs.$inferSelect;
 export type InsertChatLog = typeof chatLogs.$inferInsert;
+export type Complement = typeof complements.$inferSelect;
+export type InsertComplement = typeof complements.$inferInsert;
+export type ComplementOrder = typeof complementOrders.$inferSelect;
+export type InsertComplementOrder = typeof complementOrders.$inferInsert;
