@@ -61,6 +61,26 @@ export const translations = {
     successMessage: "Votre demande a été envoyée avec succès ! Nous vous contacterons dans les 24h.",
     other: "Autre",
 
+    // Products / Order
+    products: "Produits",
+    productsTitle: "Commandez vos compléments",
+    productsSubtitle:
+      "Produits d'entretien, équipements et accessoires pour piscines, plomberie et électricité. Commandez pour vous ou pour vos clients, livraison partout au Maroc.",
+    productsBadge: "Livraison partout au Maroc",
+    yourOrder: "Votre commande",
+    emptyCart: "Aucun produit sélectionné. Ajoutez des produits depuis le catalogue.",
+    clientInfo: "Informations du client",
+    clientName: "Nom du client",
+    clientPhone: "Téléphone du client",
+    deliveryCity: "Ville de livraison",
+    orderNotes: "Remarques (optionnel)",
+    sendOrder: "Commander via WhatsApp",
+    orderSuccessTitle: "Commande envoyée !",
+    orderSuccessDesc:
+      "Votre commande a été préparée sur WhatsApp. Nous vous confirmerons la disponibilité, les prix et le délai de livraison.",
+    newOrder: "Passer une nouvelle commande",
+    priceOnRequest: "Prix confirmé sur WhatsApp",
+
     // Testimonials
     testimonialsTitle: "Ils nous font confiance",
     testimonialsSubtitle: "Des clients satisfaits à travers le Maroc",
@@ -114,6 +134,7 @@ export const translations = {
     rejected: "Refusé",
     name: "Nom",
     city: "Ville",
+    date: "Date",
     actions: "Actions",
     noQuotes: "Aucune demande de devis",
   },
@@ -179,6 +200,26 @@ export const translations = {
     successMessage: "تم إرسال طلبك بنجاح! سنتصل بك في غضون 24 ساعة.",
     other: "آخر",
 
+    // Products / Order
+    products: "المنتجات",
+    productsTitle: "اطلب مستلزماتك",
+    productsSubtitle:
+      "منتجات الصيانة والمعدات والإكسسوارات للمسابح والسباكة والكهرباء. اطلب لنفسك أو لعملائك، التوصيل في جميع أنحاء المغرب.",
+    productsBadge: "التوصيل في جميع أنحاء المغرب",
+    yourOrder: "طلبك",
+    emptyCart: "لم يتم اختيار أي منتج. أضف منتجات من الكتالوج.",
+    clientInfo: "معلومات العميل",
+    clientName: "اسم العميل",
+    clientPhone: "هاتف العميل",
+    deliveryCity: "مدينة التوصيل",
+    orderNotes: "ملاحظات (اختياري)",
+    sendOrder: "اطلب عبر واتساب",
+    orderSuccessTitle: "تم إرسال الطلب!",
+    orderSuccessDesc:
+      "تم تجهيز طلبك على واتساب. سنؤكد لك التوفر والأسعار ومدة التوصيل.",
+    newOrder: "تقديم طلب جديد",
+    priceOnRequest: "السعر يُؤكد عبر واتساب",
+
     // Testimonials
     testimonialsTitle: "يثقون بنا",
     testimonialsSubtitle: "عملاء راضون في جميع أنحاء المغرب",
@@ -232,6 +273,7 @@ export const translations = {
     rejected: "مرفوض",
     name: "الاسم",
     city: "المدينة",
+    date: "التاريخ",
     actions: "إجراءات",
     noQuotes: "لا توجد طلبات عروض أسعار",
   },
