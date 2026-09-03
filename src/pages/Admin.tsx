@@ -5,6 +5,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/lib/translations";
 import { trpc } from "@/providers/trpc";
 import Navbar from "@/components/Navbar";
+import OrdersManager from "@/components/OrdersManager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,6 +28,7 @@ import {
   Shield,
   Image,
   FileText,
+  ShoppingCart,
   Trash2,
   Plus,
   Loader2,
@@ -42,7 +44,7 @@ export default function Admin() {
   });
   const { language, dir } = useLanguage();
   const T = translations[language];
-  const [tab, setTab] = useState<"gallery" | "quotes">("gallery");
+  const [tab, setTab] = useState<"gallery" | "quotes" | "orders">("gallery");
 
   const isAdmin = user?.role === "admin";
 
@@ -103,9 +105,26 @@ export default function Admin() {
               <FileText className="w-4 h-4" />
               {T.quotesManagement}
             </button>
+            <button
+              onClick={() => setTab("orders")}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                tab === "orders"
+                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  : "bg-slate-900 text-slate-400 border border-white/10 hover:text-white"
+              }`}
+            >
+              <ShoppingCart className="w-4 h-4" />
+              {T.ordersManagement}
+            </button>
           </div>
 
-          {tab === "gallery" ? <GalleryManager /> : <QuotesManager />}
+          {tab === "gallery" ? (
+            <GalleryManager />
+          ) : tab === "quotes" ? (
+            <QuotesManager />
+          ) : (
+            <OrdersManager />
+          )}
         </div>
       </main>
     </div>

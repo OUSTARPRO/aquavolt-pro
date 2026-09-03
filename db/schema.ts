@@ -6,6 +6,7 @@ import {
   text,
   timestamp,
   json,
+  int,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -46,6 +47,37 @@ export const quotes = mysqlTable("quotes", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const products = mysqlTable("products", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  nameAr: varchar("name_ar", { length: 255 }),
+  category: mysqlEnum("category", ["electricity", "plumbing", "pool", "other"]).default("other").notNull(),
+  // Prix unitaire en MAD
+  price: int("price").notNull(),
+  imageUrl: varchar("image_url", { length: 500 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type OrderItem = {
+  productId: number;
+  name: string;
+  price: number;
+  quantity: number;
+};
+
+export const productOrders = mysqlTable("product_orders", {
+  id: serial("id").primaryKey(),
+  clientName: varchar("client_name", { length: 255 }).notNull(),
+  clientPhone: varchar("client_phone", { length: 50 }).notNull(),
+  city: varchar("city", { length: 255 }),
+  items: json("items").$type<OrderItem[]>().notNull(),
+  // Total en MAD, calculé côté serveur
+  total: int("total").notNull(),
+  notes: text("notes"),
+  status: mysqlEnum("status", ["pending", "ordered", "delivered", "cancelled"]).default("pending").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const chatLogs = mysqlTable("chat_logs", {
   id: serial("id").primaryKey(),
   sessionId: varchar("session_id", { length: 255 }).notNull(),
@@ -61,3 +93,7 @@ export type Quote = typeof quotes.$inferSelect;
 export type InsertQuote = typeof quotes.$inferInsert;
 export type ChatLog = typeof chatLogs.$inferSelect;
 export type InsertChatLog = typeof chatLogs.$inferInsert;
+export type Product = typeof products.$inferSelect;
+export type InsertProduct = typeof products.$inferInsert;
+export type ProductOrder = typeof productOrders.$inferSelect;
+export type InsertProductOrder = typeof productOrders.$inferInsert;
