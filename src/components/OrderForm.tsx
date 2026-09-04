@@ -111,7 +111,11 @@ export default function OrderForm() {
       ...(form.clientEmail.trim() ? { clientEmail: form.clientEmail.trim() } : {}),
     };
 
-    await createOrder.mutateAsync(payload);
+    try {
+      await createOrder.mutateAsync(payload);
+    } catch {
+      // WhatsApp remains the operational channel if the API/DB is unavailable.
+    }
 
     const linesText = priced.lines
       .map((line) => {
