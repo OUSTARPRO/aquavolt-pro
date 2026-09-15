@@ -1,0 +1,12 @@
+{
+  "name": "AquaVolt Pro",
+  "install": "bash .cursor/scripts/install.sh",
+  "start": "bash .cursor/scripts/start.sh",
+  "terminals": [
+    {
+      "name": "dev",
+      "command": "npm run dev"
+    }
+  ],
+  "ports": [3000]
+}
