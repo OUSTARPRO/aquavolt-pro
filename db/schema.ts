@@ -6,6 +6,7 @@ import {
   text,
   timestamp,
   json,
+  int,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -46,6 +47,29 @@ export const quotes = mysqlTable("quotes", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const productOrders = mysqlTable("product_orders", {
+  id: serial("id").primaryKey(),
+  clientName: varchar("client_name", { length: 255 }).notNull(),
+  clientPhone: varchar("client_phone", { length: 50 }).notNull(),
+  clientEmail: varchar("client_email", { length: 320 }),
+  city: varchar("city", { length: 255 }).notNull(),
+  address: varchar("address", { length: 500 }),
+  orderedBy: varchar("ordered_by", { length: 255 }),
+  notes: text("notes"),
+  items: json("items").notNull(),
+  totalMad: int("total_mad").notNull(),
+  status: mysqlEnum("status", [
+    "new",
+    "confirmed",
+    "preparing",
+    "delivered",
+    "cancelled",
+  ])
+    .default("new")
+    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const chatLogs = mysqlTable("chat_logs", {
   id: serial("id").primaryKey(),
   sessionId: varchar("session_id", { length: 255 }).notNull(),
@@ -61,3 +85,5 @@ export type Quote = typeof quotes.$inferSelect;
 export type InsertQuote = typeof quotes.$inferInsert;
 export type ChatLog = typeof chatLogs.$inferSelect;
 export type InsertChatLog = typeof chatLogs.$inferInsert;
+export type ProductOrder = typeof productOrders.$inferSelect;
+export type InsertProductOrder = typeof productOrders.$inferInsert;

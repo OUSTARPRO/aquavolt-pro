@@ -80,6 +80,15 @@ export default function Hero() {
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
+          <Link to="/commande">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-emerald-400/40 text-emerald-200 hover:bg-emerald-500/10 hover:border-emerald-400/60 text-base px-8 py-6"
+            >
+              {T.orderHeroCta}
+            </Button>
+          </Link>
           <a href="#services">
             <Button
               size="lg"

@@ -1,6 +1,6 @@
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/lib/translations";
-import { Phone, Mail, MapPin, MessageCircle, Clock } from "lucide-react";
+import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 
 export default function Contact() {
   const { language, dir } = useLanguage();

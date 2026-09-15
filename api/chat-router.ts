@@ -14,6 +14,10 @@ SERVICES PROPOSÉS :
 - Piscines : construction, rénovation, entretien, équipement (pompe, filtre, traitement)
 - Maintenance : contrats annuels pour particuliers et professionnels
 
+COMMANDE DE COMPLÉMENTS :
+Les clients et les techniciens peuvent commander des produits (chlore, pH, algicide, joints, LED, etc.) pour un client via la page /commande.
+Redirigez vers /commande lorsqu'on veut commander des produits pour un client.
+
 ZONES D'INTERVENTION : Tout le Maroc (Khouribga, Casablanca, Rabat, Marrakech, Fès, et autres villes)
 
 CONSIGNES :
